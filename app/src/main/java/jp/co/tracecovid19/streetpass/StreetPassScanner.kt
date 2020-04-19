@@ -79,7 +79,7 @@ class StreetPassScanner(
                 var txPower: Int? = null
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    txPower = result.txPower
+                    txPower = result.scanRecord?.txPowerLevel
                     if (txPower == TX_POWER_NOT_PRESENT) {
                         txPower = null
                     }
