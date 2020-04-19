@@ -1,10 +1,11 @@
 package jp.co.tracecovid19.data.model
 
+import com.squareup.moshi.Json
 import jp.co.tracecovid19.data.database.tempuserid.TempUserIdEntity
 import jp.co.tracecovid19.extension.convertToDateTimeString
 import jp.co.tracecovid19.extension.convertToUnixTime
 
-data class TempUserId(val tempId: String,
+data class TempUserId(@Json(name = "tempID") val tempId: String,
                       val validFrom: String,
                       val validTo: String) {
 
