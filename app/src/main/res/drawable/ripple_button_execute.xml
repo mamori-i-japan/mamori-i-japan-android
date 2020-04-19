@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/colorExecuteButtonSelected">
+    <item>
+        <selector>
+            <item android:state_enabled="false"
+                android:drawable="@drawable/frame_button_execute_disabled"/>
+            <item android:drawable="@drawable/frame_button_execute"/>
+        </selector>
+    </item>
+</ripple>
+

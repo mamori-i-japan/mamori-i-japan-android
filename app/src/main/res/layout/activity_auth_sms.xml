@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBgWhite">
+
+    <androidx.appcompat.widget.Toolbar style="@style/ToolBar" android:id="@+id/toolBar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="24dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="確認番号を入力してください"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/colorTextBlack"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
+
+        <jp.co.tracecovid19.ui.CodeInputText
+            android:id="@+id/codeInputText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="32dp"
+            android:background="@color/colorBgGray"
+            app:codeInputText_num="6"/>
+
+        <Button style="@style/LinkButtonBlue"
+            android:id="@+id/changePhoneNumberButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center"
+            android:text="電話番号を変更"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBgWhite">
+
+    <androidx.appcompat.widget.Toolbar style="@style/ToolBar" android:id="@+id/toolBar"/>
+
+
+    <Button style="@style/GeneralButton"
+        android:id="@+id/settingButton"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:text="設定"/>
+
+    <Button style="@style/GeneralButton"
+        android:id="@+id/aboutButton"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:text="このアプリについて"/>
+
+    <Button style="@style/GeneralButton"
+        android:id="@+id/licenseButton"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:text="ライセンス"/>
+
+    <Button style="@style/GeneralButton"
+        android:id="@+id/logoutButton"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:text="ログアウト"/>
+
+    <Button style="@style/GeneralButton"
+        android:id="@+id/restartButton"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:text="再起動"/>
+
+
+</LinearLayout>

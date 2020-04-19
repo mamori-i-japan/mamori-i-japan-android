@@ -1,0 +1,24 @@
+<RelativeLayout
+    android:id="@+id/contentView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="48dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:textColor="@color/colorTextBlack"
+        android:textSize="36sp"
+        android:textStyle="bold"/>
+
+    <View
+        android:id="@+id/focusView"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/textView"
+        android:background="@color/colorCodeInputUnFocus"/>
+
+</RelativeLayout>
+

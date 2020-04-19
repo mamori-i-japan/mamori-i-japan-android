@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBgWhite">
+
+    <androidx.appcompat.widget.Toolbar style="@style/ToolBar" android:id="@+id/toolBar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="24dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="連絡する保健所を定めるため\nお住まいの都道府県のみ入力してください"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/colorTextBlack"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <jp.co.tracecovid19.ui.SelectText
+            android:id="@+id/prefecturesSelectText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            app:selectText_hint="お住まいの都道府県を選択"/>
+
+        <Button style="@style/ExecuteButton"
+            android:id="@+id/executeButton"
+            android:layout_width="match_parent"
+            android:layout_marginTop="48dp"
+            android:text="次へ"/>
+
+    </LinearLayout>
+
+</LinearLayout>

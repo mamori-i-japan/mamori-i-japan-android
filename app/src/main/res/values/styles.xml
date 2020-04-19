@@ -1,0 +1,64 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- Action Bar -->
+    <style name="ToolBar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:theme">@style/ToolBarTheme</item>
+        <item name="android:minHeight">?attr/actionBarSize</item>
+        <item name="android:background">@color/colorBgWhite</item>
+        <item name="android:elevation">1dp</item>
+    </style>
+    <style name="ToolBarTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColorPrimary">@color/colorTextBlack</item>
+        <item name="android:subtitleTextColor">@color/colorTextBlack</item>
+    </style>
+
+    <!-- ExecuteButton -->
+    <style name="ExecuteButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_height">56dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">@drawable/ripple_button_execute</item>
+        <item name="android:textColor">@color/colorExecuteButtonText</item>
+    </style>
+
+    <!-- GeneralButton -->
+    <style name="GeneralButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_height">40dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">@drawable/ripple_button_general</item>
+        <item name="android:textColor">@color/colorGeneralButtonText</item>
+    </style>
+
+    <!-- LinkButton -->
+    <style name="LinkButtonBlue" parent="Widget.AppCompat.Button">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:background">@drawable/ripple_button_link</item>
+        <item name="android:textColor">@color/colorLinkButtonTextBlue</item>
+    </style>
+
+    <!-- TransparentButton -->
+    <style name="TransparentButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:text">""</item>
+        <item name="android:textColor">@color/colorTransparentButtonText</item>
+        <item name="android:background">@drawable/ripple_button_transparent</item>
+    </style>
+
+</resources>

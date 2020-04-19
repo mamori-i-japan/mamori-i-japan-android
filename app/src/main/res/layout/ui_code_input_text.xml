@@ -1,0 +1,23 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:cursorVisible="false"/>
+
+    <LinearLayout
+        android:id="@+id/containerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:divider="@drawable/divider_code_input_text"
+        android:background="@color/colorBgWhite"
+        android:showDividers="middle">
+    </LinearLayout>
+
+
+</FrameLayout>

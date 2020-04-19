@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="jp.co.tracecovid19">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- BLE -->
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:allowBackup">
+
+        <service
+            android:name=".service.BluetoothMonitoringService"
+            android:foregroundServiceType="location" />
+
+        <activity android:name=".screen.common.WebActivity" />
+        <activity android:name=".screen.home.HomeActivity" />
+        <activity android:name=".screen.menu.AboutActivity" />
+        <activity android:name=".screen.menu.LicenseActivity" />
+        <activity android:name=".screen.menu.MenuActivity" />
+        <activity android:name=".screen.menu.SettingActivity" />
+        <activity android:name=".screen.profile.InputPrefectureActivity" />
+        <activity android:name=".screen.profile.InputJobActivity"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
+        <activity android:name=".screen.permission.PermissionSettingActivity" />
+        <activity android:name=".screen.register.AuthSmsActivity"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
+        <activity android:name=".screen.register.InputPhoneNumberActivity"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
+        <activity android:name=".screen.start.AgreementActivity" />
+        <activity
+            android:name=".screen.start.SplashActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".screen.start.TutorialActivity" />
+        <activity android:name=".screen.trace.TraceNotificationActivity" />
+        <activity android:name=".screen.trace.TraceDataUploadActivity" />
+
+        <activity android:name=".screen.home.TestBLEActivity" /> <!-- TODO 動作確認用 -->
+        <activity android:name=".screen.home.BLEActivity" /> <!-- TODO 動作確認用 -->
+        <activity android:name=".screen.home.TestPositiveCheckActivity" /> <!-- TODO 動作確認用 -->
+        <activity android:name=".screen.home.TestContactListActivity" /> <!-- TODO 動作確認用 -->
+
+    </application>
+
+</manifest>

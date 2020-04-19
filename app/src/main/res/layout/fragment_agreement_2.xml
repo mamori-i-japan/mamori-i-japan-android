@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="あなたが新型コロナウィルス陽性の診断をされた際、匿名での行動データをXXに共有することを許可しますか"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:textColor="@color/colorTextBlack"
+            android:textStyle="bold"
+            android:textSize="21sp"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@color/colorBgGray"
+            android:layout_margin="24dp"/>
+
+    </LinearLayout>
+
+    <Button style="@style/ExecuteButton"
+        android:id="@+id/agreeButton"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="24dp"
+        android:text="同意する"/>
+
+</RelativeLayout>

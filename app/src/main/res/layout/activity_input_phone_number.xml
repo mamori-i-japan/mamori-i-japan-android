@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBgWhite">
+
+    <androidx.appcompat.widget.Toolbar style="@style/ToolBar" android:id="@+id/toolBar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="24dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="お使いの端末の電話番号を入力してください"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/colorTextBlack"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textSize="12sp"
+            android:textColor="@color/colorTextBlack"
+            android:text="・ハイフンは不要です\n・日本国内で契約されている携帯電話番号に限ります\n・国際電話などで用いる+81は不要です。"/>
+
+        <EditText
+            android:id="@+id/phoneNumberInputText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:inputType="number"
+            android:maxLength="11"
+            android:hint="電話番号を入力してください"/>
+
+        <Button style="@style/ExecuteButton"
+            android:id="@+id/sendButton"
+            android:layout_width="match_parent"
+            android:layout_marginTop="48dp"
+            android:text="SMSを送信"/>
+
+    </LinearLayout>
+
+</LinearLayout>

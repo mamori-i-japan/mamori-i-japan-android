@@ -1,0 +1,10 @@
+<resources>
+    <declare-styleable name="CodeInputText">
+        <attr name="codeInputText_num" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="SelectText">
+        <attr name="selectText_hint" format="string" />
+    </declare-styleable>
+
+</resources>

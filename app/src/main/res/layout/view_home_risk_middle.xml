@@ -1,0 +1,71 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/img_risk_middle"
+        android:adjustViewBounds="true"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/colorRiskMiddle">
+
+        <Button style="@style/TransparentButton"
+            android:id="@+id/notificationButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="危険度 中"
+                android:textColor="@color/colorTextBlack"
+                android:textStyle="bold"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="X日前に感染者との接触の可能性があります"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="13sp"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ご自宅で安静にしてください。"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textColor="@color/colorTextBlack"
+        android:textStyle="bold"
+        android:textSize="17sp"/>
+
+    <Button style="@style/LinkButtonBlue"
+        android:id="@+id/shareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:layout_marginBottom="16dp"        android:layout_gravity="center_horizontal"
+        android:text="このアプリをシェア" />
+
+</LinearLayout>

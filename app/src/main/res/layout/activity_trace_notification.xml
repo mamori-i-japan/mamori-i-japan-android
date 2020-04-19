@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBgWhite">
+
+    <androidx.appcompat.widget.Toolbar style="@style/ToolBar" android:id="@+id/toolBar"/>
+
+    <TextView
+        android:id="@+id/resultTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:textColor="@color/colorTextBlack"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:text="6時間内に\n2名の陽性感染者と\n2m以内、30分以上の接触が認められました。"/>
+
+    <Button style="@style/GeneralButton"
+        android:id="@+id/webButton"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:text="管轄の保健所を探す"/>
+
+</LinearLayout>

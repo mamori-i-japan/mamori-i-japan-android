@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "776506470916",
+    "firebase_url": "https://contact-tracing-26716.firebaseio.com",
+    "project_id": "contact-tracing-26716",
+    "storage_bucket": "contact-tracing-26716.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776506470916:android:10ef2c44afa0bde40bfb51",
+        "android_client_info": {
+          "package_name": "jp.co.tracecovid19.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "776506470916-2iasnrlcrlnujei3esg39tpfl48iee9l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "jp.co.tracecovid19.dev",
+            "certificate_hash": "66ded867e1b29ad393f146b35a9f6200b090ef43"
+          }
+        },
+        {
+          "client_id": "776506470916-nch83ujcv0gajihui3kb4i457ki5ovnf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJeBl2cgoxdCXxfRZjuzDtZsLAUSq1DbU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "776506470916-nch83ujcv0gajihui3kb4i457ki5ovnf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "776506470916-3ttn6744j1hcqlj8bt10fs87lb5m3kq0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.decurret.TraceCovid19JP"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#109AC5</color>
+
+    <!-- 状態色 -->
+    <color name="colorRiskLow">#322F80ED</color>
+    <color name="colorRiskMiddle">#FFE0B0</color>
+    <color name="colorRiskHigh">#FFB0B0</color>
+
+    <!-- Bg -->
+    <color name="colorBgGray">#EFEFF4</color>
+    <color name="colorBgWhite">#FFFFFF</color>
+
+    <!-- Text -->
+    <color name="colorTextBlack">#000000</color>
+    <color name="colorTextError">#FF0000</color>
+    <color name="colorTextWhite">#FFFFFF</color>
+    <color name="colorTextGray">#5C5C5C</color>
+    <color name="colorTextRed">#D3323A</color>
+    <color name="colorTextDarkGray">#303030</color>
+    <color name="colorTextLightGray">#7C7C7C</color>
+
+    <!-- EditText -->
+    <color name="colorEditTextHint">#C8C8C8</color>
+    <color name="colorEditTextError">#FF0000</color>
+
+    <!-- CodeInputText -->
+    <color name="colorCodeInputFocus">#109AC5</color>
+    <color name="colorCodeInputUnFocus">#B8B8C0</color>
+    <color name="colorCodeInputError">#FF0000</color>
+
+    <!-- ExecuteButton -->
+    <color name="colorExecuteButtonText">#FFFFFF</color>
+    <color name="colorExecuteButtonBg">#109AC5</color>
+    <color name="colorExecuteButtonSelected">#074F66</color>
+    <color name="colorExecuteButtonBgDisabled">#D7D7D7</color>
+
+    <!-- GeneralButton -->
+    <color name="colorGeneralButtonText">#4A4A4A</color>
+    <color name="colorGeneralButtonBg">#FFFFFF</color>
+    <color name="colorGeneralButtonBorder">#4A4A4A</color>
+    <color name="colorGeneralButtonSelected">#32333333</color>
+
+    <!-- LinkButton -->
+    <color name="colorLinkButtonTextGray">#5C5C5C</color>
+    <color name="colorLinkButtonTextRed">#D3323A</color>
+    <color name="colorLinkButtonTextBlue">#007AFF</color>
+    <color name="colorLinkButtonSelected">#19000000</color>
+    <color name="colorLinkButtonBg">#00FFFFFF</color>
+
+    <!-- TransparentButton -->
+    <color name="colorTransparentButtonText">#00FFFFFF</color>
+    <color name="colorTransparentButtonBg">#00FFFFFF</color>
+    <color name="colorTransparentButtonSelected">#19000000</color>
+
+    <!-- TODO: 持ち込みなので不要なら削除 -->
+    <color name="notification_tint">#499dd6</color>
+</resources>

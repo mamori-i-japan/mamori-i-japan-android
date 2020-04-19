@@ -1,0 +1,25 @@
+<resources>
+    <!-- Common -->
+    <string name="app_name">Jトレース(仮)</string>
+
+    <!-- SmsAuth -->
+    <string name="sms_auth_auth_button">認証する</string>
+
+    <!-- InputPhoneNumber -->
+    <string name="input_phone_number_send_button">送信する</string>
+
+    <!-- Tutorial -->
+    <string name="tutorial_start_button">開始する</string>
+
+    <!-- FetchErrorView -->
+    <string name="fetch_error_view_reload_button">再読み込み</string>
+
+
+    <!-- 持ち込みなので、後で削除するかも -->
+    <string name="service_ok_title">J-Trace is scanning to keep you safe! :)</string>
+    <string name="service_ok_body">Restart phone if this notification disappears</string>
+    <string name="service_not_ok_title">Oh no! :(</string>
+    <string name="service_not_ok_body">J-Trace is not scanning.</string>
+    <string name="service_not_ok_action">Check app now</string>
+
+</resources>
