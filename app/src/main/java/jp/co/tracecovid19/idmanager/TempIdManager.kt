@@ -28,7 +28,8 @@ class TempIdManager(
             traceRepository.updateTempIds()
                 .subscribeOn(Schedulers.io())
                 .subscribeBy(
-                    onSuccess = {}
+                    onSuccess = {},
+                    onError = {}
                 )
                 .addTo(disposable)
         }

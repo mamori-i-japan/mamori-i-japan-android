@@ -30,10 +30,7 @@ android {
 
         buildConfigField "long", "MAX_QUEUE_TIME", '7000'
         buildConfigField "long", "CONNECTION_TIMEOUT", '6000'
-        buildConfigField "long", "PURGE_TTL", '10'
-        buildConfigField "long", "BM_CHECK_INTERVAL", '540000'
         buildConfigField "long", "HEALTH_CHECK_INTERVAL", '900000'
-        buildConfigField "long", "PURGE_INTERVAL", '1000'
 
         buildConfigField "boolean", "INFINITE_SCANNING", 'false'
         buildConfigField "long", "SCAN_DURATION", '10000' // スキャンの時間

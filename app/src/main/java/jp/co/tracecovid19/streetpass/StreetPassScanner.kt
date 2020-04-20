@@ -1,6 +1,5 @@
 package jp.co.tracecovid19.streetpass
 
-import android.bluetooth.le.AdvertiseData
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanResult.TX_POWER_NOT_PRESENT
@@ -11,9 +10,7 @@ import android.util.Log
 import jp.co.tracecovid19.bluetooth.BLEScanner
 import jp.co.tracecovid19.logger.DebugLogger
 import jp.co.tracecovid19.service.BluetoothMonitoringService.Companion.infiniteScanning
-import jp.co.tracecovid19.status.Status
 import jp.co.tracecovid19.util.BLEUtil
-import kotlin.properties.Delegates
 
 class StreetPassScanner(
     private val context: Context,
@@ -34,10 +31,6 @@ class StreetPassScanner(
     fun startScan() {
 
         DebugLogger.central(TAG, "===== Scanning Started")
-        // TODO: このステータスの設定は機能的にいるのか？
-        var statusRecord = Status("Scanning Started")
-        BLEUtil.broadcastStatusReceived(context, statusRecord)
-
         scanner.startScan(scanCallback)
         scannerCount++
 
@@ -53,8 +46,6 @@ class StreetPassScanner(
     fun stopScan() {
         //only stop if scanning was successful - kinda.
         if (scannerCount > 0) {
-            var statusRecord = Status("Scanning Stopped")
-            BLEUtil.broadcastStatusReceived(context, statusRecord)
             scannerCount--
             scanner.stopScan()
             DebugLogger.central(TAG, "===== Scanning Stopped")
