@@ -12,22 +12,17 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.IBinder
-import android.os.PowerManager
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import jp.co.tracecovid19.BlueTracePreference
 import jp.co.tracecovid19.BuildConfig
 import jp.co.tracecovid19.bluetooth.BLEAdvertiser
-import jp.co.tracecovid19.bluetooth.gatt.ACTION_RECEIVED_STATUS
 import jp.co.tracecovid19.bluetooth.gatt.ACTION_RECEIVED_STREETPASS
-import jp.co.tracecovid19.bluetooth.gatt.STATUS
 import jp.co.tracecovid19.bluetooth.gatt.STREET_PASS
 import jp.co.tracecovid19.data.database.tracedata.TraceDataEntity
 import jp.co.tracecovid19.data.repository.trase.TraceRepository
 import jp.co.tracecovid19.idmanager.TempIdManager
 import jp.co.tracecovid19.logger.DebugLogger
 import jp.co.tracecovid19.notifications.NotificationTemplates
-import jp.co.tracecovid19.status.Status
 import jp.co.tracecovid19.streetpass.ConnectionRecord
 import jp.co.tracecovid19.streetpass.StreetPassScanner
 import jp.co.tracecovid19.streetpass.StreetPassServer
@@ -47,26 +42,21 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
     companion object {
         private const val TAG = "BTMService"
 
-        private val NOTIFICATION_ID = BuildConfig.SERVICE_FOREGROUND_NOTIFICATION_ID
-        private val CHANNEL_ID = BuildConfig.SERVICE_FOREGROUND_CHANNEL_ID
-        val CHANNEL_SERVICE = BuildConfig.SERVICE_FOREGROUND_CHANNEL_NAME
-        val COMMAND_KEY = "${BuildConfig.APPLICATION_ID}_CMD"
-        val purgeTTL: Long = BuildConfig.PURGE_TTL
+        private const val NOTIFICATION_ID = BuildConfig.SERVICE_FOREGROUND_NOTIFICATION_ID
+        private const val CHANNEL_ID = BuildConfig.SERVICE_FOREGROUND_CHANNEL_ID
+        const val CHANNEL_SERVICE = BuildConfig.SERVICE_FOREGROUND_CHANNEL_NAME
+        const val COMMAND_KEY = "${BuildConfig.APPLICATION_ID}_CMD"
 
-        val PENDING_ACTIVITY = 5
-        val PENDING_SCAN_REQ_CODE = 7
-        val PENDING_ADVERTISE_REQ_CODE = 8
-        val PENDING_HEALTH_CHECK_CODE = 9
-        val PENDING_WIZARD_REQ_CODE = 10
-        val PENDING_BM_UPDATE = 11
-        val PENDING_PURGE_CODE = 12
+        const val PENDING_ACTIVITY = 5
+        const val PENDING_SCAN_REQ_CODE = 7
+        const val PENDING_ADVERTISE_REQ_CODE = 8
+        const val PENDING_HEALTH_CHECK_CODE = 9
+        const val PENDING_WIZARD_REQ_CODE = 10
 
         val connectionTimeout: Long = BuildConfig.CONNECTION_TIMEOUT
         val maxQueueTime: Long = BuildConfig.MAX_QUEUE_TIME
         val blacklistDuration: Long = BuildConfig.BLACKLIST_DURATION
-        val bmCheckInterval: Long = BuildConfig.BM_CHECK_INTERVAL
         val healthCheckInterval: Long = BuildConfig.HEALTH_CHECK_INTERVAL
-        val purgeInterval: Long = BuildConfig.PURGE_INTERVAL
         val advertisingDuration: Long = BuildConfig.ADVERTISING_DURATION
         val scanDuration: Long = BuildConfig.SCAN_DURATION
         val scanInterval: Long = BuildConfig.SCAN_INTERVAL
@@ -74,7 +64,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         val infiniteAdvertising = BuildConfig.INFINITE_ADVERTISING
         val infiniteScanning = BuildConfig.INFINITE_SCANNING
 
-        val bmValidityCheck = false
         val useBlacklist = true
     }
 
@@ -93,16 +82,9 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
     var worker: StreetPassWorker? = null
 
     private val streetPassReceiver = StreetPassReceiver()
-    private val statusReceiver = StatusReceiver()
     private val bluetoothStatusReceiver = BluetoothStatusReceiver()
 
     private var job: Job = Job()
-
-    //TODO: 多分仕様と合わないので、ここは削除
-    //private lateinit var statusRecordStorage: StatusRecordStorage
-    //private lateinit var functions: FirebaseFunctions
-    //private lateinit var firebaseAnalytics: FirebaseAnalytics
-    //private lateinit var auth: FirebaseAuth
 
     private lateinit var commandHandler: CommandHandler
 
@@ -118,9 +100,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         setup()
     }
 
-    fun setup() {
-        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
-
+    private fun setup() {
         commandHandler = CommandHandler(WeakReference(this))
 
         DebugLogger.log(TAG, "Creating service - BluetoothMonitoringService")
@@ -143,7 +123,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
 
         commandHandler.removeCallbacksAndMessages(null)
 
-        BLEUtil.cancelBMUpdateCheck(this.applicationContext)
         BLEUtil.cancelNextScan(this.applicationContext)
         BLEUtil.cancelNextAdvertise(this.applicationContext)
     }
@@ -197,14 +176,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         return EasyPermissions.hasPermissions(this.applicationContext, *perms)
     }
 
-    /* TODO: 多分これなくてもいいはず
-    private fun acquireWritePermission() {
-        val intent = Intent(this.applicationContext, RequestFileWritePermission::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(intent)
-    }
-     */
-
     private fun isBluetoothEnabled(): Boolean {
         var btOn = false
         val bluetoothAdapter: BluetoothAdapter? by lazy(LazyThreadSafetyMode.NONE) {
@@ -230,21 +201,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
             notifyLackingThings()
             return START_STICKY
         }
-
-        //check for write permissions  - not required for now. SDLog maybe?
-        //only required for debug builds - for now
-        // TODO: 一旦除外
-        /*
-        if (BuildConfig.DEBUG) {
-            if (!hasWritePermissions()) {
-                DebugLogger.log(TAG, "no write permission")
-                //start write permission activity
-                acquireWritePermission()
-                stopSelf()
-                return START_STICKY
-            }
-        }
-         */
 
         intent?.let {
             val cmd = intent.getIntExtra(COMMAND_KEY, Command.INVALID.index)
@@ -278,21 +234,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
             return
         }
 
-        //check for write permissions  - not required for now. SDLog maybe?
-        //only required for debug builds - for now
-        // TODO: 一旦除外
-        /*
-        if (BuildConfig.DEBUG) {
-            if (!hasWritePermissions()) {
-                DebugLogger.log(TAG, "no write permission")
-                //start write permission activity
-                acquireWritePermission()
-                stopSelf()
-                return
-            }
-        }
-         */
-
         //show running foreground notification if its not showing that
         notifyRunning()
 
@@ -300,8 +241,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
             Command.ACTION_START -> {
                 setupService()
                 BLEUtil.scheduleNextHealthCheck(this.applicationContext, healthCheckInterval)
-                BLEUtil.scheduleRepeatingPurge(this.applicationContext, purgeInterval)
-                BLEUtil.scheduleBMUpdateCheck(this.applicationContext, bmCheckInterval)
                 actionStart()
             }
 
@@ -320,11 +259,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
                 }
             }
 
-            // TODO: このコマンドも削除して問題ないはず
-            Command.ACTION_UPDATE_BM -> {
-                BLEUtil.scheduleBMUpdateCheck(this.applicationContext, bmCheckInterval)
-            }
-
             Command.ACTION_STOP -> {
                 actionStop()
             }
@@ -334,10 +268,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
                 if (doWork) {
                     actionHealthCheck()
                 }
-            }
-
-            Command.ACTION_PURGE -> {
-                actionPurge()
             }
 
             else -> DebugLogger.log(TAG, "Invalid / ignored command: $cmd. Nothing to do")
@@ -351,13 +281,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
     }
 
     private fun actionHealthCheck() {
-        performUserLoginCheck()
         performHealthCheck()
-        BLEUtil.scheduleRepeatingPurge(this.applicationContext, purgeInterval)
-    }
-
-    private fun actionPurge() {
-        performPurge()
     }
 
     private fun actionStart() {
@@ -443,25 +367,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         }
     }
 
-    private fun performUserLoginCheck() {
-        // TODO: ログインチェックだしいらないと思うので、コメントアウト
-        /*
-        firebaseAnalytics = FirebaseAnalytics.getInstance(applicationContext)
-        auth = FirebaseAuth.getInstance()
-        val currentUser: FirebaseUser? = auth.currentUser
-        if (currentUser == null && Preference.isOnBoarded(this)) {
-            DebugLogger.log(TAG, "User is not login but has completed onboarding")
-            val bundle = Bundle()
-            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Android")
-            bundle.putString(
-                FirebaseAnalytics.Param.ITEM_NAME,
-                "Have not login yet but in main activity"
-            )
-            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle)
-        }
-         */
-    }
-
     private fun performHealthCheck() {
 
         DebugLogger.log(TAG, "Performing self diagnosis")
@@ -491,7 +396,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         if (!infiniteAdvertising) {
             if (!commandHandler.hasAdvertiseScheduled()) {
                 Log.w(TAG, "Missing Advertise Schedule - rectifying")
-//                setupAdvertisingCycles()
                 commandHandler.scheduleNextAdvertise(100)
             } else {
                 Log.w(
@@ -502,20 +406,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
             }
         } else {
             Log.w(TAG, "Should be operating under infinite advertise mode")
-        }
-
-
-    }
-
-    // TODO: これもいらないかも
-    private fun performPurge() {
-        val context = this
-        launch {
-            val before = System.currentTimeMillis() - purgeTTL
-            DebugLogger.log(TAG, "Coroutine - Purging of data before epoch time $before")
-            // TODO: ここは不要なはず
-            //statusRecordStorage.purgeOldRecords(before)
-            BlueTracePreference.putLastPurgeTime(context, System.currentTimeMillis())
         }
     }
 
@@ -541,9 +431,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         val recordAvailableFilter = IntentFilter(ACTION_RECEIVED_STREETPASS)
         localBroadcastManager.registerReceiver(streetPassReceiver, recordAvailableFilter)
 
-        val statusReceivedFilter = IntentFilter(ACTION_RECEIVED_STATUS)
-        localBroadcastManager.registerReceiver(statusReceiver, statusReceivedFilter)
-
         val bluetoothStatusReceivedFilter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         registerReceiver(bluetoothStatusReceiver, bluetoothStatusReceivedFilter)
 
@@ -555,12 +442,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
             localBroadcastManager.unregisterReceiver(streetPassReceiver)
         } catch (e: Throwable) {
             Log.w(TAG, "streetPassReceiver is not registered?")
-        }
-
-        try {
-            localBroadcastManager.unregisterReceiver(statusReceiver)
-        } catch (e: Throwable) {
-            Log.w(TAG, "statusReceiver is not registered?")
         }
 
         try {
@@ -633,40 +514,16 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         }
     }
 
-    inner class StatusReceiver : BroadcastReceiver() {
-        private val TAG = "StatusReceiver"
-
-        override fun onReceive(context: Context, intent: Intent) {
-
-            if (ACTION_RECEIVED_STATUS == intent.action) {
-                var statusRecord: Status = intent.getParcelableExtra(STATUS)
-                DebugLogger.log(TAG, "Status received: ${statusRecord.msg}")
-
-                // TODO: ステータスの保存なのでコメントアウト
-                /*
-                if (statusRecord.msg.isNotEmpty()) {
-                    val statusRecord = StatusRecord(statusRecord.msg)
-                    launch {
-                        statusRecordStorage.saveRecord(statusRecord)
-                    }
-                }
-                 */
-            }
-        }
-    }
-
     enum class Command(val index: Int, val string: String) {
         INVALID(-1, "INVALID"),
         ACTION_START(0, "START"),
         ACTION_SCAN(1, "SCAN"),
         ACTION_STOP(2, "STOP"),
         ACTION_ADVERTISE(3, "ADVERTISE"),
-        ACTION_SELF_CHECK(4, "SELF_CHECK"),
-        ACTION_UPDATE_BM(5, "UPDATE_BM"),
-        ACTION_PURGE(6, "PURGE");
+        ACTION_SELF_CHECK(4, "SELF_CHECK");
 
         companion object {
-            private val types = values().associate { it.index to it }
+            private val types = values().associateBy { it.index }
             fun findByValue(value: Int) = types[value]
         }
     }

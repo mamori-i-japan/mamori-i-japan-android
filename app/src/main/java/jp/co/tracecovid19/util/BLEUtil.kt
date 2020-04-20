@@ -7,15 +7,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import jp.co.tracecovid19.bluetooth.gatt.*
-import jp.co.tracecovid19.logger.DebugLogger
 import jp.co.tracecovid19.scheduler.Scheduler
 import jp.co.tracecovid19.service.BluetoothMonitoringService
 import jp.co.tracecovid19.service.BluetoothMonitoringService.Companion.PENDING_ADVERTISE_REQ_CODE
-import jp.co.tracecovid19.service.BluetoothMonitoringService.Companion.PENDING_BM_UPDATE
 import jp.co.tracecovid19.service.BluetoothMonitoringService.Companion.PENDING_HEALTH_CHECK_CODE
-import jp.co.tracecovid19.service.BluetoothMonitoringService.Companion.PENDING_PURGE_CODE
 import jp.co.tracecovid19.service.BluetoothMonitoringService.Companion.PENDING_SCAN_REQ_CODE
-import jp.co.tracecovid19.status.Status
 import jp.co.tracecovid19.streetpass.ACTION_DEVICE_SCANNED
 import jp.co.tracecovid19.streetpass.ConnectablePeripheral
 import jp.co.tracecovid19.streetpass.ConnectionRecord
@@ -72,16 +68,6 @@ object BLEUtil {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }
 
-    fun cancelBMUpdateCheck(context: Context) {
-        val intent = Intent(context, BluetoothMonitoringService::class.java)
-        intent.putExtra(
-            BluetoothMonitoringService.COMMAND_KEY,
-            BluetoothMonitoringService.Command.ACTION_UPDATE_BM.index
-        )
-
-        Scheduler.cancelServiceIntent(PENDING_BM_UPDATE, context, intent)
-    }
-
     fun cancelNextScan(context: Context) {
         val nextIntent = Intent(context, BluetoothMonitoringService::class.java)
         nextIntent.putExtra(
@@ -98,13 +84,6 @@ object BLEUtil {
             BluetoothMonitoringService.Command.ACTION_ADVERTISE.index
         )
         Scheduler.cancelServiceIntent(PENDING_ADVERTISE_REQ_CODE, context, nextIntent)
-    }
-
-    fun broadcastStatusReceived(context: Context, statusRecord: Status) {
-        DebugLogger.central(TAG, "broadcastStatusReceived ${statusRecord.msg}")
-        val intent = Intent(ACTION_RECEIVED_STATUS)
-        intent.putExtra(STATUS, statusRecord)
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }
 
     fun broadcastStreetPassReceived(context: Context, streetPass: ConnectionRecord) {
@@ -140,39 +119,6 @@ object BLEUtil {
             context,
             nextIntent,
             timeInMillis
-        )
-    }
-
-    fun scheduleRepeatingPurge(context: Context, intervalMillis: Long) {
-        val nextIntent = Intent(context, BluetoothMonitoringService::class.java)
-        nextIntent.putExtra(
-            BluetoothMonitoringService.COMMAND_KEY,
-            BluetoothMonitoringService.Command.ACTION_PURGE.index
-        )
-
-        Scheduler.scheduleRepeatingServiceIntent(
-            PENDING_PURGE_CODE,
-            context,
-            nextIntent,
-            intervalMillis
-        )
-    }
-
-    fun scheduleBMUpdateCheck(context: Context, bmCheckInterval: Long) {
-
-        cancelBMUpdateCheck(context)
-
-        val intent = Intent(context, BluetoothMonitoringService::class.java)
-        intent.putExtra(
-            BluetoothMonitoringService.COMMAND_KEY,
-            BluetoothMonitoringService.Command.ACTION_UPDATE_BM.index
-        )
-
-        Scheduler.scheduleServiceIntent(
-            PENDING_BM_UPDATE,
-            context,
-            intent,
-            bmCheckInterval
         )
     }
 
