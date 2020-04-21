@@ -17,6 +17,7 @@ class FirebaseStorageServiceImpl(private val storage: FirebaseStorage):
             pathReference.metadata.addOnSuccessListener { metaData ->
                 if (metaData.newerThan(generation)) {
                     // 指定されたgenerationよりあたらしい場合はデータを取得しにいく
+                    // TODO 許容するファイルサイズ
                     pathReference.getBytes(1024 * 1024).addOnSuccessListener { data ->
                         data?.let {
                             result.onSuccess(FirebaseStorageData(it, metaData.generation ?: "0"))

@@ -7,7 +7,7 @@ import jp.co.tracecovid19.data.model.FirebaseStorageData
 interface FirebaseStorageService {
 
     enum class FileNameKey(val rawValue: String) {
-        PositivePersonList("positive_person_list.json"),
+        PositivePersonList("positives.json.gz"),
         AppStatus("app_status.json")
     }
 

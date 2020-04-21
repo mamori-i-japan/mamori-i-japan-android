@@ -21,6 +21,8 @@ import jp.co.tracecovid19.data.storage.FirebaseStorageService.FileNameKey.Positi
 import jp.co.tracecovid19.data.storage.LocalCacheService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import java.util.zip.GZIPInputStream
+import java.nio.charset.StandardCharsets.UTF_8
 
 
 class TraceRepositoryImpl (private val moshi: Moshi,
@@ -35,9 +37,9 @@ class TraceRepositoryImpl (private val moshi: Moshi,
             firebaseStorageService.loadDataIfNeeded(PositivePersonList, localCacheService.positivePersonListGeneration?:"0", activity).subscribeBy (
                 onSuccess = { data ->
                     // データの取得に成功
-                    data.data?.let {
+                    data.data?.let { listData ->
                         // 取得データあり = 更新する
-                        val dataStr = it.toString(Charsets.UTF_8)
+                        val dataStr = GZIPInputStream(listData.inputStream()).bufferedReader(UTF_8).use { it.readText() }
                         try {
                             // パースする
                             moshi.adapter(PositivePersons::class.java).fromJson(dataStr)?.let { parseResult ->
