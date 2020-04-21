@@ -21,5 +21,6 @@
     <string name="service_not_ok_title">Oh no! :(</string>
     <string name="service_not_ok_body">J-Trace is not scanning.</string>
     <string name="service_not_ok_action">Check app now</string>
+    <string name="permission_location_rationale">BLE 位置情報取得の許可をONにしてください.</string>
 
 </resources>
