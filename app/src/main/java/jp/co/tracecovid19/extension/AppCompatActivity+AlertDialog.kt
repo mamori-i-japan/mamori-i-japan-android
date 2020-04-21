@@ -2,7 +2,7 @@ package jp.co.tracecovid19.extension
 
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import jp.co.tracecovid19.data.model.TraceCovid19Error
+import jp.co.tracecovid19.screen.common.TraceCovid19Error
 
 fun AppCompatActivity.showErrorAlert(error: TraceCovid19Error,
                                      completion: (() -> Unit)? = null) {

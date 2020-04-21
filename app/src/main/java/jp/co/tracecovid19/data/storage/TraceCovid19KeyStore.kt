@@ -4,7 +4,7 @@ import java.security.Key
 import java.security.PublicKey
 
 
-interface KeyStoreManager {
+interface TraceCovid19KeyStore {
     fun publicKey(): PublicKey
     fun privateKey(): Key
 }

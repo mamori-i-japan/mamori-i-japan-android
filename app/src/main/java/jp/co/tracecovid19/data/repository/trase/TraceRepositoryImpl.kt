@@ -3,7 +3,7 @@ package jp.co.tracecovid19.data.repository.trase
 import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.room.withTransaction
-import com.google.gson.JsonParseException
+import com.google.firebase.FirebaseException
 import com.squareup.moshi.Moshi
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
@@ -15,7 +15,6 @@ import jp.co.tracecovid19.data.database.tracedata.TraceDataEntity
 import jp.co.tracecovid19.data.model.PositivePerson
 import jp.co.tracecovid19.data.model.PositivePersons
 import jp.co.tracecovid19.data.model.TempUserId
-import jp.co.tracecovid19.data.model.TraceCovid19Error
 import jp.co.tracecovid19.data.storage.FirebaseStorageService
 import jp.co.tracecovid19.data.storage.FirebaseStorageService.FileNameKey.PositivePersonList
 import jp.co.tracecovid19.data.storage.LocalCacheService
@@ -47,15 +46,15 @@ class TraceRepositoryImpl (private val moshi: Moshi,
                                 localCacheService.positivePersonList = parseResult.data
                                 localCacheService.positivePersonListGeneration = data.generation
                                 result.onSuccess(parseResult.data)
-                            }?: result.onError(TraceCovid19Error.create(JsonParseException(""))) // パース失敗
+                            }?: result.onError( FirebaseException("FirebaseStorage NoData Error"))
                         } catch (e: Throwable) {
                             // パース失敗
-                            result.onError(TraceCovid19Error.create(e))
+                            result.onError(e)
                         }
                     }?: result.onSuccess(localCacheService.positivePersonList) // 取得データなし = キャッシュのやつを使用する
                 },
-                onError = { error ->
-                    result.onError(error)
+                onError = { e ->
+                    result.onError(e)
                 }
             )
         }
@@ -70,8 +69,8 @@ class TraceRepositoryImpl (private val moshi: Moshi,
                     }
                     result.onSuccess(true)
                 },
-                onError = { error ->
-                    result.onError(error)
+                onError = { e ->
+                    result.onError(e)
                 }
             )
         }

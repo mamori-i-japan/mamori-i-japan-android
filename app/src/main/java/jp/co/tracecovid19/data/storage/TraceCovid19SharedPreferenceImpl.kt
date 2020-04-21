@@ -4,12 +4,8 @@ import android.content.Context
 import androidx.core.content.edit
 
 
-class SharedPreferenceManagerImpl(context: Context): SharedPreferenceManager {
-
-    companion object {
-        private const val KEY = "jp.co.tracecovid19.shared"
-    }
-
+class TraceCovid19SharedPreferenceImpl(context: Context): TraceCovid19SharedPreference {
+    private  val KEY = "jp.co.tracecovid19.shared"
     private val prefs = context.getSharedPreferences(KEY, Context.MODE_PRIVATE)
 
     override fun <T: Any> read(key: String, default: T): T {

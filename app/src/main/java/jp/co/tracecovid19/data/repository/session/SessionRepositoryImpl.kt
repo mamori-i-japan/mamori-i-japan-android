@@ -8,9 +8,10 @@ import com.google.firebase.auth.PhoneAuthProvider
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
 import jp.co.tracecovid19.data.api.login.LoginApiService
-import jp.co.tracecovid19.data.model.*
-import jp.co.tracecovid19.data.storage.LocalStorageService
-import jp.co.tracecovid19.data.storage.LocalStorageService.StringKey.*
+import jp.co.tracecovid19.data.model.LoginRequestBody
+import jp.co.tracecovid19.data.model.PhoneNumberAuthResult
+import jp.co.tracecovid19.data.model.PrefectureType
+import jp.co.tracecovid19.data.model.Token
 import java.util.concurrent.TimeUnit
 
 
@@ -42,13 +43,13 @@ class SessionRepositoryImpl(private val phoneAuthProvider: PhoneAuthProvider,
                                 if (task.isSuccessful) {
                                     result.onSuccess(PhoneNumberAuthResult(null))
                                 } else {
-                                    result.onError(TraceCovid19Error(TraceCovid19Error.ErrorType.Auth, "signInWithCredentialに失敗\n ${task.exception?.localizedMessage}"))
+                                    result.onError(task.exception?: FirebaseException("FirebaseAuth SignInWithCredential Error"))
                                 }
                             }
                     }
 
                     override fun onVerificationFailed(error: FirebaseException) {
-                        result.onError(TraceCovid19Error(TraceCovid19Error.ErrorType.Auth, "verifyPhoneNumberに失敗 \n ${error.localizedMessage}"))
+                        result.onError(error)
                     }
 
                     override fun onCodeSent(verificationId: String, resendToken: PhoneAuthProvider.ForceResendingToken) {
@@ -66,12 +67,7 @@ class SessionRepositoryImpl(private val phoneAuthProvider: PhoneAuthProvider,
                     if (task.isSuccessful) {
                         result.onSuccess(true)
                     } else {
-                        result.onError(
-                            TraceCovid19Error(
-                                TraceCovid19Error.ErrorType.Auth,
-                                "signInWithCredentialに失敗\n ${task.exception?.localizedMessage}"
-                            )
-                        )
+                        result.onError(task.exception?: FirebaseException("FirebaseAuth SignInWithCredential Error"))
                     }
                 }
         }
@@ -86,8 +82,7 @@ class SessionRepositoryImpl(private val phoneAuthProvider: PhoneAuthProvider,
                     result.onSuccess(true)
                 },
                 onError = { e ->
-                    // システムエラー
-                    result.onError(TraceCovid19Error.create(e))
+                    result.onError(e)
                 }
             )
         }

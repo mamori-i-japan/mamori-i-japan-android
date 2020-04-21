@@ -5,13 +5,10 @@ import android.security.keystore.KeyProperties
 import java.security.*
 
 
-class KeyStoreManagerImpl: KeyStoreManager {
+class TraceCovid19KeyStoreImpl: TraceCovid19KeyStore {
 
-    companion object {
-        private const val PROVIDER = "AndroidKeyStore"
-        private const val ALIAS = "jp.co.tracecovid19.keystore"
-    }
-
+    private val PROVIDER = "AndroidKeyStore"
+    private val ALIAS = "jp.co.tracecovid19.keystore"
     private val keyStore: KeyStore
 
     init {

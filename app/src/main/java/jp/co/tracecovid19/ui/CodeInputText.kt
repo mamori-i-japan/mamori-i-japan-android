@@ -126,10 +126,15 @@ class CodeInputText @JvmOverloads constructor(context: Context, attrs: Attribute
         return inputItems.joinToString("") { it.code() }
     }
 
-    fun showError(message: String) {
+    fun clear() {
         inputItems.forEach { it.setCode("") }
         currentItemIndex = 0
         inputItems.firstOrNull { it.tag == currentItemIndex }?.updateState(true)
+    }
+
+    fun showError(message: String) {
+        clear()
+        // TODO 赤いラインとエラーメッセージ表示
     }
 
     fun clearError() {

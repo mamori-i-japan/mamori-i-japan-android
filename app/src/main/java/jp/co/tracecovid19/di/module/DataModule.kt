@@ -8,10 +8,10 @@ import jp.co.tracecovid19.BuildConfig
 import jp.co.tracecovid19.data.client.getUnsafeOkHttpClientBuilder
 import jp.co.tracecovid19.data.intercepter.CommonHeaderInterceptor
 import jp.co.tracecovid19.data.intercepter.OAuthHeaderInterceptor
-import jp.co.tracecovid19.data.storage.KeyStoreManager
-import jp.co.tracecovid19.data.storage.KeyStoreManagerImpl
-import jp.co.tracecovid19.data.storage.SharedPreferenceManager
-import jp.co.tracecovid19.data.storage.SharedPreferenceManagerImpl
+import jp.co.tracecovid19.data.storage.TraceCovid19KeyStore
+import jp.co.tracecovid19.data.storage.TraceCovid19KeyStoreImpl
+import jp.co.tracecovid19.data.storage.TraceCovid19SharedPreference
+import jp.co.tracecovid19.data.storage.TraceCovid19SharedPreferenceImpl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -29,12 +29,12 @@ val dataModule = module {
         OAuthHeaderInterceptor(FirebaseAuth.getInstance())
     }
 
-    single <SharedPreferenceManager> {
-        SharedPreferenceManagerImpl(androidContext())
+    single <TraceCovid19SharedPreference> {
+        TraceCovid19SharedPreferenceImpl(androidContext())
     }
 
-    single <KeyStoreManager> {
-        KeyStoreManagerImpl()
+    single <TraceCovid19KeyStore> {
+        TraceCovid19KeyStoreImpl()
     }
 
     single {

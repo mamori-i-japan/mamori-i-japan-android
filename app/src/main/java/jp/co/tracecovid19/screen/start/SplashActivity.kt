@@ -1,15 +1,12 @@
 package jp.co.tracecovid19.screen.start
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
 import jp.co.tracecovid19.R
-import jp.co.tracecovid19.extension.showErrorAlert
+import jp.co.tracecovid19.extension.showSimpleMessageAlert
 import jp.co.tracecovid19.screen.home.HomeActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -54,15 +51,6 @@ class SplashActivity: AppCompatActivity(),
     }
 
     private fun bind() {
-        viewModel.launchError
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy {
-                showErrorAlert(it) {
-                    viewModel.launch(this)
-                }
-            }
-            .addTo(disposable)
     }
 
     override fun goToHome() {
@@ -73,5 +61,19 @@ class SplashActivity: AppCompatActivity(),
     override fun goToTutorial() {
         val intent = Intent(this, TutorialActivity::class.java)
         this.startActivity(intent)
+    }
+
+    override fun showForceUpdateDialog(message: String, uri: Uri) {
+        showSimpleMessageAlert(message) {
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            this.startActivity(intent)
+            finish()
+        }
+    }
+
+    override fun showMaintenanceDialog(message: String) {
+        showSimpleMessageAlert(message) {
+            finish()
+        }
     }
 }

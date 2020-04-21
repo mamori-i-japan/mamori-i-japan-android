@@ -79,17 +79,15 @@ class InputPhoneNumberActivity: AppCompatActivity(), InputPhoneNumberNavigator {
                 sendButton.isEnabled = enabled
             }.addTo(disposable)
 
-        viewModel.inputError
+        viewModel.sendError
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy { error ->
-                showSimpleMessageAlert(error) {
-                    phoneNumberInputText.text.clear()
-                }
+                showErrorAlert(error)
             }
             .addTo(disposable)
 
-        viewModel.authError
+        viewModel.loginError
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy { error ->

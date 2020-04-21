@@ -3,9 +3,9 @@ package jp.co.tracecovid19.data.repository.profile
 import android.app.Activity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.JsonParseException
 import io.reactivex.Single
 import jp.co.tracecovid19.data.model.Profile
-import jp.co.tracecovid19.data.model.TraceCovid19Error
 
 class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
                             private val auth: FirebaseAuth): ProfileRepository {
@@ -21,12 +21,7 @@ class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
                     result.onSuccess(true)
                 }
                 .addOnFailureListener { e ->
-                    result.onError(
-                        TraceCovid19Error(
-                            TraceCovid19Error.ErrorType.General,
-                            e.localizedMessage
-                        )
-                    )
+                    result.onError(e)
                 }
         }
     }
@@ -41,20 +36,10 @@ class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
                 .addOnSuccessListener { document ->
                     document.toObject(Profile::class.java)?.let {
                         result.onSuccess(it)
-                    } ?: result.onError(
-                        TraceCovid19Error(
-                            TraceCovid19Error.ErrorType.General,
-                            "fireStoreのfetchに失敗"
-                        )
-                    )
+                    } ?: result.onError(JsonParseException(""))
                 }
                 .addOnFailureListener { e ->
-                    result.onError(
-                        TraceCovid19Error(
-                            TraceCovid19Error.ErrorType.General,
-                            e.localizedMessage
-                        )
-                    )
+                    result.onError(e)
                 }
         }
     }

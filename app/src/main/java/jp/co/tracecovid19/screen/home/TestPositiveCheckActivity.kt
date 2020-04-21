@@ -12,7 +12,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.co.tracecovid19.R
-import jp.co.tracecovid19.data.model.TraceCovid19Error
+import jp.co.tracecovid19.screen.common.TraceCovid19Error
 import jp.co.tracecovid19.data.repository.trase.TraceRepository
 import jp.co.tracecovid19.extension.setUpToolBar
 import jp.co.tracecovid19.extension.showErrorAlert
@@ -103,9 +103,7 @@ class TestPositiveCheckActivity: AppCompatActivity(), CoroutineScope {
                     }
                 },
                 onError = { error ->
-                    (error as? TraceCovid19Error)?.let {
-                        showErrorAlert(it)
-                    } ?: showErrorAlert(TraceCovid19Error.unexpectedError())
+                    showErrorAlert(TraceCovid19Error(TraceCovid19Error.mappingReason(error), "陽性者リスト取得エラー", TraceCovid19Error.Action.DialogCloseOnly))
                 }
             ).addTo(disposable)
     }

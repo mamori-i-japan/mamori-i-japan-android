@@ -6,7 +6,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
 import io.reactivex.Single
 import jp.co.tracecovid19.data.model.FirebaseStorageData
-import jp.co.tracecovid19.data.model.TraceCovid19Error
 
 class FirebaseStorageServiceImpl(private val storage: FirebaseStorage):
     FirebaseStorageService {
@@ -21,18 +20,13 @@ class FirebaseStorageServiceImpl(private val storage: FirebaseStorage):
                     pathReference.getBytes(1024 * 1024).addOnSuccessListener { data ->
                         data?.let {
                             result.onSuccess(FirebaseStorageData(it, metaData.generation ?: "0"))
-                        }?: result.onError(TraceCovid19Error.create(FirebaseException("FirebaseStorage Error No Data")))
+                        }?: result.onError(FirebaseException("FirebaseStorage Error NoData"))
                     }
                 } else {
-                    result.onSuccess(
-                        FirebaseStorageData(
-                            null,
-                            metaData.generation ?: "0"
-                        )
-                    )
+                    result.onSuccess(FirebaseStorageData(null, metaData.generation ?: "0"))
                 }
-            }.addOnFailureListener {
-                result.onError(TraceCovid19Error.create(FirebaseException("FirebaseStorage loadGeneration Error")))
+            }.addOnFailureListener { e ->
+                result.onError(e)
             }
         }
     }

@@ -1,19 +1,17 @@
 package jp.co.tracecovid19.screen.start
 
 import android.app.Activity
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
-import jp.co.tracecovid19.BuildConfig
-import jp.co.tracecovid19.data.model.TraceCovid19Error
+import jp.co.tracecovid19.data.model.AndroidAppStatus
 import jp.co.tracecovid19.data.repository.config.ConfigRepository
 import jp.co.tracecovid19.data.repository.session.SessionRepository
 import jp.co.tracecovid19.screen.common.LogoutHelper
-import jp.co.tracecovid19.util.VersionUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -23,7 +21,6 @@ class SplashViewModel(private val sessionRepository: SessionRepository,
                       private val disposable: CompositeDisposable): ViewModel() {
 
     lateinit var navigator: SplashNavigator
-    val launchError = PublishSubject.create<TraceCovid19Error>()
 
     override fun onCleared() {
         disposable.dispose()
@@ -38,13 +35,14 @@ class SplashViewModel(private val sessionRepository: SessionRepository,
             .subscribeBy(
                 onSuccess = { appStatus ->
                     when {
-                        // メンテナンスチェック
-                        appStatus.isMaintenance -> {
-                            launchError.onNext(TraceCovid19Error(TraceCovid19Error.ErrorType.Maintenance, "メンテナンス中"))
+                        appStatus.status() == AndroidAppStatus.Status.Maintenance -> {
+                            // メンテナンス
+                            navigator.showMaintenanceDialog("メンテナンス中です") // TODO メッセージ
                             return@subscribeBy
                         }
-                        !VersionUtil.versionCheck(BuildConfig.VERSION_NAME, appStatus.minVersion) -> {
-                            launchError.onNext(TraceCovid19Error(TraceCovid19Error.ErrorType.AppVersion, "バージョンエラー"))
+                        appStatus.status() == AndroidAppStatus.Status.ForceUpdate -> {
+                            // 強制アップデート
+                            navigator.showForceUpdateDialog("最新のバージョンがあります。", appStatus.storeUrl.toUri()) // TODO メッセージ
                             return@subscribeBy
                         }
                         sessionRepository.isLogin() -> {
@@ -60,10 +58,8 @@ class SplashViewModel(private val sessionRepository: SessionRepository,
                         }
                     }
                 },
-                onError = { e ->
-                    (e as? TraceCovid19Error)?.let { error ->
-                        launchError.onNext(error)
-                    }?: launchError.onNext(TraceCovid19Error.unexpectedError())
+                onError = {
+                    // エラーは無視する
                 }
             ).addTo(disposable)
     }

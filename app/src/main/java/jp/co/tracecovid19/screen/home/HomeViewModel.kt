@@ -10,7 +10,9 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import jp.co.tracecovid19.data.model.RiskStatusType
-import jp.co.tracecovid19.data.model.TraceCovid19Error
+import jp.co.tracecovid19.screen.common.TraceCovid19Error
+import jp.co.tracecovid19.screen.common.TraceCovid19Error.Reason.*
+import jp.co.tracecovid19.screen.common.TraceCovid19Error.Action.*
 import jp.co.tracecovid19.data.repository.trase.TraceRepository
 import jp.co.tracecovid19.util.AnalysisUtil
 import kotlinx.coroutines.*
@@ -22,8 +24,9 @@ class HomeViewModel(private val traceRepository: TraceRepository,
 
     lateinit var navigator: HomeNavigator
     val currentRiskStatus = PublishSubject.create<RiskStatusType>()
-    val hasTempId = PublishSubject.create<Boolean>()
-    val fetchError = PublishSubject.create<TraceCovid19Error>()
+    val bleEnabled = PublishSubject.create<Boolean>()
+    val fetchTempIdError = PublishSubject.create<TraceCovid19Error>()
+    val statusCheckError = PublishSubject.create<TraceCovid19Error>()
 
     private var job: Job = Job()
     override val coroutineContext: CoroutineContext
@@ -45,18 +48,22 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
                         onSuccess = {
-                            hasTempId.onNext(it)
+                            bleEnabled.onNext(true)
                         },
                         onError = { e ->
-                            (e as? TraceCovid19Error)?.let { error ->
-                                fetchError.onNext(error)
-                            } ?: fetchError.onNext(TraceCovid19Error.unexpectedError())
-                            hasTempId.onNext(false)
+                            val reason = TraceCovid19Error.mappingReason(e)
+                            fetchTempIdError.onNext(
+                                when (reason) {
+                                    NetWork -> TraceCovid19Error(reason, "", InView)
+                                    // TODO Auth -> TraceCovid19Error(reason, "文言検討3", DialogCloseOnly)
+                                    Parse -> TraceCovid19Error(reason, "文言検討14", DialogRetry)
+                                    else -> TraceCovid19Error(reason, "文言検討14", DialogRetry)
+                                })
                         }
                     )
                     .addTo(disposable)
             } else {
-                hasTempId.onNext(true)
+                bleEnabled.onNext(true)
             }
         }
     }
@@ -91,8 +98,15 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                     }
                 },
 
-                onError = { _ ->
-                    // 特に何もしない
+                onError = { e ->
+                    val reason = TraceCovid19Error.mappingReason(e)
+                    statusCheckError.onNext(
+                        when (reason) {
+                            NetWork -> TraceCovid19Error(reason, "", InView)
+                            // TODO Auth -> TraceCovid19Error(reason, "文言検討3", DialogCloseOnly)
+                            Parse -> TraceCovid19Error(reason, "文言検討15", DialogRetry)
+                            else -> TraceCovid19Error(reason, "文言検討15", DialogRetry)
+                        })
                 }
             ).addTo(disposable)
     }

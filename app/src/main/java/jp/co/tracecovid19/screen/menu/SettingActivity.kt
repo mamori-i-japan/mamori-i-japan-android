@@ -9,6 +9,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import jp.co.tracecovid19.R
 import jp.co.tracecovid19.extension.setUpToolBar
+import jp.co.tracecovid19.extension.showErrorAlert
 import jp.co.tracecovid19.screen.profile.InputPrefectureActivity
 import jp.co.tracecovid19.screen.profile.InputPrefectureTransitionEntity
 import jp.co.tracecovid19.screen.profile.InputJobActivity
@@ -76,6 +77,15 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
                         "\n" +
                         "職業: " +
                         profile.job
+            }.addTo(disposable)
+
+        viewModel.fetchError
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { error ->
+                showErrorAlert(error) {
+                    finish()
+                }
             }.addTo(disposable)
     }
 

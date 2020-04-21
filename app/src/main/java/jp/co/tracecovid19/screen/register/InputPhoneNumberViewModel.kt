@@ -8,21 +8,19 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import jp.co.tracecovid19.data.model.PrefectureType
 import jp.co.tracecovid19.data.model.Profile
-import jp.co.tracecovid19.data.model.TraceCovid19Error
+import jp.co.tracecovid19.screen.common.TraceCovid19Error
+import jp.co.tracecovid19.screen.common.TraceCovid19Error.Reason.*
+import jp.co.tracecovid19.screen.common.TraceCovid19Error.Action.*
 import jp.co.tracecovid19.data.repository.session.SessionRepository
-import jp.co.tracecovid19.data.repository.profile.ProfileRepository
-import jp.co.tracecovid19.util.InputValidateUtil
 
 
 class InputPhoneNumberViewModel(private val sessionRepository: SessionRepository,
-                                private val profileRepository: ProfileRepository,
                                 private val disposable: CompositeDisposable): ViewModel() {
 
     lateinit var navigator: InputPhoneNumberNavigator
-    val inputError = PublishSubject.create<String>()
-    val authError = PublishSubject.create<TraceCovid19Error>()
+    val sendError = PublishSubject.create<TraceCovid19Error>()
+    val loginError = PublishSubject.create<TraceCovid19Error>()
 
     override fun onCleared() {
         disposable.dispose()
@@ -30,11 +28,6 @@ class InputPhoneNumberViewModel(private val sessionRepository: SessionRepository
     }
 
     fun onClickSendButton(tel: String, profile: Profile, activity: Activity) {
-        // バリデーションチェック
-        InputValidateUtil.validatePhoneNumber(tel)?.let {
-            inputError.onNext(it)
-            return
-        }
         navigator.showProgress()
         sessionRepository.authPhoneNumber(tel, activity)
             .subscribeOn(Schedulers.io())
@@ -49,42 +42,41 @@ class InputPhoneNumberViewModel(private val sessionRepository: SessionRepository
                         }
                         else -> {
                             // そのまま認証とおった
-                            login(profile, activity)
+                            login(profile)
                         }
                     }
                 },
                 onError = { e ->
                     navigator.hideProgress()
-                    (e as? TraceCovid19Error)?.let { error ->
-                        authError.onNext(error)
-                    }?: authError.onNext(TraceCovid19Error.unexpectedError())
+                    val reason = TraceCovid19Error.mappingReason(e)
+                    sendError.onNext(
+                        when (reason) {
+                            NetWork -> TraceCovid19Error(reason, "文言検討5", DialogCloseOnly)
+                            SMSSendLimit -> TraceCovid19Error(reason, "文言検討6", DialogCloseOnly)
+                            else -> TraceCovid19Error(reason, "文言検討7", DialogCloseOnly)
+                        })
                 }
             ).addTo(disposable)
     }
 
-    private fun login(profile: Profile, activity: Activity) {
+    private fun login(profile: Profile) {
         navigator.showProgress()
         sessionRepository.login(profile.prefectureType(), profile.job)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = {
-                    profileRepository.updateProfile(profile, activity).subscribeBy(
-                        onSuccess = {
-                            navigator.hideProgress()
-                            navigator.goToPermissionSetting()
-                        },
-                        onError = {
-                            navigator.hideProgress()
-                            navigator.goToPermissionSetting()
-                        }
-                    ).addTo(disposable)
+                    navigator.hideProgress()
+                    navigator.goToPermissionSetting()
                 },
                 onError = { e ->
                     navigator.hideProgress()
-                    (e as? TraceCovid19Error)?.let { error ->
-                        authError.onNext(error)
-                    }?: authError.onNext(TraceCovid19Error.unexpectedError())
+                    val reason = TraceCovid19Error.mappingReason(e)
+                    loginError.onNext(
+                        when (reason) {
+                            NetWork -> TraceCovid19Error(reason, "文言検討12", DialogCloseOnly)
+                            else -> TraceCovid19Error(reason, "文言検討13", DialogCloseOnly)
+                        })
                 }
             ).addTo(disposable)
     }

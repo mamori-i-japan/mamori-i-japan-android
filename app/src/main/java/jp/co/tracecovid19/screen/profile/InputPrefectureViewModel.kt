@@ -8,7 +8,9 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 import jp.co.tracecovid19.data.model.PrefectureType
 import jp.co.tracecovid19.data.model.Profile
-import jp.co.tracecovid19.data.model.TraceCovid19Error
+import jp.co.tracecovid19.screen.common.TraceCovid19Error
+import jp.co.tracecovid19.screen.common.TraceCovid19Error.Reason.*
+import jp.co.tracecovid19.screen.common.TraceCovid19Error.Action.*
 import jp.co.tracecovid19.data.repository.profile.ProfileRepository
 
 class InputPrefectureViewModel(private val profileRepository: ProfileRepository,
@@ -39,10 +41,13 @@ class InputPrefectureViewModel(private val profileRepository: ProfileRepository,
                     },
                     onError = { e ->
                         navigator.hideProgress()
-                        // TODO エラー
-                        (e as? TraceCovid19Error)?.let { error ->
-                            updateError.onNext(error)
-                        }?: updateError.onNext(TraceCovid19Error.unexpectedError())
+                        val reason = TraceCovid19Error.mappingReason(e)
+                        updateError.onNext(
+                            when (reason) {
+                                NetWork -> TraceCovid19Error(reason, "文言検討1", DialogCloseOnly)
+                                // TODO Auth -> TraceCovid19Error(reason, "文言検討6", DialogCloseOnly)
+                                else -> TraceCovid19Error(reason, "文言検討2", DialogCloseOnly)
+                            })
                     }
                 ).addTo(disposable)
             }

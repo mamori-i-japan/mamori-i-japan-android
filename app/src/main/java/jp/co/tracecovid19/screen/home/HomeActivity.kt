@@ -1,10 +1,8 @@
 package jp.co.tracecovid19.screen.home
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -14,9 +12,7 @@ import io.reactivex.schedulers.Schedulers
 import jp.co.tracecovid19.R
 import jp.co.tracecovid19.data.model.RiskStatusType
 import jp.co.tracecovid19.extension.showErrorAlert
-import jp.co.tracecovid19.extension.showSimpleMessageAlert
-import jp.co.tracecovid19.screen.common.WebActivity
-import jp.co.tracecovid19.screen.common.WebTransitionEntity
+import jp.co.tracecovid19.screen.common.TraceCovid19Error.Action.*
 import jp.co.tracecovid19.screen.menu.MenuActivity
 import jp.co.tracecovid19.screen.trace.TraceDataUploadActivity
 import jp.co.tracecovid19.screen.trace.TraceNotificationActivity
@@ -101,7 +97,7 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
             }
             .addTo(disposable)
 
-        viewModel.hasTempId
+        viewModel.bleEnabled
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy {
@@ -112,12 +108,40 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
             }
             .addTo(disposable)
 
-        viewModel.fetchError
+        viewModel.fetchTempIdError
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy { error ->
-                showErrorAlert(error) {
-                    viewModel.fetchTempIdIfNeeded()
+                when(error.action) {
+                    InView -> {
+                        // TODO エラー画面を貼り、リトライする
+                        viewModel.fetchTempIdIfNeeded()
+                    }
+                    DialogRetry -> {
+                        showErrorAlert(error) {
+                            viewModel.fetchTempIdIfNeeded()
+                        }
+                    }
+                    else -> {}
+                }
+            }
+            .addTo(disposable)
+
+        viewModel.statusCheckError
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy { error ->
+                when(error.action) {
+                    InView -> {
+                        // TODO エラー画面を貼り、リトライする
+                        viewModel.doStatusCheck(this)
+                    }
+                    DialogRetry -> {
+                        showErrorAlert(error) {
+                            viewModel.doStatusCheck(this)
+                        }
+                    }
+                    else -> {}
                 }
             }
             .addTo(disposable)

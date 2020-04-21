@@ -10,6 +10,9 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import jp.co.tracecovid19.data.model.Profile
 import jp.co.tracecovid19.data.repository.profile.ProfileRepository
+import jp.co.tracecovid19.screen.common.TraceCovid19Error
+import jp.co.tracecovid19.screen.common.TraceCovid19Error.Reason.*
+import jp.co.tracecovid19.screen.common.TraceCovid19Error.Action.*
 import jp.co.tracecovid19.screen.profile.InputPrefectureTransitionEntity
 import jp.co.tracecovid19.screen.profile.InputJobTransitionEntity
 
@@ -19,6 +22,7 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
 
     lateinit var navigator: SettingNavigator
     val profile = PublishSubject.create<Profile>()
+    val fetchError = PublishSubject.create<TraceCovid19Error>()
 
     private var _profile: Profile? = null
 
@@ -35,8 +39,15 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
                     _profile = it
                     profile.onNext(it)
                 },
-                onError = {
-                    // TODO エラー
+                onError = { e ->
+                    val reason = TraceCovid19Error.mappingReason(e)
+                    fetchError.onNext(
+                        when (reason) {
+                            NetWork -> TraceCovid19Error(reason, "文言検討20", DialogBack)
+                            // TODO Auth -> TraceCovid19Error(reason, "文言検討3", DialogCloseOnly)
+                            Parse -> TraceCovid19Error(reason, "文言検討21", DialogBack)
+                            else -> TraceCovid19Error(reason, "文言検討21", DialogBack)
+                        })
                 }
             ).addTo(disposable)
     }

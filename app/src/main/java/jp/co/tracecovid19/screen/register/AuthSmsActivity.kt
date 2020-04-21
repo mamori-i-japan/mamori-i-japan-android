@@ -10,6 +10,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.co.tracecovid19.R
 import jp.co.tracecovid19.extension.*
+import jp.co.tracecovid19.screen.common.TraceCovid19Error.Action.*
 import jp.co.tracecovid19.screen.permission.PermissionSettingActivity
 import jp.co.tracecovid19.ui.CodeInputText
 import jp.co.tracecovid19.ui.ProgressHUD
@@ -83,8 +84,40 @@ class AuthSmsActivity: AppCompatActivity(), AuthSmsNavigator {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy { error ->
-                showErrorAlert(error) {
-                    codeInputText.showError(error.message)
+                when(error.action) {
+                    DialogCloseOnly -> {
+                        codeInputText.clear()
+                        showErrorAlert(error)
+                    }
+                    Inline -> {
+                        codeInputText.showError(error.message)
+                    }
+                    DialogBack -> {
+                        showErrorAlert(error) {
+                            finish()
+                        }
+                    }
+                    else -> {}
+                }
+            }
+            .addTo(disposable)
+
+        viewModel.loginError
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy { error ->
+                when(error.action) {
+                    DialogRetry -> {
+                        showErrorAlert(error) {
+                            viewModel.executeLogin(transitionEntity.profile)
+                        }
+                    }
+                    DialogBack -> {
+                        showErrorAlert(error) {
+                            finish()
+                        }
+                    }
+                    else -> {}
                 }
             }
             .addTo(disposable)
