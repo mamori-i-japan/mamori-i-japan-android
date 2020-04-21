@@ -97,7 +97,7 @@ class AuthSmsActivity: AppCompatActivity(), AuthSmsNavigator {
                             finish()
                         }
                     }
-                    else -> {}
+                    else -> { showErrorAlert(error) }
                 }
             }
             .addTo(disposable)
@@ -117,7 +117,7 @@ class AuthSmsActivity: AppCompatActivity(), AuthSmsNavigator {
                             finish()
                         }
                     }
-                    else -> {}
+                    else -> { showErrorAlert(error) }
                 }
             }
             .addTo(disposable)

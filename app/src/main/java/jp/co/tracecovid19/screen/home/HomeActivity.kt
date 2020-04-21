@@ -122,7 +122,7 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
                             viewModel.fetchTempIdIfNeeded()
                         }
                     }
-                    else -> {}
+                    else -> { showErrorAlert(error) }
                 }
             }
             .addTo(disposable)
@@ -141,7 +141,7 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
                             viewModel.doStatusCheck(this)
                         }
                     }
-                    else -> {}
+                    else -> { showErrorAlert(error) }
                 }
             }
             .addTo(disposable)
