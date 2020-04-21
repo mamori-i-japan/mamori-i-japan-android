@@ -15,5 +15,5 @@ interface SessionRepository {
     // SMS認証
     fun authSms(inputCode: String, verificationId: String, activity: Activity): Single<Boolean>
     // ログイン
-    fun login(): Single<Boolean>
+    fun login(prefectureType: PrefectureType, job: String?): Single<Boolean>
 }

@@ -11,5 +11,5 @@ interface TraceApiService {
     @POST("api/v1/upload")
     fun upload(@Body hoge: String): Single<Any>
     @GET("dev/users/me/temp_ids")
-    fun fetchTempIds(@Header("x-mobile-secret-random-token") random: String = "helloworld"): Single<List<TempUserId>>
+    fun fetchTempIds(): Single<List<TempUserId>>
 }
