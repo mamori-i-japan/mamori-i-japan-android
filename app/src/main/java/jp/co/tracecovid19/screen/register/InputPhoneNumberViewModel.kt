@@ -64,7 +64,7 @@ class InputPhoneNumberViewModel(private val sessionRepository: SessionRepository
 
     private fun login(profile: Profile, activity: Activity) {
         navigator.showProgress()
-        sessionRepository.login()
+        sessionRepository.login(profile.prefectureType(), profile.job)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
