@@ -1,5 +1,6 @@
 package jp.co.tracecovid19.screen.common
 
+import android.accounts.NetworkErrorException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.gson.JsonParseException
@@ -44,6 +45,7 @@ data class TraceCovid19Error (val reason: Reason, val message: String, val actio
         // TODO DBエラーのマッピング
         fun mappingReason(e: Throwable): Reason {
             return when(e) {
+                is NetworkErrorException,
                 is FirebaseNetworkException,
                 is UnknownHostException,
                 is SocketTimeoutException,
