@@ -61,6 +61,7 @@ class Work(
         var connected = Check()
         var mtuChanged = Check()
         var readCharacteristic = Check()
+        var writeCharacteristic = Check()
         var disconnected = Check()
         var skipped = Check()
 

@@ -85,11 +85,8 @@ class StreetPassWorker(val context: Context) {
             //the connection is still there - might be stuck / work in progress
             else if (work.checklist.connected.status && !work.checklist.disconnected.status) {
 
-                if (work.checklist.readCharacteristic.status || work.checklist.skipped.status) {
-                    Log.e(
-                        TAG,
-                        "Connected but did not disconnect in time for ${work.device.address}"
-                    )
+                if (work.checklist.readCharacteristic.status || work.checklist.writeCharacteristic.status || work.checklist.skipped.status) {
+                    Log.e(TAG, "Connected but did not disconnect in time for ${work.device.address}")
 
                     try {
                         work.gatt?.disconnect()
@@ -565,12 +562,43 @@ class StreetPassWorker(val context: Context) {
                     work.checklist.readCharacteristic.status = true
                     work.checklist.readCharacteristic.timePerformed = System.currentTimeMillis()
                 }
-
                 else -> {
                     Log.w(
                         TAG,
                         "Failed to read characteristics from ${gatt.device.address}: $status"
                     )
+                }
+            }
+
+            // attempt to do a write
+            if (BLE.supportsCharUUID(characteristic.uuid)) {
+                // TODO: I/F決めてデータを作成(work.connectable.rssiやwork.connectable.transmissionPowerを送信するはず
+                val writeData = "aaa".toByteArray(Charsets.UTF_8)
+                characteristic.value = writeData
+                val writeSuccess = gatt.writeCharacteristic(characteristic)
+                DebugLogger.central(TAG, "Attempt to write characteristic to our service on ${gatt.device.address}: $writeSuccess")
+                // TODO: writeした場合、どうやったらendWorkConnection(gatt)が呼ばれて、接続完了になるのか？
+            } else {
+                DebugLogger.central(TAG, "Not writing to ${gatt.device.address}. Characteristic ${characteristic.uuid} is not supported")
+                endWorkConnection(gatt)
+            }
+        }
+
+        override fun onCharacteristicWrite(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            status: Int
+        ) {
+
+            when (status) {
+                BluetoothGatt.GATT_SUCCESS -> {
+                    Log.i(TAG, "Characteristic wrote successfully")
+                    work.checklist.writeCharacteristic.status = true
+                    work.checklist.writeCharacteristic.timePerformed =
+                        System.currentTimeMillis()
+                }
+                else -> {
+                    Log.i(TAG, "Failed to write characteristics: $status")
                 }
             }
             endWorkConnection(gatt)
