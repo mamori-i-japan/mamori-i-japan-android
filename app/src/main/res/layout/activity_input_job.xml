@@ -2,7 +2,6 @@
 <LinearLayout
     android:id="@+id/root"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -13,25 +12,25 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="あなたの職業を入力してください\n入力は任意です。"
-            android:layout_marginTop="24dp"
-            android:layout_gravity="center"
+            android:layout_marginTop="64dp"
             android:gravity="center"
             android:textColor="@color/colorTextBlack"
             android:textStyle="bold"
-            android:textSize="16sp"/>
+            android:textSize="17sp"
+            android:text="あなたの職業を入力してください\n入力は任意です。"/>
 
         <EditText
             android:id="@+id/workInputText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="64dp"
             android:inputType="text"
             android:lines="1"
             android:hint="職業名を入力"/>
@@ -39,7 +38,7 @@
         <Button style="@style/ExecuteButton"
             android:id="@+id/executeButton"
             android:layout_width="match_parent"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="32dp"
             android:text="次へ"/>
 
     </LinearLayout>

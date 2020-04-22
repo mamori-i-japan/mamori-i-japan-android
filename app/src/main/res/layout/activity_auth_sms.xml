@@ -12,34 +12,33 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="確認番号を入力してください"
             android:layout_marginTop="24dp"
-            android:layout_gravity="center"
             android:gravity="center"
             android:textColor="@color/colorTextBlack"
             android:textStyle="bold"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:text="確認番号を入力してください"/>
 
         <jp.co.tracecovid19.ui.CodeInputText
             android:id="@+id/codeInputText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="32dp"
-            android:background="@color/colorBgGray"
+            android:layout_gravity="center"
+            android:layout_marginTop="64dp"
             app:codeInputText_num="6"/>
 
         <Button style="@style/LinkButtonBlue"
             android:id="@+id/changePhoneNumberButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="80dp"
             android:layout_gravity="center"
             android:text="電話番号を変更"/>
 
