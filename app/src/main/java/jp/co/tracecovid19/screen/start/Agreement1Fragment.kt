@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import io.reactivex.subjects.PublishSubject
 import jp.co.tracecovid19.R
 import kotlinx.android.synthetic.main.fragment_agreement_1.*
 
@@ -14,6 +15,8 @@ class Agreement1Fragment(private val navigator: AgreementNavigator): Fragment() 
     companion object {
         const val KEY = "jp.co.tracecovid19.screen.start.Agreement1Fragment"
     }
+
+    val title = PublishSubject.create<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +38,10 @@ class Agreement1Fragment(private val navigator: AgreementNavigator): Fragment() 
     }
 
     private fun setupViews() {
-        nextButton.setOnClickListener {
+        // タイトル
+        title.onNext("利用規約への同意")
+
+        agreeButton.setOnClickListener {
             navigator.goToNext(AgreementNavigator.AgreementPageType.Agreement1)
         }
         linkButton.setOnClickListener {

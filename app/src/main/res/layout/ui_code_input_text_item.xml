@@ -7,11 +7,10 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="48dp"
         android:gravity="center"
         android:textColor="@color/colorTextBlack"
-        android:textSize="36sp"
-        android:textStyle="bold"/>
+        android:textSize="36sp"/>
 
     <View
         android:id="@+id/focusView"

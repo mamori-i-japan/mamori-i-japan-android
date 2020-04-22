@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.activity_permission_setting.*
 
 class PermissionSettingActivity: AppCompatActivity(), PermissionSettingNavigator {
     companion object {
-        const val KEY = "jp.co.tracecovid19.screen.setting.PermissionSettingActivity"
+        const val KEY = "jp.co.tracecovid19.screen.permission.PermissionSettingActivity"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,13 +51,6 @@ class PermissionSettingActivity: AppCompatActivity(), PermissionSettingNavigator
     override fun goToNext(pageType: PermissionSettingNavigator.PermissionSettingPageType) {
         when(pageType) {
             PermissionSettingNavigator.PermissionSettingPageType.BLE -> {
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(containerView.id, PushPermissionSettingFragment(this))
-                    .addToBackStack(null)
-                    .commit()
-            }
-            PermissionSettingNavigator.PermissionSettingPageType.Push -> {
                 val intent = Intent(this, HomeActivity::class.java)
                 this.startActivity(intent)
             }

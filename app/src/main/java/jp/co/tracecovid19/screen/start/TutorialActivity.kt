@@ -2,8 +2,10 @@ package jp.co.tracecovid19.screen.start
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import jp.co.tracecovid19.R
+import jp.co.tracecovid19.extension.setUpToolBar
 import kotlinx.android.synthetic.main.activity_tutorial.*
 
 
@@ -25,6 +27,10 @@ class TutorialActivity: AppCompatActivity(),
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 1) {
+            if (supportFragmentManager.backStackEntryCount == 2) {
+                // 先頭に戻るときはToolBarを非表示にする
+                toolBar.visibility = View.INVISIBLE
+            }
             supportFragmentManager.popBackStack()
         } else {
             // バックキー押下時はアプリをバックグラウンドに落とす
@@ -37,6 +43,11 @@ class TutorialActivity: AppCompatActivity(),
     }
 
     private fun setupViews() {
+        setUpToolBar(toolBar, "") {
+            this.onBackPressed()
+        }
+
+        toolBar.visibility = View.INVISIBLE // 先頭の時は非表示
         supportFragmentManager
             .beginTransaction()
             .replace(containerView.id, Tutorial1Fragment(this))
@@ -50,6 +61,7 @@ class TutorialActivity: AppCompatActivity(),
     override fun goToNext(pageType: TutorialNavigator.TutorialPageType) {
         when(pageType) {
             TutorialNavigator.TutorialPageType.Tutorial1 -> {
+                toolBar.visibility = View.VISIBLE
                 supportFragmentManager
                     .beginTransaction()
                     .replace(containerView.id, Tutorial2Fragment(this))
@@ -57,6 +69,7 @@ class TutorialActivity: AppCompatActivity(),
                     .commit()
             }
             TutorialNavigator.TutorialPageType.Tutorial2 -> {
+                toolBar.visibility = View.VISIBLE
                 supportFragmentManager
                     .beginTransaction()
                     .replace(containerView.id, Tutorial3Fragment(this))

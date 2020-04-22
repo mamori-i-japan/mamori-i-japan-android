@@ -59,7 +59,7 @@ class InputPrefectureActivity: AppCompatActivity(),
 
     private fun setupViews() {
         // ツールバー
-        setUpToolBar(toolBar, "都道府県入力")
+        setUpToolBar(toolBar, "都道府県選択")
         executeButton.setOnClickListener {
             viewModel.onClickExecuteButton(prefecturesSelectText.selectItem() as? PrefectureType,
                 transitionEntity.profile,

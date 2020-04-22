@@ -75,9 +75,9 @@ class SessionRepositoryImpl(private val phoneAuthProvider: PhoneAuthProvider,
 
     override fun login(prefectureType: PrefectureType, job: String?): Single<Boolean> {
         return Single.create { result ->
-            val requestBody = LoginRequestBody(prefectureType.rawValue, job)
+            val requestBody = LoginRequestBody(prefectureType.rawValue, if (job?.isEmpty() == true) null else job)
             api.login(requestBody).subscribeBy (
-                onSuccess = { _ ->
+                onSuccess = {
                     auth.currentUser?.getIdToken(true)  // トークンのリフレッシュ
                     result.onSuccess(true)
                 },

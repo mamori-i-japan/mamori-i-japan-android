@@ -1,32 +1,25 @@
 package jp.co.tracecovid19.screen.permission
 
-import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import jp.co.tracecovid19.R
 import jp.co.tracecovid19.util.BLEUtil
-import kotlinx.android.synthetic.main.fragment_tutorial_1.nextButton
+import kotlinx.android.synthetic.main.fragment_tutorial_1.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 
 class BLEPermissionSettingFragment(private val navigator: PermissionSettingNavigator): Fragment() {
 
     companion object {
-        const val KEY = "jp.co.tracecovid19.screen.setting.BLEPermissionSettingFragment"
+        const val KEY = "jp.co.tracecovid19.screen.permission.BLEPermissionSettingFragment"
         private const val PERMISSION_REQUEST_ACCESS_LOCATION = 456
         private const val REQUEST_ENABLE_BT = 123
     }

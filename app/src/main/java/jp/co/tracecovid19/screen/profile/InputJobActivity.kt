@@ -14,8 +14,8 @@ import jp.co.tracecovid19.extension.setUpToolBar
 import jp.co.tracecovid19.extension.showErrorAlert
 import jp.co.tracecovid19.screen.register.*
 import jp.co.tracecovid19.ui.ProgressHUD
-import kotlinx.android.synthetic.main.activity_input_work.*
-import kotlinx.android.synthetic.main.activity_input_work.toolBar
+import kotlinx.android.synthetic.main.activity_input_job.*
+import kotlinx.android.synthetic.main.activity_input_job.toolBar
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -46,7 +46,7 @@ class InputJobActivity: AppCompatActivity(),
     }
 
     private fun initialize() {
-        setContentView(R.layout.activity_input_work)
+        setContentView(R.layout.activity_input_job)
         viewModel.navigator = this
         intent?.let { intent ->
             (intent.getSerializableExtra(KEY) as? InputJobTransitionEntity)?.let { entity ->

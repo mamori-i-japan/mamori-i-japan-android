@@ -6,12 +6,13 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import jp.co.tracecovid19.R
 import kotlinx.android.synthetic.main.ui_code_input_text.view.*
 import kotlinx.android.synthetic.main.ui_code_input_text_item.view.*
 
-class CodeInputText @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : FrameLayout(context, attrs, defStyle) {
+class CodeInputText @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : LinearLayout(context, attrs, defStyle) {
 
     class CodeInputTextItem @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : RelativeLayout(context, attrs, defStyle) {
 
@@ -108,6 +109,10 @@ class CodeInputText @JvmOverloads constructor(context: Context, attrs: Attribute
         if (!matched) {
             return
         }
+
+        // エラーを消す
+        clearError()
+
         // 値をセット
         inputItems.firstOrNull { it.tag == currentItemIndex }?.setCode(code)
 
@@ -134,9 +139,10 @@ class CodeInputText @JvmOverloads constructor(context: Context, attrs: Attribute
 
     fun showError(message: String) {
         clear()
-        // TODO 赤いラインとエラーメッセージ表示
+        errorTextView.text = message
     }
 
     fun clearError() {
+        errorTextView.text = ""
     }
 }
