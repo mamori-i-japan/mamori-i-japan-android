@@ -35,7 +35,7 @@ class Agreement1Fragment(private val navigator: AgreementNavigator): Fragment() 
     }
 
     private fun setupViews() {
-        nextButton.setOnClickListener {
+        agreeButton.setOnClickListener {
             navigator.goToNext(AgreementNavigator.AgreementPageType.Agreement1)
         }
         linkButton.setOnClickListener {
