@@ -15,7 +15,7 @@
     <color name="colorBgWhite">#FFFFFF</color>
 
     <!-- Text -->
-    <color name="colorTextBlack">#000000</color>
+    <color name="colorTextBlack">#05182E</color>
     <color name="colorTextError">#FF0000</color>
     <color name="colorTextWhite">#FFFFFF</color>
     <color name="colorTextGray">#5C5C5C</color>
@@ -34,8 +34,8 @@
 
     <!-- ExecuteButton -->
     <color name="colorExecuteButtonText">#FFFFFF</color>
-    <color name="colorExecuteButtonBg">#109AC5</color>
-    <color name="colorExecuteButtonSelected">#074F66</color>
+    <color name="colorExecuteButtonBg">#003E9B</color>
+    <color name="colorExecuteButtonSelected">#011B41</color>
     <color name="colorExecuteButtonBgDisabled">#D7D7D7</color>
 
     <!-- GeneralButton -->

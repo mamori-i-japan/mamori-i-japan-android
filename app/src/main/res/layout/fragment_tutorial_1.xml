@@ -4,46 +4,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/nextButton">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="アプリ保持者同士の\n接触履歴を保存します"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textColor="@color/colorTextBlack"
-            android:textStyle="bold"
-            android:textSize="28sp"/>
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:src="@drawable/img_tutorial_1"
-            android:adjustViewBounds="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/colorTextBlack"
+                android:textStyle="bold"
+                android:textSize="28sp"
+                android:text="アプリ保持者同士の\n接触履歴を保存します"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="氏名、年齢、性別などの\n個人情報は一切取得・通信しません。"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textColor="@color/colorTextBlack"
-            android:textStyle="bold"
-            android:textSize="17sp"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:src="@drawable/img_tutorial_1"
+                android:adjustViewBounds="true"/>
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/colorTextBlack"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:text="氏名、年齢、性別などの\n個人情報は一切取得・通信しません。"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <Button style="@style/ExecuteButton"
         android:id="@+id/nextButton"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_margin="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:text="次へ"/>
 
 </RelativeLayout>
