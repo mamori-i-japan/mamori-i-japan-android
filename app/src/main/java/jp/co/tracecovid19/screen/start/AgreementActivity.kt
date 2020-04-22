@@ -4,6 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import jp.co.tracecovid19.R
 import jp.co.tracecovid19.data.model.Profile
 import jp.co.tracecovid19.extension.setUpToolBar
@@ -11,12 +16,16 @@ import jp.co.tracecovid19.screen.profile.InputPrefectureActivity
 import jp.co.tracecovid19.screen.profile.InputPrefectureTransitionEntity
 import kotlinx.android.synthetic.main.activity_agreement.*
 import kotlinx.android.synthetic.main.activity_agreement.toolBar
+import org.koin.android.ext.android.inject
 
 class AgreementActivity: AppCompatActivity(), AgreementNavigator {
+
     companion object {
         const val KEY = "jp.co.tracecovid19.screen.start.AgreementActivity"
     }
 
+    private val disposable: CompositeDisposable by inject()
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 初期設定
@@ -25,6 +34,11 @@ class AgreementActivity: AppCompatActivity(), AgreementNavigator {
         setupViews()
         // viewModelとのbind
         bind()
+    }
+
+    override fun onDestroy() {
+        disposable.dispose()
+        super.onDestroy()
     }
 
     override fun onBackPressed() {
@@ -40,12 +54,19 @@ class AgreementActivity: AppCompatActivity(), AgreementNavigator {
     }
 
     private fun setupViews() {
-        setUpToolBar(toolBar, "利用規約への同意") {
+        setUpToolBar(toolBar, "") {
             this.onBackPressed()
         }
         supportFragmentManager
             .beginTransaction()
-            .replace(containerView.id, Agreement1Fragment(this))
+            .replace(containerView.id, Agreement1Fragment(this).apply {
+                title.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeBy {
+                        supportActionBar?.title = it
+                    }
+                    .addTo(disposable)
+            })
             .addToBackStack(null)
             .commit()
     }
@@ -58,7 +79,14 @@ class AgreementActivity: AppCompatActivity(), AgreementNavigator {
             AgreementNavigator.AgreementPageType.Agreement1 -> {
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(containerView.id, Agreement2Fragment(this))
+                    .replace(containerView.id, Agreement2Fragment(this).apply {
+                        title.subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeBy {
+                                supportActionBar?.title = it
+                            }
+                            .addTo(disposable)
+                    })
                     .addToBackStack(null)
                     .commit()
             }

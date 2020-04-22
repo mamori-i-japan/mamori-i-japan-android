@@ -15,7 +15,6 @@
         <item name="android:theme">@style/ToolBarTheme</item>
         <item name="android:minHeight">?attr/actionBarSize</item>
         <item name="android:background">@color/colorBgWhite</item>
-        <item name="android:elevation">1dp</item>
     </style>
     <style name="ToolBarTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:textColorPrimary">@color/colorTextBlack</item>
