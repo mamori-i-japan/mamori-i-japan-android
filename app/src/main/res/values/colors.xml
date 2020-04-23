@@ -56,6 +56,11 @@
     <color name="colorTransparentButtonBg">#00FFFFFF</color>
     <color name="colorTransparentButtonSelected">#19000000</color>
 
+    <!-- List -->
+    <color name="colorListItemBg">#FFFFFF</color>
+    <color name="colorListItemSelected">#19000000</color>
+    <color name="colorListSeparator">#D8D8D8</color>
+
     <!-- TODO: 持ち込みなので不要なら削除 -->
     <color name="notification_tint">#499dd6</color>
 </resources>

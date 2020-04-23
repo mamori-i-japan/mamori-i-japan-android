@@ -15,7 +15,7 @@ import jp.co.tracecovid19.extension.showErrorDialog
 import jp.co.tracecovid19.screen.common.TraceCovid19Error.Action.InView
 import jp.co.tracecovid19.screen.menu.MenuActivity
 import jp.co.tracecovid19.screen.trace.TraceDataUploadActivity
-import jp.co.tracecovid19.screen.trace.TraceNotificationActivity
+import jp.co.tracecovid19.screen.trace.TraceHistoryActivity
 import jp.co.tracecovid19.util.BLEUtil
 import kotlinx.android.synthetic.main.activity_home.*
 import org.koin.android.ext.android.inject
@@ -191,7 +191,7 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
     }
 
     private fun goToTraceNotification() {
-        val intent = Intent(this, TraceNotificationActivity::class.java)
+        val intent = Intent(this, TraceHistoryActivity::class.java)
         this.startActivity(intent)
     }
 

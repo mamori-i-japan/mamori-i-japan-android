@@ -6,7 +6,7 @@ import jp.co.tracecovid19.screen.home.HomeViewModel
 import jp.co.tracecovid19.screen.home.TestBLEViewModel
 import jp.co.tracecovid19.screen.home.TestContactListViewModel
 import jp.co.tracecovid19.screen.trace.TraceDataUploadViewModel
-import jp.co.tracecovid19.screen.trace.TraceNotificationViewModel
+import jp.co.tracecovid19.screen.trace.TraceHistoryViewModel
 import jp.co.tracecovid19.screen.menu.MenuViewModel
 import jp.co.tracecovid19.screen.menu.SettingViewModel
 import jp.co.tracecovid19.screen.start.SplashViewModel
@@ -57,7 +57,7 @@ val viewModule = module {
         TraceDataUploadViewModel()
     }
     viewModel {
-        TraceNotificationViewModel()
+        TraceHistoryViewModel(get())
     }
     viewModel {
         TestContactListViewModel(get(), get())

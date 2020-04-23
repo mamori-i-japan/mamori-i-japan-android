@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="64dp">
+
+    <TextView
+        android:id="@+id/historyTextView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_above="@+id/separatorView"
+        android:gravity="center_vertical"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:textColor="@color/colorTextBlack"/>
+
+    <View
+        android:id="@+id/separatorView"
+        android:layout_width="wrap_content"
+        android:layout_height="0.8dp"
+        android:layout_alignStart="@+id/historyTextView"
+        android:layout_alignEnd="@+id/historyTextView"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorListSeparator" />
+
+</RelativeLayout>
