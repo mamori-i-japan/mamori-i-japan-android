@@ -1,6 +1,7 @@
 package jp.co.tracecovid19.extension
 
 import java.lang.Exception
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -13,4 +14,12 @@ fun String.convertToUnixTime(stringFormat: String): Long {
     } catch (e: Exception) {
         return 0
     }
+}
+
+fun String.convertSHA256HashString(): String {
+    return MessageDigest.getInstance("SHA-256")
+        .digest(toByteArray())
+        .joinToString(separator = "") {
+            "%02x".format(it)
+        }
 }

@@ -3,9 +3,7 @@ package jp.co.tracecovid19.data.repository.trase
 import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.room.withTransaction
-import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthException
 import com.squareup.moshi.Moshi
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
@@ -16,10 +14,9 @@ import jp.co.tracecovid19.data.database.deepcontactuser.DeepContactUserEntity
 import jp.co.tracecovid19.data.database.tempuserid.TempUserIdEntity
 import jp.co.tracecovid19.data.database.tracedata.TraceDataEntity
 import jp.co.tracecovid19.data.exception.TraceCovid19Exception
-import jp.co.tracecovid19.data.exception.TraceCovid19Exception.Reason.*
-import jp.co.tracecovid19.data.model.PositivePerson
-import jp.co.tracecovid19.data.model.PositivePersons
-import jp.co.tracecovid19.data.model.TempUserId
+import jp.co.tracecovid19.data.exception.TraceCovid19Exception.Reason.Auth
+import jp.co.tracecovid19.data.exception.TraceCovid19Exception.Reason.Parse
+import jp.co.tracecovid19.data.model.*
 import jp.co.tracecovid19.data.storage.FirebaseStorageService
 import jp.co.tracecovid19.data.storage.FirebaseStorageService.FileNameKey.PositivePersonList
 import jp.co.tracecovid19.data.storage.LocalCacheService
@@ -105,6 +102,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
     override suspend fun selectTraceData(tempId: String): List<TraceDataEntity> = db.traceDataDao().select(tempId)
 
     override fun selectAllDeepContacttUsers(): LiveData<List<DeepContactUserEntity>> = db.deepContactUserDao().selectAll()
+
     override suspend fun selectDeepContactUsers(ids: List<String>): List<DeepContactUserEntity> = db.deepContactUserDao().select(ids)
 
     override suspend fun insertDeepContactUsers(entities: List<DeepContactUserEntity>, tempId: String) {
@@ -113,6 +111,29 @@ class TraceRepositoryImpl (private val moshi: Moshi,
                 db.deepContactUserDao().insert(entity)
             }
             db.traceDataDao().delete(tempId)
+        }
+    }
+
+    override fun uploadDeepContacts(contacts: List<DeepContact>): Single<Boolean> {
+        return Single.create { result ->
+            auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    task.result?.token?.let { token ->
+                        api.uploadDeepContacts("Bearer $token", UploadDeepContactsRequestBody(contacts))
+                            .subscribeOn(Schedulers.io())
+                            .subscribeBy (
+                                onSuccess = {
+                                    result.onSuccess(true)
+                                },
+                                onError = { e ->
+                                    result.onError(e)
+                                }
+                            )
+                    }?: result.onError(TraceCovid19Exception(Auth))
+                } else {
+                    result.onError(TraceCovid19Exception(Auth))
+                }
+            }
         }
     }
 

@@ -54,7 +54,7 @@ val viewModule = module {
         SplashViewModel(get(), get(), get(), get())
     }
     viewModel {
-        TraceDataUploadViewModel()
+        TraceDataUploadViewModel(get(), get(), get())
     }
     viewModel {
         TraceHistoryViewModel(get())

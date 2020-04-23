@@ -6,6 +6,7 @@ import io.reactivex.Single
 import jp.co.tracecovid19.data.database.deepcontactuser.DeepContactUserEntity
 import jp.co.tracecovid19.data.database.tempuserid.TempUserIdEntity
 import jp.co.tracecovid19.data.database.tracedata.TraceDataEntity
+import jp.co.tracecovid19.data.model.DeepContact
 import jp.co.tracecovid19.data.model.PositivePerson
 import jp.co.tracecovid19.data.model.TempUserId
 
@@ -40,6 +41,9 @@ interface TraceRepository {
 
     // 濃厚接触者情報を追加し、該当になった濃厚接触者のデータを接触情報から削除
     suspend fun insertDeepContactUsers(entities: List<DeepContactUserEntity>, tempId: String)
+
+    // 濃厚接触者情報のアップロード
+    fun uploadDeepContacts(contacts: List<DeepContact>): Single<Boolean>
 
     // 全テータ削除
     suspend fun deleteAllData()

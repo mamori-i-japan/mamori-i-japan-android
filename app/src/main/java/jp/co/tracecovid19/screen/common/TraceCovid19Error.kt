@@ -62,7 +62,7 @@ data class TraceCovid19Error (val reason: Reason, val message: String, val actio
                 is SocketTimeoutException -> Reason.NetWork
 
                 is HttpException -> {
-                    if (e.code() in 400 until 500) {
+                    if (e.code() == 401) {
                         Reason.Auth
                     } else {
                         Reason.Other
