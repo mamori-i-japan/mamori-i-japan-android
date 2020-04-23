@@ -62,8 +62,8 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
             viewModel.onClickPrefecture()
         }
 
-        workButton.setOnClickListener {
-            viewModel.onClickWork()
+        jobButton.setOnClickListener {
+            viewModel.onClickJob()
         }
     }
 
@@ -72,11 +72,8 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { profile ->
-                resultTextView.text = "都道府県: " +
-                        profile.prefectureType().description() +
-                        "\n" +
-                        "職業: " +
-                        profile.job
+                prefectureValueTextView.text = profile.prefectureType().description()
+                jobValueTextView.text = if (profile.job.isNullOrEmpty()) "未入力" else profile.job
             }.addTo(disposable)
 
         viewModel.fetchError
@@ -93,7 +90,7 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
         this.startActivity(intent)
     }
 
-    override fun goToInputWork(transitionEntity: InputJobTransitionEntity) {
+    override fun goToInputJob(transitionEntity: InputJobTransitionEntity) {
         val intent = Intent(this, InputJobActivity::class.java)
         intent.putExtra(InputJobActivity.KEY, transitionEntity)
         this.startActivity(intent)

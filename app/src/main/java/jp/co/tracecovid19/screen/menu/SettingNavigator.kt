@@ -5,5 +5,5 @@ import jp.co.tracecovid19.screen.profile.InputJobTransitionEntity
 
 interface SettingNavigator {
     fun goToInputPrefecture(transitionEntity: InputPrefectureTransitionEntity)
-    fun goToInputWork(transitionEntity: InputJobTransitionEntity)
+    fun goToInputJob(transitionEntity: InputJobTransitionEntity)
 }

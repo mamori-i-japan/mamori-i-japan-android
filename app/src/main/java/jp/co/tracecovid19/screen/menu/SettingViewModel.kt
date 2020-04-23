@@ -68,9 +68,9 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
         }
     }
 
-    fun onClickWork() {
+    fun onClickJob() {
         _profile?.let {
-            navigator.goToInputWork(InputJobTransitionEntity(it, false))
+            navigator.goToInputJob(InputJobTransitionEntity(it, false))
         }
     }
 
