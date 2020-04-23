@@ -54,7 +54,7 @@ class TraceHistoryActivity: AppCompatActivity() {
 
     private fun bind() {
         viewModel.deepContacts.observe(this, Observer {
-            if (it.count() > 1) {
+            if (it.count() > 0) {
                 noDataMessageTextView.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
             } else {
