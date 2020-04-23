@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import jp.co.tracecovid19.data.model.PrefectureType
 import jp.co.tracecovid19.data.model.Profile
@@ -34,7 +35,9 @@ class InputPrefectureViewModel(private val profileRepository: ProfileRepository,
                 navigator.goToInputWork(InputJobTransitionEntity(profile, isRegistrationFlow))
             } else {
                 navigator.showProgress()
-                profileRepository.updateProfile(profile, activity).subscribeBy(
+                profileRepository.updateProfile(profile, activity)
+                    .subscribeOn(Schedulers.io())
+                    .subscribeBy(
                     onSuccess = {
                         navigator.hideProgress()
                         navigator.finishWithCompleteMessage("更新しました。") // TODO メッセージ

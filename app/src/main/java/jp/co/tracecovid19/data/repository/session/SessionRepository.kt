@@ -8,8 +8,6 @@ import jp.co.tracecovid19.data.model.*
 interface SessionRepository {
     // ログイン判定
     fun isLogin(): Boolean
-    // トークン取得
-    fun getToken(): Token?
     // 電話番号認証
     fun authPhoneNumber(tel: String, activity: Activity): Single<PhoneNumberAuthResult>
     // SMS認証

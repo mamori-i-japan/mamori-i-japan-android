@@ -45,7 +45,6 @@ class HomeViewModel(private val traceRepository: TraceRepository,
             if (tempIdCount == 0) {
                 traceRepository.updateTempIds()
                     .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
                         onSuccess = {
                             bleEnabled.onNext(true)
@@ -55,7 +54,7 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                             fetchTempIdError.onNext(
                                 when (reason) {
                                     NetWork -> TraceCovid19Error(reason, "", InView)
-                                    // TODO Auth -> TraceCovid19Error(reason, "文言検討3", DialogCloseOnly)
+                                    Auth -> TraceCovid19Error(reason, "文言検討22", DialogLogout)
                                     Parse -> TraceCovid19Error(reason, "文言検討14", DialogRetry)
                                     else -> TraceCovid19Error(reason, "文言検討14", DialogRetry)
                                 })
@@ -72,7 +71,6 @@ class HomeViewModel(private val traceRepository: TraceRepository,
         // まず陽性者リストを取得する
         traceRepository.fetchPositivePersons(activity)
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = { positivePersonList ->
                     launch (Dispatchers.IO) {
@@ -103,7 +101,7 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                     statusCheckError.onNext(
                         when (reason) {
                             NetWork -> TraceCovid19Error(reason, "", InView)
-                            // TODO Auth -> TraceCovid19Error(reason, "文言検討3", DialogCloseOnly)
+                            Auth -> TraceCovid19Error(reason, "文言検討22", DialogLogout)
                             Parse -> TraceCovid19Error(reason, "文言検討15", DialogRetry)
                             else -> TraceCovid19Error(reason, "文言検討15", DialogRetry)
                         })

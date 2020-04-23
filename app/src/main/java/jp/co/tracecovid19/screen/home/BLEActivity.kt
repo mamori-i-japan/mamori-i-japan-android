@@ -102,8 +102,8 @@ class BLEActivity : AppCompatActivity(), CoroutineScope {
             val tempId = tempIdManager.getTempUserId(System.currentTimeMillis())
             launch {
                 currentIdText.text = tempId.tempId
-                startText.text = tempId.validFrom
-                endText.text = tempId.validTo
+                startText.text = tempId.validFrom.toString()
+                endText.text = tempId.validTo.toString()
             }
         }
 

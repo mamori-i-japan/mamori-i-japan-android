@@ -39,7 +39,7 @@ val viewModule = module {
         SettingViewModel(get(), get())
     }
     viewModel {
-        AuthSmsViewModel(get(), get(), get())
+        AuthSmsViewModel(get(), get())
     }
     viewModel {
         InputPhoneNumberViewModel(get(), get())

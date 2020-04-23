@@ -9,7 +9,7 @@ import retrofit2.http.POST
 
 interface TraceApiService {
     @POST("api/v1/upload")
-    fun upload(@Body hoge: String): Single<Any>
+    fun upload(@Header("Authorization") authorization: String, @Body hoge: String): Single<Any>
     @GET("dev/users/me/temp_ids")
-    fun fetchTempIds(): Single<List<TempUserId>>
+    fun fetchTempIds(@Header("Authorization") authorization: String): Single<List<TempUserId>>
 }

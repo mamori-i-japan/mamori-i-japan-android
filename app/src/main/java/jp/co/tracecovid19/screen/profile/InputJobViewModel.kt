@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import jp.co.tracecovid19.data.model.Profile
 import jp.co.tracecovid19.screen.common.TraceCovid19Error
@@ -33,7 +34,9 @@ class InputJobViewModel(private val profileRepository: ProfileRepository,
             navigator.goToInputPhoneNumber(InputPhoneNumberTransitionEntity(profile))
         } else {
             navigator.showProgress()
-            profileRepository.updateProfile(profile, activity).subscribeBy(
+            profileRepository.updateProfile(profile, activity)
+                .subscribeOn(Schedulers.io())
+                .subscribeBy(
                 onSuccess = {
                     navigator.hideProgress()
                     navigator.finishWithCompleteMessage("更新しました。") // TODO メッセージ

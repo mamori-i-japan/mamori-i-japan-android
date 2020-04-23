@@ -32,8 +32,8 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
     }
 
     fun fetchProfile(activity: Activity) {
-        profileRepository.fetchProfile(activity).subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        profileRepository.fetchProfile(activity)
+            .subscribeOn(Schedulers.io())
             .subscribeBy(
                 onSuccess = {
                     _profile = it

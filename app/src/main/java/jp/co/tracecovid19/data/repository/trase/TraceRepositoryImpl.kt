@@ -4,9 +4,13 @@ import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.room.withTransaction
 import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.squareup.moshi.Moshi
+import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import jp.co.tracecovid19.data.api.trace.TraceApiService
 import jp.co.tracecovid19.data.database.TraceCovid19Database
 import jp.co.tracecovid19.data.database.deepcontactuser.DeepContactUserEntity
@@ -20,12 +24,13 @@ import jp.co.tracecovid19.data.storage.FirebaseStorageService.FileNameKey.Positi
 import jp.co.tracecovid19.data.storage.LocalCacheService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import java.util.zip.GZIPInputStream
 import java.nio.charset.StandardCharsets.UTF_8
+import java.util.zip.GZIPInputStream
 
 
 class TraceRepositoryImpl (private val moshi: Moshi,
                            private val api: TraceApiService,
+                           private val auth: FirebaseAuth,
                            private val localCacheService: LocalCacheService,
                            private val firebaseStorageService: FirebaseStorageService,
                            private val db: TraceCovid19Database): TraceRepository {
@@ -33,50 +38,58 @@ class TraceRepositoryImpl (private val moshi: Moshi,
     override fun fetchPositivePersons(activity: Activity): Single<List<PositivePerson>> {
         return Single.create { result ->
             // データを取得
-            firebaseStorageService.loadDataIfNeeded(PositivePersonList, localCacheService.positivePersonListGeneration?:"0", activity).subscribeBy (
-                onSuccess = { data ->
-                    // データの取得に成功
-                    data.data?.let { listData ->
-                        // 取得データあり = 更新する
-                        val dataStr = GZIPInputStream(listData.inputStream()).bufferedReader(UTF_8).use { it.readText() }
-                        try {
-                            // パースする
-                            moshi.adapter(PositivePersons::class.java).fromJson(dataStr)?.let { parseResult ->
-                                // パース成功
-                                localCacheService.positivePersonList = parseResult.data
-                                localCacheService.positivePersonListGeneration = data.generation
-                                result.onSuccess(parseResult.data)
-                            }?: result.onError( FirebaseException("FirebaseStorage NoData Error"))
-                        } catch (e: Throwable) {
-                            // パース失敗
-                            result.onError(e)
-                        }
-                    }?: result.onSuccess(localCacheService.positivePersonList) // 取得データなし = キャッシュのやつを使用する
-                },
-                onError = { e ->
-                    result.onError(e)
-                }
+            firebaseStorageService.loadDataIfNeeded(PositivePersonList, localCacheService.positivePersonListGeneration?:"0", activity)
+                .subscribeOn(Schedulers.io())
+                .subscribeBy (
+                    onSuccess = { data ->
+                        // データの取得に成功
+                        data.data?.let { listData ->
+                            // 取得データあり = 更新する
+                            val dataStr = GZIPInputStream(listData.inputStream()).bufferedReader(UTF_8).use { it.readText() }
+                            try {
+                                // パースする
+                                moshi.adapter(PositivePersons::class.java).fromJson(dataStr)?.let { parseResult ->
+                                    // パース成功
+                                    localCacheService.positivePersonList = parseResult.data
+                                    localCacheService.positivePersonListGeneration = data.generation
+                                    result.onSuccess(parseResult.data)
+                                }?: result.onError( FirebaseException("FirebaseStorage NoData Error"))
+                            } catch (e: Throwable) {
+                                // パース失敗
+                                result.onError(e)
+                            }
+                        }?: result.onSuccess(localCacheService.positivePersonList) // 取得データなし = キャッシュのやつを使用する
+                    },
+                    onError = { e ->
+                        result.onError(e)
+                    }
             )
         }
     }
 
     override fun updateTempIds(): Single<Boolean> {
         return Single.create { result ->
-            api.fetchTempIds().subscribeBy (
-                onSuccess = { data ->
-                    runBlocking (Dispatchers.IO) {
-                        saveTempIds(data)
-                    }
-                    result.onSuccess(true)
-                },
-                onError = { e ->
-                    result.onError(e)
-                }
-            )
+            auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
+                task.result?.token?.let { token ->
+                    api.fetchTempIds("Bearer $token")
+                        .subscribeOn(Schedulers.io())
+                        .subscribeBy (
+                            onSuccess = { data ->
+                                runBlocking (Dispatchers.IO) {
+                                    saveTempIds(data)
+                                }
+                                result.onSuccess(true)
+                            },
+                            onError = { e ->
+                                result.onError(e)
+                            }
+                        )
+                }?: result.onError(FirebaseAuthException("", ""))
+            }
         }
     }
 
-    override suspend fun loadTempIds(): List<TempUserId> = db.tempUserIdDao().selectAll().map { TempUserId.create(it)}
+    override suspend fun loadTempIds(): List<TempUserId> = db.tempUserIdDao().selectAll().map { TempUserId.create(it) }
     override suspend fun availableTempUserIdCount(currentTime: Long): Int = db.tempUserIdDao().availableTempUserIdCount(currentTime)
     override suspend fun getTempUserId(currentTime: Long): List<TempUserIdEntity> = db.tempUserIdDao().getTempUserId(currentTime)
     override suspend fun getLatestTempUserId(): TempUserIdEntity = db.tempUserIdDao().getLatestTempUserId()
