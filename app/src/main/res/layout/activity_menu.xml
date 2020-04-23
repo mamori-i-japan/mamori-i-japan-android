@@ -7,36 +7,152 @@
 
     <androidx.appcompat.widget.Toolbar style="@style/ToolBar" android:id="@+id/toolBar"/>
 
-
-    <Button style="@style/GeneralButton"
-        android:id="@+id/settingButton"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_margin="8dp"
-        android:text="設定"/>
+        android:layout_height="64dp">
 
-    <Button style="@style/GeneralButton"
-        android:id="@+id/aboutButton"
+        <TextView
+            android:id="@+id/settingTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="24dp"
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextBlack"
+            android:text="設定"/>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0.8dp"
+            android:layout_alignStart="@+id/settingTextView"
+            android:layout_alignEnd="@+id/settingTextView"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorListSeparator" />
+
+        <Button style="@style/TransparentButton"
+            android:id="@+id/settingButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_margin="8dp"
-        android:text="このアプリについて"/>
+        android:layout_height="64dp">
 
-    <Button style="@style/GeneralButton"
-        android:id="@+id/licenseButton"
+        <TextView
+            android:id="@+id/aboutTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="24dp"
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextBlack"
+            android:text="このアプリについて"/>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0.8dp"
+            android:layout_alignStart="@+id/aboutTextView"
+            android:layout_alignEnd="@+id/aboutTextView"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorListSeparator" />
+
+        <Button style="@style/TransparentButton"
+            android:id="@+id/aboutButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_margin="8dp"
-        android:text="ライセンス"/>
+        android:layout_height="64dp">
 
-    <Button style="@style/GeneralButton"
-        android:id="@+id/logoutButton"
+        <TextView
+            android:id="@+id/licenseTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="24dp"
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextBlack"
+            android:text="利用ライセンス"/>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0.8dp"
+            android:layout_alignStart="@+id/licenseTextView"
+            android:layout_alignEnd="@+id/licenseTextView"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorListSeparator" />
+
+        <Button style="@style/TransparentButton"
+            android:id="@+id/licenseButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+    <!-- TODO Debug用 -->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_margin="8dp"
-        android:text="ログアウト"/>
+        android:layout_height="64dp">
 
-    <Button style="@style/GeneralButton"
-        android:id="@+id/restartButton"
+        <TextView
+            android:id="@+id/logoutTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="24dp"
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextBlack"
+            android:text="(Debug用)ログアウト"/>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0.8dp"
+            android:layout_alignStart="@+id/logoutTextView"
+            android:layout_alignEnd="@+id/logoutTextView"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorListSeparator" />
+
+        <Button style="@style/TransparentButton"
+            android:id="@+id/logoutButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_margin="8dp"
-        android:text="再起動"/>
+        android:layout_height="64dp">
 
+        <TextView
+            android:id="@+id/restartTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="24dp"
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextBlack"
+            android:text="(Debug用)再起動"/>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0.8dp"
+            android:layout_alignStart="@+id/restartTextView"
+            android:layout_alignEnd="@+id/restartTextView"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorListSeparator" />
+
+        <Button style="@style/TransparentButton"
+            android:id="@+id/restartButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+    <!-- TODO Debug用 -->
 
 </LinearLayout>

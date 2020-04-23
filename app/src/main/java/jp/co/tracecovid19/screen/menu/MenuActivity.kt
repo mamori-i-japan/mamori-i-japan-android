@@ -42,7 +42,7 @@ class MenuActivity: AppCompatActivity(), MenuNavigator {
 
     private fun setupViews() {
         // ツールバー
-        setUpToolBar(toolBar, "メニュー")
+        setUpToolBar(toolBar, "")
 
         settingButton.setOnClickListener {
             viewModel.onClickSetting()
@@ -56,10 +56,10 @@ class MenuActivity: AppCompatActivity(), MenuNavigator {
             viewModel.onClickLicense()
         }
 
+        // TODO デバッグ用
         logoutButton.setOnClickListener {
             viewModel.onClickLogout()
         }
-
         restartButton.setOnClickListener {
             viewModel.onClickRestart()
         }
@@ -83,6 +83,7 @@ class MenuActivity: AppCompatActivity(), MenuNavigator {
         this.startActivity(intent)
     }
 
+    // TODO デバッグ用
     override fun goToSplash() {
         val intent = Intent(this, SplashActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
