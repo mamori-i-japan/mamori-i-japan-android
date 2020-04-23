@@ -7,7 +7,6 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.squareup.moshi.Moshi
-import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
@@ -16,6 +15,8 @@ import jp.co.tracecovid19.data.database.TraceCovid19Database
 import jp.co.tracecovid19.data.database.deepcontactuser.DeepContactUserEntity
 import jp.co.tracecovid19.data.database.tempuserid.TempUserIdEntity
 import jp.co.tracecovid19.data.database.tracedata.TraceDataEntity
+import jp.co.tracecovid19.data.exception.TraceCovid19Exception
+import jp.co.tracecovid19.data.exception.TraceCovid19Exception.Reason.*
 import jp.co.tracecovid19.data.model.PositivePerson
 import jp.co.tracecovid19.data.model.PositivePersons
 import jp.co.tracecovid19.data.model.TempUserId
@@ -53,7 +54,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
                                     localCacheService.positivePersonList = parseResult.data
                                     localCacheService.positivePersonListGeneration = data.generation
                                     result.onSuccess(parseResult.data)
-                                }?: result.onError( FirebaseException("FirebaseStorage NoData Error"))
+                                }?: result.onError( TraceCovid19Exception(Parse)) // データなしもパース失敗扱いとする
                             } catch (e: Throwable) {
                                 // パース失敗
                                 result.onError(e)
@@ -70,21 +71,25 @@ class TraceRepositoryImpl (private val moshi: Moshi,
     override fun updateTempIds(): Single<Boolean> {
         return Single.create { result ->
             auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
-                task.result?.token?.let { token ->
-                    api.fetchTempIds("Bearer $token")
-                        .subscribeOn(Schedulers.io())
-                        .subscribeBy (
-                            onSuccess = { data ->
-                                runBlocking (Dispatchers.IO) {
-                                    saveTempIds(data)
+                if (task.isSuccessful) {
+                    task.result?.token?.let { token ->
+                        api.fetchTempIds("Bearer $token")
+                            .subscribeOn(Schedulers.io())
+                            .subscribeBy (
+                                onSuccess = { data ->
+                                    runBlocking (Dispatchers.IO) {
+                                        saveTempIds(data)
+                                    }
+                                    result.onSuccess(true)
+                                },
+                                onError = { e ->
+                                    result.onError(e)
                                 }
-                                result.onSuccess(true)
-                            },
-                            onError = { e ->
-                                result.onError(e)
-                            }
-                        )
-                }?: result.onError(FirebaseAuthException("", ""))
+                            )
+                    }?: result.onError(TraceCovid19Exception(Auth))
+                } else {
+                    result.onError(TraceCovid19Exception(Auth))
+                }
             }
         }
     }

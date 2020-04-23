@@ -3,13 +3,15 @@ package jp.co.tracecovid19.data.repository.session
 import android.app.Activity
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.co.tracecovid19.data.api.login.LoginApiService
+import jp.co.tracecovid19.data.exception.TraceCovid19Exception
+import jp.co.tracecovid19.data.exception.TraceCovid19Exception.Reason.*
 import jp.co.tracecovid19.data.model.LoginRequestBody
 import jp.co.tracecovid19.data.model.PhoneNumberAuthResult
 import jp.co.tracecovid19.data.model.PrefectureType
@@ -38,7 +40,7 @@ class SessionRepositoryImpl(private val phoneAuthProvider: PhoneAuthProvider,
                                 if (task.isSuccessful) {
                                     result.onSuccess(PhoneNumberAuthResult(null))
                                 } else {
-                                    result.onError(task.exception?: FirebaseException("FirebaseAuth SignInWithCredential Error"))
+                                    result.onError(task.exception?: TraceCovid19Exception(Auth))
                                 }
                             }
                     }
@@ -62,7 +64,7 @@ class SessionRepositoryImpl(private val phoneAuthProvider: PhoneAuthProvider,
                     if (task.isSuccessful) {
                         result.onSuccess(true)
                     } else {
-                        result.onError(task.exception?: FirebaseException("FirebaseAuth SignInWithCredential Error"))
+                        result.onError(task.exception?: TraceCovid19Exception(Auth))
                     }
                 }
         }
@@ -82,7 +84,7 @@ class SessionRepositoryImpl(private val phoneAuthProvider: PhoneAuthProvider,
                             result.onError(e)
                         }
                 )
-            }?: result.onError(FirebaseAuthException("",""))
+            }?: result.onError(TraceCovid19Exception(Auth))
         }
     }
 }

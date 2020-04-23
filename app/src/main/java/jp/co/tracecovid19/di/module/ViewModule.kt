@@ -27,7 +27,7 @@ val viewModule = module {
 
     /* ViewModels */
     viewModel {
-        HomeViewModel(get(), get())
+        HomeViewModel(get(), get(), get())
     }
     viewModel {
         TestBLEViewModel(get())
@@ -36,7 +36,7 @@ val viewModule = module {
         MenuViewModel(get())
     }
     viewModel {
-        SettingViewModel(get(), get())
+        SettingViewModel(get(), get(), get())
     }
     viewModel {
         AuthSmsViewModel(get(), get())
@@ -45,10 +45,10 @@ val viewModule = module {
         InputPhoneNumberViewModel(get(), get())
     }
     viewModel {
-        InputPrefectureViewModel(get(), get())
+        InputPrefectureViewModel(get(), get(), get())
     }
     viewModel {
-        InputJobViewModel(get(), get())
+        InputJobViewModel(get(), get(), get())
     }
     viewModel {
         SplashViewModel(get(), get(), get(), get())

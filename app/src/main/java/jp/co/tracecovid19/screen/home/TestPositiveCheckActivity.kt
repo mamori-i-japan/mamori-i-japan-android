@@ -15,7 +15,7 @@ import jp.co.tracecovid19.R
 import jp.co.tracecovid19.screen.common.TraceCovid19Error
 import jp.co.tracecovid19.data.repository.trase.TraceRepository
 import jp.co.tracecovid19.extension.setUpToolBar
-import jp.co.tracecovid19.extension.showErrorAlert
+import jp.co.tracecovid19.extension.showErrorDialog
 import jp.co.tracecovid19.util.AnalysisUtil
 import kotlinx.android.synthetic.main.activity_test_positive_check.*
 import kotlinx.coroutines.*
@@ -103,7 +103,7 @@ class TestPositiveCheckActivity: AppCompatActivity(), CoroutineScope {
                     }
                 },
                 onError = { error ->
-                    showErrorAlert(TraceCovid19Error(TraceCovid19Error.mappingReason(error), "陽性者リスト取得エラー", TraceCovid19Error.Action.DialogCloseOnly))
+                    showErrorDialog(TraceCovid19Error(TraceCovid19Error.mappingReason(error), "陽性者リスト取得エラー", TraceCovid19Error.Action.DialogCloseOnly))
                 }
             ).addTo(disposable)
     }

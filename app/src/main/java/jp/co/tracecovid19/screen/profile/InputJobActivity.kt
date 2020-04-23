@@ -11,7 +11,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import jp.co.tracecovid19.R
 import jp.co.tracecovid19.extension.setUpToolBar
-import jp.co.tracecovid19.extension.showErrorAlert
+import jp.co.tracecovid19.extension.showErrorDialog
 import jp.co.tracecovid19.screen.register.*
 import jp.co.tracecovid19.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_input_job.*
@@ -81,7 +81,7 @@ class InputJobActivity: AppCompatActivity(),
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { error ->
-                showErrorAlert(error)
+                showErrorDialog(error)
             }.addTo(disposable)
     }
 

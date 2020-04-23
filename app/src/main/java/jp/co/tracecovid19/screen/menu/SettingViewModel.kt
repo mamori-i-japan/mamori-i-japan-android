@@ -10,14 +10,18 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import jp.co.tracecovid19.data.model.Profile
 import jp.co.tracecovid19.data.repository.profile.ProfileRepository
+import jp.co.tracecovid19.screen.common.LogoutHelper
 import jp.co.tracecovid19.screen.common.TraceCovid19Error
 import jp.co.tracecovid19.screen.common.TraceCovid19Error.Reason.*
 import jp.co.tracecovid19.screen.common.TraceCovid19Error.Action.*
 import jp.co.tracecovid19.screen.profile.InputPrefectureTransitionEntity
 import jp.co.tracecovid19.screen.profile.InputJobTransitionEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 
 class SettingViewModel(private val profileRepository: ProfileRepository,
+                       private val logoutHelper: LogoutHelper,
                        private val disposable: CompositeDisposable): ViewModel() {
 
     lateinit var navigator: SettingNavigator
@@ -41,10 +45,16 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
                 },
                 onError = { e ->
                     val reason = TraceCovid19Error.mappingReason(e)
+                    if (reason == Auth) {
+                        // 認証エラーの場合はログアウト処理をする
+                        runBlocking (Dispatchers.IO) {
+                            logoutHelper.logout()
+                        }
+                    }
                     fetchError.onNext(
                         when (reason) {
                             NetWork -> TraceCovid19Error(reason, "文言検討20", DialogBack)
-                            // TODO Auth -> TraceCovid19Error(reason, "文言検討3", DialogCloseOnly)
+                            Auth -> TraceCovid19Error(reason, "文言検討22", DialogLogout)
                             Parse -> TraceCovid19Error(reason, "文言検討21", DialogBack)
                             else -> TraceCovid19Error(reason, "文言検討21", DialogBack)
                         })

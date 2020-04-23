@@ -12,9 +12,13 @@ import jp.co.tracecovid19.screen.common.TraceCovid19Error
 import jp.co.tracecovid19.screen.common.TraceCovid19Error.Reason.*
 import jp.co.tracecovid19.screen.common.TraceCovid19Error.Action.*
 import jp.co.tracecovid19.data.repository.profile.ProfileRepository
+import jp.co.tracecovid19.screen.common.LogoutHelper
 import jp.co.tracecovid19.screen.register.InputPhoneNumberTransitionEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 class InputJobViewModel(private val profileRepository: ProfileRepository,
+                        private val logoutHelper: LogoutHelper,
                         private val disposable: CompositeDisposable): ViewModel() {
 
     lateinit var navigator: InputJobNavigator
@@ -44,10 +48,16 @@ class InputJobViewModel(private val profileRepository: ProfileRepository,
                 onError = { e ->
                     navigator.hideProgress()
                     val reason = TraceCovid19Error.mappingReason(e)
+                    if (reason == Auth) {
+                        // 認証エラーの場合はログアウト処理をする
+                        runBlocking (Dispatchers.IO) {
+                            logoutHelper.logout()
+                        }
+                    }
                     updateError.onNext(
                         when (reason) {
                             NetWork -> TraceCovid19Error(reason, "文言検討3", DialogCloseOnly)
-                            // TODO Auth -> TraceCovid19Error(reason, "文言検討3", DialogCloseOnly)
+                            Auth -> TraceCovid19Error(reason, "文言検討22", DialogLogout)
                             else -> TraceCovid19Error(reason, "文言検討4", DialogCloseOnly)
                         })
                 }

@@ -3,7 +3,6 @@ package jp.co.tracecovid19.screen.home
 import android.app.Activity
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -14,12 +13,14 @@ import jp.co.tracecovid19.screen.common.TraceCovid19Error
 import jp.co.tracecovid19.screen.common.TraceCovid19Error.Reason.*
 import jp.co.tracecovid19.screen.common.TraceCovid19Error.Action.*
 import jp.co.tracecovid19.data.repository.trase.TraceRepository
+import jp.co.tracecovid19.screen.common.LogoutHelper
 import jp.co.tracecovid19.util.AnalysisUtil
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 
 class HomeViewModel(private val traceRepository: TraceRepository,
+                    private val logoutHelper: LogoutHelper,
                     private val disposable: CompositeDisposable): ViewModel(), CoroutineScope {
 
     lateinit var navigator: HomeNavigator
@@ -51,6 +52,12 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                         },
                         onError = { e ->
                             val reason = TraceCovid19Error.mappingReason(e)
+                            if (reason == Auth) {
+                                // 認証エラーの場合はログアウト処理をする
+                                runBlocking (Dispatchers.IO) {
+                                    logoutHelper.logout()
+                                }
+                            }
                             fetchTempIdError.onNext(
                                 when (reason) {
                                     NetWork -> TraceCovid19Error(reason, "", InView)
@@ -98,6 +105,12 @@ class HomeViewModel(private val traceRepository: TraceRepository,
 
                 onError = { e ->
                     val reason = TraceCovid19Error.mappingReason(e)
+                    if (reason == Auth) {
+                        // 認証エラーの場合はログアウト処理をする
+                        runBlocking (Dispatchers.IO) {
+                            logoutHelper.logout()
+                        }
+                    }
                     statusCheckError.onNext(
                         when (reason) {
                             NetWork -> TraceCovid19Error(reason, "", InView)

@@ -1,15 +1,13 @@
 package jp.co.tracecovid19.data.repository.profile
 
-import android.accounts.NetworkErrorException
 import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
-import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.JsonParseException
 import io.reactivex.Single
+import jp.co.tracecovid19.data.exception.TraceCovid19Exception
+import jp.co.tracecovid19.data.exception.TraceCovid19Exception.Reason.*
 import jp.co.tracecovid19.data.model.Profile
 
 class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
@@ -32,7 +30,7 @@ class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
                         result.onError(e)
                     }
             } else {
-                result.onError(NetworkErrorException(""))
+                result.onError(TraceCovid19Exception(Network))
             }
         }
     }
@@ -50,13 +48,13 @@ class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
                     .addOnSuccessListener { document ->
                         document.toObject(Profile::class.java)?.let {
                             result.onSuccess(it)
-                        } ?: result.onError(JsonParseException(""))
+                        } ?: result.onError(TraceCovid19Exception(Network)) // データなしはパースエラーとする
                     }
                     .addOnFailureListener { e ->
                         result.onError(e)
                     }
             } else {
-                result.onError(NetworkErrorException(""))
+                result.onError(TraceCovid19Exception(Network))
             }
         }
     }
