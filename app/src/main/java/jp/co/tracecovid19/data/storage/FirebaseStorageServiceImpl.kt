@@ -1,10 +1,11 @@
 package jp.co.tracecovid19.data.storage
 
 import android.app.Activity
-import com.google.firebase.FirebaseException
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
 import io.reactivex.Single
+import jp.co.tracecovid19.data.exception.TraceCovid19Exception
+import jp.co.tracecovid19.data.exception.TraceCovid19Exception.Reason.*
 import jp.co.tracecovid19.data.model.FirebaseStorageData
 
 class FirebaseStorageServiceImpl(private val storage: FirebaseStorage):
@@ -20,7 +21,7 @@ class FirebaseStorageServiceImpl(private val storage: FirebaseStorage):
                     pathReference.getBytes(1024 * 1024).addOnSuccessListener { data ->
                         data?.let {
                             result.onSuccess(FirebaseStorageData(it, metaData.generation ?: "0"))
-                        }?: result.onError(FirebaseException("FirebaseStorage Error NoData"))
+                        }?: result.onError(TraceCovid19Exception(Other))
                     }
                 } else {
                     result.onSuccess(FirebaseStorageData(null, metaData.generation ?: "0"))

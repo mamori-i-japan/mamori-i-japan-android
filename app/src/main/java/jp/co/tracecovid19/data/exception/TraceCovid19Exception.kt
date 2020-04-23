@@ -6,6 +6,7 @@ class TraceCovid19Exception(val reason: Reason): Throwable() {
     enum class Reason {
         Network,
         Parse,
-        Auth
+        Auth,
+        Other
     }
 }

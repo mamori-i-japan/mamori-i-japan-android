@@ -52,6 +52,7 @@ data class TraceCovid19Error (val reason: Reason, val message: String, val actio
                         Network -> Reason.NetWork
                         Parse -> Reason.Parse
                         Auth -> Reason.Auth
+                        Other -> Reason.Other
                     }
                 }
 
