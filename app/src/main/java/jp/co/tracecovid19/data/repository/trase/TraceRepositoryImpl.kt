@@ -138,7 +138,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
     }
 
     private suspend fun saveTempIds(ids: List<TempUserId>): Boolean {
-        db.tempUserIdDao().insert(ids.map { TempUserIdEntity(it.tempId, it.fromTime, it.toTime) })
+        db.tempUserIdDao().insert(ids.map { TempUserIdEntity(it.tempId, it.startTime, it.expiryTime) })
         return true
     }
 

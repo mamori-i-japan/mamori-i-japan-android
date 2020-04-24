@@ -1,22 +1,16 @@
 package jp.co.tracecovid19.screen.home
 
-import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,9 +18,9 @@ import androidx.recyclerview.widget.RecyclerView
 import jp.co.tracecovid19.R
 import jp.co.tracecovid19.data.repository.session.SessionRepository
 import jp.co.tracecovid19.data.repository.trase.TraceRepository
+import jp.co.tracecovid19.extension.convertToDateTimeString
 import jp.co.tracecovid19.extension.setUpToolBar
 import jp.co.tracecovid19.idmanager.TempIdManager
-import jp.co.tracecovid19.screen.permission.BLEPermissionSettingFragment
 import jp.co.tracecovid19.util.BLEUtil
 import kotlinx.android.synthetic.main.activity_b_l_e.*
 import kotlinx.android.synthetic.main.ble_contact_row_item.view.*
@@ -102,9 +96,13 @@ class BLEActivity : AppCompatActivity(), CoroutineScope {
             val tempId = tempIdManager.getTempUserId(System.currentTimeMillis())
             launch {
                 currentIdText.text = tempId.tempId
-                startText.text = tempId.validFrom.toString()
-                endText.text = tempId.validTo.toString()
+                startText.text = tempId.startTime.convertToDateTimeString("yyyy/MM/dd HH:mm")
+                endText.text = tempId.expiryTime.convertToDateTimeString("yyyy/MM/dd HH:mm")
             }
+        }
+
+        currentIdText.setOnClickListener {
+
         }
 
         logButton.setOnClickListener {

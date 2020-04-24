@@ -14,6 +14,7 @@ import io.reactivex.schedulers.Schedulers
 import jp.co.tracecovid19.R
 import jp.co.tracecovid19.screen.common.TraceCovid19Error
 import jp.co.tracecovid19.data.repository.trase.TraceRepository
+import jp.co.tracecovid19.extension.convertToDateTimeString
 import jp.co.tracecovid19.extension.setUpToolBar
 import jp.co.tracecovid19.extension.showErrorDialog
 import jp.co.tracecovid19.util.AnalysisUtil
@@ -92,7 +93,7 @@ class TestPositiveCheckActivity: AppCompatActivity(), CoroutineScope {
                         val isPositive = AnalysisUtil.analysisPositive(list, tempIds)
 
                         withContext(Dispatchers.Main) {
-                            myTempIdListText.text = tempIds.map { it.tempId }.joinToString("\n")
+                            myTempIdListText.text = tempIds.map { it.tempId + "\n      " + it.startTime.convertToDateTimeString("MM/dd HH:mm") + "~" + it.expiryTime.convertToDateTimeString("MM/dd HH:mm") }.joinToString("\n")
                             positiveListText.text = ids.joinToString("\n")
                             if (isPositive) {
                                 checkResultText.text = "陽性です"

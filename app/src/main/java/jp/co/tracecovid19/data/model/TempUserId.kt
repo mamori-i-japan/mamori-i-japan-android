@@ -2,25 +2,23 @@ package jp.co.tracecovid19.data.model
 
 import com.squareup.moshi.Json
 import jp.co.tracecovid19.data.database.tempuserid.TempUserIdEntity
-import jp.co.tracecovid19.extension.convertToDateTimeString
-import jp.co.tracecovid19.extension.convertToUnixTime
+import jp.co.tracecovid19.extension.convertTimeInMillis
+import jp.co.tracecovid19.extension.convertUnixTime
 
 data class TempUserId(@Json(name = "tempID") val tempId: String,
-                      val validFrom: String,
-                      val validTo: String) {
+                      private val validFrom: Long,
+                      private val validTo: Long) {
 
-    val fromTime =  validFrom.convertToUnixTime(format)
-    val toTime = validTo.convertToUnixTime(format)
+    val startTime = validFrom.convertTimeInMillis()
+    val expiryTime = validTo.convertTimeInMillis()
 
     companion object {
-        // TODO せっかくUnixTimeなのにわざわざStringに戻して、使うときにLongに戻るの超微妙
-        const val format = "yyyy-MM-dd'T'HH:mm:ss.SSS"
 
         fun create(entity: TempUserIdEntity): TempUserId {
+            // BE側はUnixTimeなのでTimeInMillisとの相互変換が必要
             return TempUserId(entity.tempId,
-                entity.startTime.convertToDateTimeString(format),
-                entity.expiryTime.convertToDateTimeString(format))
+                entity.startTime.convertUnixTime(),
+                entity.expiryTime.convertUnixTime())
         }
     }
-
 }

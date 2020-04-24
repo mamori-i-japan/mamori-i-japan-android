@@ -20,7 +20,6 @@ class TraceHistoryAdapter(val values: MutableList<DeepContact>) : RecyclerView.A
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
 
-        // TODO アプリ側のモデル作ってフォーマットはそっちに寄せる
         holder.historyTextView.text = item.tempId + "\n" + item.startTime.convertToDateTimeString("yyyy/MM/dd HH:mm") + "〜" + item.endTime.convertToDateTimeString("yyyy/MM/dd HH:mm")
 
         with(holder.view) {
