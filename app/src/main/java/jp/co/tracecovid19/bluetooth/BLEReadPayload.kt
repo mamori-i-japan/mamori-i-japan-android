@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
 @Keep
-class BLEPayload(
+class BLEReadPayload(
     val i: String
 ) {
     fun getPayload(): ByteArray {
@@ -16,9 +16,9 @@ class BLEPayload(
         val gson: Gson = GsonBuilder()
             .disableHtmlEscaping().create()
 
-        fun fromPayload(dataBytes: ByteArray): BLEPayload {
+        fun fromPayload(dataBytes: ByteArray): BLEReadPayload {
             val dataString = String(dataBytes, Charsets.UTF_8)
-            return gson.fromJson(dataString, BLEPayload::class.java)
+            return gson.fromJson(dataString, BLEReadPayload::class.java)
         }
     }
 }

@@ -19,6 +19,12 @@ class DebugLogger {
             logString.onNext(log)
         }
 
+        fun service(tag: String, message: String) {
+            val log = "[Service] ${now()} $message"
+            Log.i(tag, log)
+            logString.onNext(log)
+        }
+
         fun peripheral(tag: String, message: String) {
             val log = "[Peripheral] ${now()} $message"
             Log.i(tag, log)

@@ -42,6 +42,6 @@ class TempIdManager(
      */
     private suspend fun canNeedFetch(currentTime: Long): Boolean {
         // TODO: ここのハードコードは設定とかに出していたほうがいいかも
-        return (traceRepository.availableTempUserIdCount(currentTime) <= 3)
+        return (traceRepository.availableTempUserIdCount(currentTime) <= 2)
     }
 }

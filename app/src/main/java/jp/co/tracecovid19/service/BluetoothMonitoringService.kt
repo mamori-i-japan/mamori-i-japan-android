@@ -106,7 +106,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         DebugLogger.log(TAG, "Creating service - BluetoothMonitoringService")
         serviceUUID = BuildConfig.BLE_SSID
 
-        worker = StreetPassWorker(this.applicationContext)
+        worker = StreetPassWorker(this.applicationContext, tempIdManager)
 
         unregisterReceivers()
         registerReceivers()
@@ -493,10 +493,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
 
             if (ACTION_RECEIVED_STREETPASS == intent.action) {
                 var connRecord: ConnectionRecord = intent.getParcelableExtra(STREET_PASS)
-                DebugLogger.log(
-                    TAG,
-                    "StreetPass received: $connRecord"
-                )
+                DebugLogger.service(TAG, "+-+- StreetPass received: $connRecord")
 
                 if (connRecord.id.isNotEmpty()) {
                     launch (Dispatchers.IO) {
@@ -507,7 +504,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
                             txPower = connRecord.txPower
                         )
                         traceRepository.insertTraceData(entity)
-                        DebugLogger.central(TAG, "Coroutine - Saving TraceDataEntity: ${entity.toString()}")
+                        DebugLogger.service(TAG, "Saving TraceDataEntity: ${entity.toString()}")
                     }
                 }
             }
