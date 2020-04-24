@@ -4,9 +4,12 @@ import android.bluetooth.*
 import android.content.Context
 import android.util.Log
 import jp.co.tracecovid19.bluetooth.BLE
-import jp.co.tracecovid19.bluetooth.BLEPayload
+import jp.co.tracecovid19.bluetooth.BLEReadPayload
+import jp.co.tracecovid19.bluetooth.BLEWritePayload
 import jp.co.tracecovid19.idmanager.TempIdManager
 import jp.co.tracecovid19.logger.DebugLogger
+import jp.co.tracecovid19.streetpass.BLEType
+import jp.co.tracecovid19.streetpass.ConnectionRecord
 import jp.co.tracecovid19.util.BLEUtil
 import kotlinx.coroutines.*
 import java.util.*
@@ -76,7 +79,7 @@ class GattServer(private val context: Context, serviceUUIDString: String, privat
                         runBlocking (Dispatchers.IO) {
                             val currentTime = System.currentTimeMillis()
                             val myTempId = tempIdManager.getTempUserId(currentTime)
-                            val value = BLEPayload(myTempId.tempId).getPayload()
+                            val value = BLEReadPayload(myTempId.tempId).getPayload()
                             DebugLogger.peripheral(
                                 TAG,
                                 "read response data ${String(value, Charsets.UTF_8)}"
@@ -117,13 +120,11 @@ class GattServer(private val context: Context, serviceUUIDString: String, privat
             if (device == null) {
                 Log.e(TAG, "Write stopped - no device")
             }
-
             device?.let {
-                Log.i(
+                DebugLogger.peripheral(
                     TAG,
-                    "onCharacteristicWriteRequest - ${device.address} - preparedWrite: $preparedWrite"
+                    "+++ onCharacteristicWriteRequest  - ${device.address} - preparedWrite: $preparedWrite , responseNeeded: $responseNeeded"
                 )
-
                 Log.i(
                     TAG,
                     "onCharacteristicWriteRequest from ${device.address} - $requestId - $offset"
@@ -193,6 +194,7 @@ class GattServer(private val context: Context, serviceUUIDString: String, privat
         }
 
         override fun onExecuteWrite(device: BluetoothDevice, requestId: Int, execute: Boolean) {
+            DebugLogger.peripheral(TAG, "+++ onExecuteWrite")
             super.onExecuteWrite(device, requestId, execute)
             val data = writeDataPayload[device.address]
 
@@ -221,11 +223,12 @@ class GattServer(private val context: Context, serviceUUIDString: String, privat
         }
 
         private fun saveDataReceived(device: BluetoothDevice) {
+            DebugLogger.peripheral(TAG, "+++ saveDataReceived")
             var data = writeDataPayload[device.address]
             var charUUID = deviceCharacteristicMap[device.address]
 
             charUUID?.let {
-                data?.let {
+                data?.let {data ->
                     try {
                         device.let {
                             // TODO: ここでセントラルのwriteの情報で接続情報を作成するが、onExecuteWriteはAndroidでも呼ばれる？
@@ -242,6 +245,15 @@ class GattServer(private val context: Context, serviceUUIDString: String, privat
                                 BLEUtil.broadcastStreetPassReceived(context, connectionRecord)
                             }
                              */
+                            val payload = BLEWritePayload.fromPayload(data)
+                            val connectionRecord = ConnectionRecord(
+                                BLEType.PERIPHERAL,
+                                payload.i,
+                                payload.rs,
+                                payload.txPower
+                            )
+                            BLEUtil.broadcastStreetPassReceived(context, connectionRecord)
+                            DebugLogger.peripheral(TAG, "write request data = ${String(data, Charsets.UTF_8)}")
                         }
                     } catch (e: Throwable) {
                         Log.e(TAG, "Failed to process write payload - ${e.message}")

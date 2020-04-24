@@ -10,20 +10,23 @@ import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import jp.co.tracecovid19.BuildConfig
 import jp.co.tracecovid19.bluetooth.BLE
-import jp.co.tracecovid19.bluetooth.BLEPayload
+import jp.co.tracecovid19.bluetooth.BLEReadPayload
+import jp.co.tracecovid19.bluetooth.BLEWritePayload
 import jp.co.tracecovid19.bluetooth.gatt.ACTION_DEVICE_PROCESSED
 import jp.co.tracecovid19.bluetooth.gatt.CONNECTION_DATA
 import jp.co.tracecovid19.bluetooth.gatt.DEVICE_ADDRESS
+import jp.co.tracecovid19.idmanager.TempIdManager
 import jp.co.tracecovid19.logger.DebugLogger
 import jp.co.tracecovid19.service.BluetoothMonitoringService
 import jp.co.tracecovid19.service.BluetoothMonitoringService.Companion.blacklistDuration
 import jp.co.tracecovid19.service.BluetoothMonitoringService.Companion.maxQueueTime
 import jp.co.tracecovid19.service.BluetoothMonitoringService.Companion.useBlacklist
 import jp.co.tracecovid19.util.BLEUtil
+import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.util.concurrent.PriorityBlockingQueue
 
-class StreetPassWorker(val context: Context) {
+class StreetPassWorker(val context: Context, val tempIdManager: TempIdManager) {
 
     companion object {
         private const val TAG = "StreetPassWorker"
@@ -538,9 +541,10 @@ class StreetPassWorker(val context: Context) {
                     if (BLE.supportsCharUUID(characteristic.uuid)) {
                         try {
                             val dataBytes = characteristic.value
-                            val blePayload = BLEPayload.fromPayload(dataBytes)
+                            val blePayload = BLEReadPayload.fromPayload(dataBytes)
 
                             val connectionRecord = ConnectionRecord(
+                                BLEType.CENTRAL,
                                 blePayload.i,
                                 work.connectable.rssi,
                                 work.connectable.transmissionPower
@@ -573,9 +577,13 @@ class StreetPassWorker(val context: Context) {
             // attempt to do a write
             if (BLE.supportsCharUUID(characteristic.uuid)) {
                 // TODO: I/F決めてデータを作成(work.connectable.rssiやwork.connectable.transmissionPowerを送信するはず
-                val writeData = "aaa".toByteArray(Charsets.UTF_8)
-                characteristic.value = writeData
+                val tempUserId = runBlocking {
+                    tempIdManager.getTempUserId(System.currentTimeMillis())
+                }
+                val payload = BLEWritePayload(tempUserId.tempId, work.connectable.rssi, work.connectable.transmissionPower)
+                characteristic.value = payload.getPayload()
                 val writeSuccess = gatt.writeCharacteristic(characteristic)
+                DebugLogger.central(TAG, "write data = ${String(characteristic.value, Charsets.UTF_8)}")
                 DebugLogger.central(TAG, "Attempt to write characteristic to our service on ${gatt.device.address}: $writeSuccess")
                 // TODO: writeした場合、どうやったらendWorkConnection(gatt)が呼ばれて、接続完了になるのか？
             } else {
@@ -644,7 +652,7 @@ class StreetPassWorker(val context: Context) {
         override fun onReceive(context: Context, intent: Intent) {
             if (ACTION_DEVICE_PROCESSED == intent.action) {
                 intent.getStringExtra(DEVICE_ADDRESS)?.let {
-                    DebugLogger.central(TAG, "Adding to blacklist: $it")
+                    DebugLogger.central(TAG, "+-+- Adding to blacklist: $it")
                     val entry = BlacklistEntry(it, System.currentTimeMillis())
                     blacklist.add(entry)
                     blacklistHandler.postDelayed({

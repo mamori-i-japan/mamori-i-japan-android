@@ -15,12 +15,17 @@ class ConnectablePeripheral(
 @Keep
 @Parcelize
 data class ConnectionRecord(
+    val type: BLEType,
     val id: String,
     val rssi: Int,
     val txPower: Int?
 ): Parcelable {
     override fun toString(): String {
-        return "id: $id, rssi: $rssi, txPower: $txPower"
+        return "type: ${type.toString()}, id: $id, rssi: $rssi, txPower: $txPower"
     }
 }
 
+enum class BLEType {
+    PERIPHERAL,
+    CENTRAL
+}
