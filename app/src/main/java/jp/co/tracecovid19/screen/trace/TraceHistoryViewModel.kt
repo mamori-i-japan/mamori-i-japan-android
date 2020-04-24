@@ -11,7 +11,7 @@ import kotlin.coroutines.CoroutineContext
 
 class TraceHistoryViewModel(traceRepository: TraceRepository): ViewModel(), CoroutineScope {
 
-    val deepContacts = Transformations.map(traceRepository.selectAllDeepContacttUsers()) {
+    val deepContacts = Transformations.map(traceRepository.selectAllLiveDataDeepContactUsers()) {
         it.map { entity -> DeepContact.create(entity) }
     }
 

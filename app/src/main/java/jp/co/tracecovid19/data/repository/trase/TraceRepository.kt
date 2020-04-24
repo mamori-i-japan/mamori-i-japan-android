@@ -34,8 +34,11 @@ interface TraceRepository {
     // 指定のtempIdの情報を取得
     suspend fun selectTraceData(tempId: String): List<TraceDataEntity>
 
+    // 濃厚接触者の全件取得(LiveData)
+    fun selectAllLiveDataDeepContactUsers(): LiveData<List<DeepContactUserEntity>>
     // 濃厚接触者の全件取得
-    fun selectAllDeepContacttUsers(): LiveData<List<DeepContactUserEntity>>
+    suspend fun selectAllDeepContactUsers(): List<DeepContactUserEntity>
+
     // 濃厚接触者の取得
     suspend fun selectDeepContactUsers(ids: List<String>): List<DeepContactUserEntity>
 
