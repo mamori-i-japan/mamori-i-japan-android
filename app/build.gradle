@@ -8,7 +8,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId "jp.co.tracecovid19"
+        applicationId "jp.mamori-i.app"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
