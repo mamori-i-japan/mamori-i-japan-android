@@ -27,6 +27,7 @@ class TraceHistoryActivity: AppCompatActivity() {
     }
 
     private val viewModel: TraceHistoryViewModel by viewModel()
+    private val disposable: CompositeDisposable by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +37,13 @@ class TraceHistoryActivity: AppCompatActivity() {
         setupViews()
         // viewModelとのbind
         bind()
+        // ロード
+        viewModel.loadDeepContacts()
+    }
+
+    override fun onDestroy() {
+        disposable.dispose()
+        super.onDestroy()
     }
 
     private fun initialize() {
@@ -53,15 +61,18 @@ class TraceHistoryActivity: AppCompatActivity() {
     }
 
     private fun bind() {
-        viewModel.deepContacts.observe(this, Observer {
-            if (it.count() > 0) {
-                noDataMessageTextView.visibility = View.GONE
-                recyclerView.visibility = View.VISIBLE
-            } else {
-                noDataMessageTextView.visibility = View.VISIBLE
-                recyclerView.visibility = View.GONE
-            }
-            (recyclerView.adapter as? TraceHistoryAdapter)?.updateValues(it)
-        })
+        viewModel.deepContacts
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy {
+                if (it.count() > 0) {
+                    noDataMessageTextView.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
+                } else {
+                    noDataMessageTextView.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                }
+                (recyclerView.adapter as? TraceHistoryAdapter)?.updateValues(it)
+            }.addTo(disposable)
     }
 }
