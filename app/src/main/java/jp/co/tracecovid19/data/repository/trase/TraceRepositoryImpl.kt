@@ -102,7 +102,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
     override suspend fun selectTraceData(tempId: String): List<TraceDataEntity> = db.traceDataDao().select(tempId)
 
     override fun selectAllLiveDataDeepContactUsers(): LiveData<List<DeepContactUserEntity>> = db.deepContactUserDao().selectAllLiveData()
-    suspend fun selectAllDeepContactUsers(): List<DeepContactUserEntity> = db.deepContactUserDao().selectAll()
+    override suspend fun selectAllDeepContactUsers(): List<DeepContactUserEntity> = db.deepContactUserDao().selectAll()
 
     override suspend fun selectDeepContactUsers(ids: List<String>): List<DeepContactUserEntity> = db.deepContactUserDao().select(ids)
 
