@@ -28,7 +28,7 @@ class TestContactListViewModel(
     val checkResult = PublishSubject.create<TestContactModel>()
     val checkResultNone = PublishSubject.create<Any>()
 
-    val deepContactUserModels = Transformations.map(traceRepository.selectAllDeepContacttUsers()) {
+    val deepContactUserModels = Transformations.map(traceRepository.selectAllLiveDataDeepContactUsers()) {
         it.map { entity -> TestContactModel(entity.tempId, entity.startTime, entity.endTime) }
     }
 
