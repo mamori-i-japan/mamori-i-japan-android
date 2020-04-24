@@ -10,10 +10,10 @@ fun Long.convertToDateTimeString(format: String): String {
     return formatter.format(calendar.time)
 }
 
-fun Long.convertTimeInMillis(): Long {
+fun Long.convertToTimeInMillis(): Long {
     return this * 1000
 }
 
-fun Long.convertUnixTime(): Long {
+fun Long.convertToUnixTime(): Long {
     return this / 1000
 }
