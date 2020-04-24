@@ -1,6 +1,6 @@
 <resources>
     <!-- Common -->
-    <string name="app_name">Jトレース(仮)</string>
+    <string name="app_name">まもりあいJAPAN</string>
 
     <!-- SmsAuth -->
     <string name="sms_auth_auth_button">認証する</string>
