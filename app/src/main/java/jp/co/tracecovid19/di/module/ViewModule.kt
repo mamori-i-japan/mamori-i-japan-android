@@ -6,7 +6,7 @@ import jp.co.tracecovid19.screen.home.HomeViewModel
 import jp.co.tracecovid19.screen.home.TestBLEViewModel
 import jp.co.tracecovid19.screen.home.TestContactListViewModel
 import jp.co.tracecovid19.screen.trace.TraceDataUploadViewModel
-import jp.co.tracecovid19.screen.trace.TraceNotificationViewModel
+import jp.co.tracecovid19.screen.trace.TraceHistoryViewModel
 import jp.co.tracecovid19.screen.menu.MenuViewModel
 import jp.co.tracecovid19.screen.menu.SettingViewModel
 import jp.co.tracecovid19.screen.start.SplashViewModel
@@ -27,7 +27,7 @@ val viewModule = module {
 
     /* ViewModels */
     viewModel {
-        HomeViewModel(get(), get())
+        HomeViewModel(get(), get(), get())
     }
     viewModel {
         TestBLEViewModel(get())
@@ -36,28 +36,28 @@ val viewModule = module {
         MenuViewModel(get())
     }
     viewModel {
-        SettingViewModel(get(), get())
+        SettingViewModel(get(), get(), get())
     }
     viewModel {
-        AuthSmsViewModel(get(), get(), get())
+        AuthSmsViewModel(get(), get())
     }
     viewModel {
         InputPhoneNumberViewModel(get(), get())
     }
     viewModel {
-        InputPrefectureViewModel(get(), get())
+        InputPrefectureViewModel(get(), get(), get())
     }
     viewModel {
-        InputJobViewModel(get(), get())
+        InputJobViewModel(get(), get(), get())
     }
     viewModel {
         SplashViewModel(get(), get(), get(), get())
     }
     viewModel {
-        TraceDataUploadViewModel()
+        TraceDataUploadViewModel(get(), get(), get())
     }
     viewModel {
-        TraceNotificationViewModel()
+        TraceHistoryViewModel(get())
     }
     viewModel {
         TestContactListViewModel(get(), get())

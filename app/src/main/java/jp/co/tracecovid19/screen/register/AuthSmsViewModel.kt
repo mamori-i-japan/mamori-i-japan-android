@@ -17,7 +17,6 @@ import jp.co.tracecovid19.data.repository.profile.ProfileRepository
 
 
 class AuthSmsViewModel(private val sessionRepository: SessionRepository,
-                       private val profileRepository: ProfileRepository,
                        private val disposable: CompositeDisposable): ViewModel() {
 
     lateinit var navigator: AuthSmsNavigator
@@ -33,7 +32,6 @@ class AuthSmsViewModel(private val sessionRepository: SessionRepository,
         navigator.showProgress()
         sessionRepository.authSms(inputCode, verificationId, activity)
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = {
                     navigator.hideProgress()
@@ -57,7 +55,6 @@ class AuthSmsViewModel(private val sessionRepository: SessionRepository,
         navigator.showProgress()
         sessionRepository.login(profile.prefectureType(), profile.job)
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = {
                     navigator.hideProgress()

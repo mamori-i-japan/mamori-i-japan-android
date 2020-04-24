@@ -83,7 +83,7 @@ class InputPhoneNumberActivity: AppCompatActivity(), InputPhoneNumberNavigator {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy { error ->
-                showErrorAlert(error)
+                showErrorDialog(error)
             }
             .addTo(disposable)
 
@@ -91,7 +91,7 @@ class InputPhoneNumberActivity: AppCompatActivity(), InputPhoneNumberNavigator {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy { error ->
-                showErrorAlert(error)
+                showErrorDialog(error)
             }
             .addTo(disposable)
     }

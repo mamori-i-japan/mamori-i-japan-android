@@ -31,7 +31,6 @@ class InputPhoneNumberViewModel(private val sessionRepository: SessionRepository
         navigator.showProgress()
         sessionRepository.authPhoneNumber(tel, activity)
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = { result ->
                     navigator.hideProgress()
@@ -63,7 +62,6 @@ class InputPhoneNumberViewModel(private val sessionRepository: SessionRepository
         navigator.showProgress()
         sessionRepository.login(profile.prefectureType(), profile.job)
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = {
                     navigator.hideProgress()

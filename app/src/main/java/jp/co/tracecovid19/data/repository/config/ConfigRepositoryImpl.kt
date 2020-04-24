@@ -1,10 +1,11 @@
 package jp.co.tracecovid19.data.repository.config
 
 import android.app.Activity
-import com.google.firebase.FirebaseException
 import com.squareup.moshi.Moshi
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
+import jp.co.tracecovid19.data.exception.TraceCovid19Exception
+import jp.co.tracecovid19.data.exception.TraceCovid19Exception.Reason.*
 import jp.co.tracecovid19.data.model.AndroidAppStatus
 import jp.co.tracecovid19.data.model.AppStatus
 import jp.co.tracecovid19.data.storage.FirebaseStorageService
@@ -30,7 +31,7 @@ class ConfigRepositoryImpl(private val moshi: Moshi,
                                 localCacheService.appStatus = parseResult.android
                                 localCacheService.appStatusGeneration = data.generation
                                 result.onSuccess(parseResult.android)
-                            }?: result.onError( FirebaseException("FirebaseStorage NoData Error"))
+                            }?: result.onError( TraceCovid19Exception(Other))
                         } catch (e: Throwable) {
                             result.onError(e)
                         }

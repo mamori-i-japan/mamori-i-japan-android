@@ -12,7 +12,7 @@ import io.reactivex.schedulers.Schedulers
 import jp.co.tracecovid19.R
 import jp.co.tracecovid19.data.model.PrefectureType
 import jp.co.tracecovid19.extension.setUpToolBar
-import jp.co.tracecovid19.extension.showErrorAlert
+import jp.co.tracecovid19.extension.showErrorDialog
 import jp.co.tracecovid19.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_input_prefecture.*
 import kotlinx.android.synthetic.main.activity_input_prefecture.toolBar
@@ -93,7 +93,7 @@ class InputPrefectureActivity: AppCompatActivity(),
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { error ->
-                showErrorAlert(error)
+                showErrorDialog(error)
             }.addTo(disposable)
     }
 

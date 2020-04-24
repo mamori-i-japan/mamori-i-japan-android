@@ -22,6 +22,7 @@ class MenuViewModel(private val logoutHelper: LogoutHelper): ViewModel() {
         navigator.goToLicense()
     }
 
+    // TODO デバッグ用
     fun onClickLogout() {
         runBlocking (Dispatchers.IO) {
             logoutHelper.logout()
@@ -29,6 +30,7 @@ class MenuViewModel(private val logoutHelper: LogoutHelper): ViewModel() {
         navigator.goToSplash()
     }
 
+    // TODO デバッグ用
     fun onClickRestart() {
         navigator.goToSplash()
     }

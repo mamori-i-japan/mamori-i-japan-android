@@ -7,26 +7,99 @@
 
     <androidx.appcompat.widget.Toolbar style="@style/ToolBar" android:id="@+id/toolBar"/>
 
-    <TextView
-        android:id="@+id/resultTextView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_margin="24dp"
-        android:textStyle="bold"
-        android:textSize="16sp" />
+        android:layout_height="64dp">
 
-    <Button style="@style/GeneralButton"
-        android:id="@+id/prefectureButton"
+        <TextView
+            android:id="@+id/prefectureKeyTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_centerVertical="true"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextBlack"
+            android:text="都道府県"/>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0.8dp"
+            android:layout_alignStart="@+id/prefectureKeyTextView"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorListSeparator" />
+
+        <TextView
+            android:id="@+id/prefectureValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/prefectureArrowImageView"
+            android:layout_marginEnd="32dp"
+            android:layout_centerVertical="true"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextBlack"/>
+
+        <ImageView
+            android:id="@+id/prefectureArrowImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_arrow_next_gray"/>
+
+        <Button style="@style/TransparentButton"
+            android:id="@+id/prefectureButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_margin="8dp"
-        android:text="都道府県設定へ"/>
+        android:layout_height="64dp">
 
-    <Button style="@style/GeneralButton"
-        android:id="@+id/workButton"
-        android:layout_width="match_parent"
-        android:layout_margin="8dp"
-        android:text="職業設定へ"/>
+        <TextView
+            android:id="@+id/jobKeyTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_centerVertical="true"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextBlack"
+            android:text="職業"/>
 
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0.8dp"
+            android:layout_alignStart="@+id/jobKeyTextView"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorListSeparator" />
 
+        <TextView
+            android:id="@+id/jobValueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/jobArrowImageView"
+            android:layout_marginEnd="32dp"
+            android:layout_centerVertical="true"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextBlack"/>
+
+        <ImageView
+            android:id="@+id/jobArrowImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_arrow_next_gray"/>
+
+        <Button style="@style/TransparentButton"
+            android:id="@+id/jobButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
 </LinearLayout>

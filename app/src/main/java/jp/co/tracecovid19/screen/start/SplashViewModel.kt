@@ -31,7 +31,6 @@ class SplashViewModel(private val sessionRepository: SessionRepository,
         // 設定を取得
         configRepository.fetchAppStatus(activity)
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
                 onSuccess = { appStatus ->
                     when {

@@ -3,15 +3,18 @@ package jp.co.tracecovid19.data.repository.session
 import android.app.Activity
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import jp.co.tracecovid19.data.api.login.LoginApiService
+import jp.co.tracecovid19.data.exception.TraceCovid19Exception
+import jp.co.tracecovid19.data.exception.TraceCovid19Exception.Reason.*
 import jp.co.tracecovid19.data.model.LoginRequestBody
 import jp.co.tracecovid19.data.model.PhoneNumberAuthResult
 import jp.co.tracecovid19.data.model.PrefectureType
-import jp.co.tracecovid19.data.model.Token
 import java.util.concurrent.TimeUnit
 
 
@@ -21,12 +24,6 @@ class SessionRepositoryImpl(private val phoneAuthProvider: PhoneAuthProvider,
 
     override fun isLogin(): Boolean {
         return auth.currentUser != null
-    }
-
-    override fun getToken(): Token? {
-        return auth.currentUser?.getIdToken(false)?.result?.token?.let {
-            Token(it)
-        }
     }
 
     override fun authPhoneNumber(tel: String, activity: Activity): Single<PhoneNumberAuthResult> {
@@ -43,7 +40,7 @@ class SessionRepositoryImpl(private val phoneAuthProvider: PhoneAuthProvider,
                                 if (task.isSuccessful) {
                                     result.onSuccess(PhoneNumberAuthResult(null))
                                 } else {
-                                    result.onError(task.exception?: FirebaseException("FirebaseAuth SignInWithCredential Error"))
+                                    result.onError(task.exception?: TraceCovid19Exception(Auth))
                                 }
                             }
                     }
@@ -67,7 +64,7 @@ class SessionRepositoryImpl(private val phoneAuthProvider: PhoneAuthProvider,
                     if (task.isSuccessful) {
                         result.onSuccess(true)
                     } else {
-                        result.onError(task.exception?: FirebaseException("FirebaseAuth SignInWithCredential Error"))
+                        result.onError(task.exception?: TraceCovid19Exception(Auth))
                     }
                 }
         }
@@ -75,16 +72,19 @@ class SessionRepositoryImpl(private val phoneAuthProvider: PhoneAuthProvider,
 
     override fun login(prefectureType: PrefectureType, job: String?): Single<Boolean> {
         return Single.create { result ->
-            val requestBody = LoginRequestBody(prefectureType.rawValue, if (job?.isEmpty() == true) null else job)
-            api.login(requestBody).subscribeBy (
-                onSuccess = {
-                    auth.currentUser?.getIdToken(true)  // トークンのリフレッシュ
-                    result.onSuccess(true)
-                },
-                onError = { e ->
-                    result.onError(e)
-                }
-            )
+            auth.currentUser?.getIdToken(false)?.result?.token?.let { token ->
+                val requestBody = LoginRequestBody(prefectureType.rawValue, if (job?.isEmpty() == true) null else job)
+                api.login("Bearer $token", requestBody)
+                    .subscribeOn(Schedulers.io())
+                    .subscribeBy (
+                        onSuccess = {
+                            result.onSuccess(true)
+                        },
+                        onError = { e ->
+                            result.onError(e)
+                        }
+                )
+            }?: result.onError(TraceCovid19Exception(Auth))
         }
     }
 }

@@ -11,11 +11,11 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.co.tracecovid19.R
 import jp.co.tracecovid19.data.model.RiskStatusType
-import jp.co.tracecovid19.extension.showErrorAlert
-import jp.co.tracecovid19.screen.common.TraceCovid19Error.Action.*
+import jp.co.tracecovid19.extension.showErrorDialog
+import jp.co.tracecovid19.screen.common.TraceCovid19Error.Action.InView
 import jp.co.tracecovid19.screen.menu.MenuActivity
 import jp.co.tracecovid19.screen.trace.TraceDataUploadActivity
-import jp.co.tracecovid19.screen.trace.TraceNotificationActivity
+import jp.co.tracecovid19.screen.trace.TraceHistoryActivity
 import jp.co.tracecovid19.util.BLEUtil
 import kotlinx.android.synthetic.main.activity_home.*
 import org.koin.android.ext.android.inject
@@ -117,12 +117,11 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
                         // TODO エラー画面を貼り、リトライする
                         viewModel.fetchTempIdIfNeeded()
                     }
-                    DialogRetry -> {
-                        showErrorAlert(error) {
+                    else -> {
+                        showErrorDialog(error) {
                             viewModel.fetchTempIdIfNeeded()
                         }
                     }
-                    else -> { showErrorAlert(error) }
                 }
             }
             .addTo(disposable)
@@ -136,12 +135,11 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
                         // TODO エラー画面を貼り、リトライする
                         viewModel.doStatusCheck(this)
                     }
-                    DialogRetry -> {
-                        showErrorAlert(error) {
+                    else -> {
+                        showErrorDialog(error) {
                             viewModel.doStatusCheck(this)
                         }
                     }
-                    else -> { showErrorAlert(error) }
                 }
             }
             .addTo(disposable)
@@ -193,7 +191,7 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
     }
 
     private fun goToTraceNotification() {
-        val intent = Intent(this, TraceNotificationActivity::class.java)
+        val intent = Intent(this, TraceHistoryActivity::class.java)
         this.startActivity(intent)
     }
 

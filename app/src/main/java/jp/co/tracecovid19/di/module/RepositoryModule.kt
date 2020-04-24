@@ -30,6 +30,6 @@ val repositoryModule = module {
     }
 
     factory <TraceRepository> {
-        TraceRepositoryImpl(get(), get(), get(), get(), get())
+        TraceRepositoryImpl(get(), get(), FirebaseAuth.getInstance(), get(), get(), get())
     }
 }

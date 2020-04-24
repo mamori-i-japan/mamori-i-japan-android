@@ -85,19 +85,11 @@ class AuthSmsActivity: AppCompatActivity(), AuthSmsNavigator {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy { error ->
                 when(error.action) {
-                    DialogCloseOnly -> {
+                    Inline -> { codeInputText.showError(error.message) }
+                    else -> {
                         codeInputText.clear()
-                        showErrorAlert(error)
+                        showErrorDialog(error)
                     }
-                    Inline -> {
-                        codeInputText.showError(error.message)
-                    }
-                    DialogBack -> {
-                        showErrorAlert(error) {
-                            finish()
-                        }
-                    }
-                    else -> { showErrorAlert(error) }
                 }
             }
             .addTo(disposable)
@@ -106,18 +98,8 @@ class AuthSmsActivity: AppCompatActivity(), AuthSmsNavigator {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy { error ->
-                when(error.action) {
-                    DialogRetry -> {
-                        showErrorAlert(error) {
-                            viewModel.executeLogin(transitionEntity.profile)
-                        }
-                    }
-                    DialogBack -> {
-                        showErrorAlert(error) {
-                            finish()
-                        }
-                    }
-                    else -> { showErrorAlert(error) }
+                showErrorDialog(error) {
+                    viewModel.executeLogin(transitionEntity.profile)
                 }
             }
             .addTo(disposable)

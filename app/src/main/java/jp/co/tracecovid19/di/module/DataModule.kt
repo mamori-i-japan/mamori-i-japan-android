@@ -1,13 +1,10 @@
 package jp.co.tracecovid19.di.module
 
-import com.google.firebase.auth.FirebaseAuth
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import jp.co.tracecovid19.BuildConfig
 import jp.co.tracecovid19.data.client.getUnsafeOkHttpClientBuilder
-import jp.co.tracecovid19.data.intercepter.CommonHeaderInterceptor
-import jp.co.tracecovid19.data.intercepter.OAuthHeaderInterceptor
 import jp.co.tracecovid19.data.storage.TraceCovid19KeyStore
 import jp.co.tracecovid19.data.storage.TraceCovid19KeyStoreImpl
 import jp.co.tracecovid19.data.storage.TraceCovid19SharedPreference
@@ -21,14 +18,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 
 val dataModule = module {
-    single {
-        CommonHeaderInterceptor()
-    }
-
-    single {
-        OAuthHeaderInterceptor(FirebaseAuth.getInstance())
-    }
-
     single <TraceCovid19SharedPreference> {
         TraceCovid19SharedPreferenceImpl(androidContext())
     }
@@ -46,8 +35,6 @@ val dataModule = module {
     if (BuildConfig.IS_IGONORE_SSL_ERROR) {
         single {
             getUnsafeOkHttpClientBuilder() // SSL無視
-                .addInterceptor(get() as CommonHeaderInterceptor)
-                .addInterceptor(get() as OAuthHeaderInterceptor)
                 .addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY // ログを出力
                 })
@@ -56,8 +43,6 @@ val dataModule = module {
     } else {
         single {
             OkHttpClient.Builder()
-                .addInterceptor(get() as CommonHeaderInterceptor)
-                .addInterceptor(get() as OAuthHeaderInterceptor)
                 .addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY // TODO ログを出力 消す
                 })
