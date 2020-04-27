@@ -6,12 +6,17 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.co.tracecovid19.data.model.TempUserId
 import jp.co.tracecovid19.data.repository.trase.TraceRepository
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 // TODO: テストを意識してinterfaceを作るかどうか
 class TempIdManager(
     private val traceRepository: TraceRepository,
     private val disposable: CompositeDisposable
 ) {
+
+    private val mutex = Mutex()
+    private var requesting = false
 
     suspend fun getTempUserId(currentTime: Long): TempUserId {
         val tempUserIds = traceRepository.getTempUserId(currentTime)
@@ -24,15 +29,20 @@ class TempIdManager(
     }
 
     suspend fun updateTempUserIdIfNeeded(currentTime: Long) {
-        if (canNeedFetch(currentTime)) {
-            traceRepository.updateTempIds()
-                .subscribeOn(Schedulers.io())
-                .subscribeBy(
-                    onSuccess = {},
-                    onError = {}
-                )
-                .addTo(disposable)
+        mutex.withLock {
+            if (requesting || canNeedFetch(currentTime)) {
+                return
+            }
+            requesting = true
         }
+
+        traceRepository.updateTempIds()
+            .subscribeOn(Schedulers.io())
+            .subscribeBy(
+                onSuccess = { requesting = false },
+                onError = { requesting = false }
+            )
+            .addTo(disposable)
     }
 
     /**
