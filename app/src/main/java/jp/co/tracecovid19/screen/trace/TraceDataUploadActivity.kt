@@ -58,8 +58,9 @@ class TraceDataUploadActivity: AppCompatActivity(), TraceDataUploadNavigator {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy { state ->
+                // TODO ステータスに応じた出しわけ
                 when(state) {
-                    Ready -> { }
+                    Ready -> {}
                     InProgress -> {}
                     Complete -> {}
                     else -> {}
