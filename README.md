@@ -1,1 +1,1 @@
-# TraceCovid19
+# まもりあいJAPAN

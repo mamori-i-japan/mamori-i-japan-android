@@ -26,7 +26,7 @@
             android:textSize="20sp"
             android:text="確認番号を入力してください"/>
 
-        <jp.co.tracecovid19.ui.CodeInputText
+        <jp.mamori_i.app.ui.CodeInputText
             android:id="@+id/codeInputText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

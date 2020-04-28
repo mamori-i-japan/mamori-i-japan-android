@@ -27,7 +27,7 @@
             android:textSize="17sp"
             android:text="連絡する保健所を定めるため\nお住まいの都道府県を選択してください"/>
 
-        <jp.co.tracecovid19.ui.SelectText
+        <jp.mamori_i.app.ui.SelectText
             android:id="@+id/prefecturesSelectText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

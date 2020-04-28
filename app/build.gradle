@@ -8,7 +8,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId "jp.mamori-i.app"
+        applicationId "jp.mamori_i.app"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
@@ -43,10 +43,10 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file('../keystore/TraceCovid19Dev')
-            storePassword 'traceCovid19Dev'
-            keyAlias = 'traceCovid19Dev'
-            keyPassword 'traceCovid19Dev'
+            storeFile file('../keystore/MIJDev.keystore')
+            storePassword 'MIJDev'
+            keyAlias = 'MIJDev'
+            keyPassword 'MIJDev'
         }
     }
 

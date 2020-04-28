@@ -54,4 +54,4 @@
 
 ## App
 ## マッピング対象のクラス
--keep class jp.co.tracecovid19.data.model.** { *; }
+-keep class jp.mamori_i.app.data.model.** { *; }

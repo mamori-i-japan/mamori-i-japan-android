@@ -8,18 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:776506470916:android:10ef2c44afa0bde40bfb51",
+        "mobilesdk_app_id": "1:776506470916:android:0ca844640a9b0a2a0bfb51",
         "android_client_info": {
-          "package_name": "jp.co.tracecovid19.dev"
+          "package_name": "jp.mamori_i.app.dev"
         }
       },
       "oauth_client": [
         {
-          "client_id": "776506470916-2iasnrlcrlnujei3esg39tpfl48iee9l.apps.googleusercontent.com",
+          "client_id": "776506470916-5qnbaf1al0r89v5hp6gu8o992op28inm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "jp.co.tracecovid19.dev",
-            "certificate_hash": "66ded867e1b29ad393f146b35a9f6200b090ef43"
+            "package_name": "jp.mamori_i.app.dev",
+            "certificate_hash": "bf4f1fc8184aa0c04ebcbc17fea64317985d80f6"
           }
         },
         {
@@ -40,10 +40,10 @@
               "client_type": 3
             },
             {
-              "client_id": "776506470916-3ttn6744j1hcqlj8bt10fs87lb5m3kq0.apps.googleusercontent.com",
+              "client_id": "776506470916-r54hqcgpkpuib3h0rj1jltr0t6n5tetd.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.decurret.TraceCovid19JP"
+                "bundle_id": "jp.mamori-i.app"
               }
             }
           ]
