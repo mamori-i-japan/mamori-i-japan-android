@@ -16,11 +16,11 @@
 
 
     <!-- 持ち込みなので、後で削除するかも -->
-    <string name="service_ok_title">J-Trace is scanning to keep you safe! :)</string>
-    <string name="service_ok_body">Restart phone if this notification disappears</string>
-    <string name="service_not_ok_title">Oh no! :(</string>
-    <string name="service_not_ok_body">J-Trace is not scanning.</string>
-    <string name="service_not_ok_action">Check app now</string>
-    <string name="permission_location_rationale">BLE 位置情報取得の許可をONにしてください.</string>
+    <string name="service_ok_title">まもりあいJAPANのスキャン中</string>
+    <string name="service_ok_body">もしこの通知が消えている場合は、再起動して下さい。</string>
+    <string name="service_not_ok_title">まもりあいJAPAN</string>
+    <string name="service_not_ok_body">スキャン停止中</string>
+    <string name="service_not_ok_action">アプリを起動</string>
+    <string name="permission_location_rationale">BLE 位置情報取得の許可をONにしてください。</string>
 
 </resources>

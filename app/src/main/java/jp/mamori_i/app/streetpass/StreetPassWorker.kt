@@ -17,10 +17,6 @@ import jp.mamori_i.app.bluetooth.gatt.CONNECTION_DATA
 import jp.mamori_i.app.bluetooth.gatt.DEVICE_ADDRESS
 import jp.mamori_i.app.idmanager.TempIdManager
 import jp.mamori_i.app.logger.DebugLogger
-import jp.mamori_i.app.service.BluetoothMonitoringService
-import jp.mamori_i.app.service.BluetoothMonitoringService.Companion.blacklistDuration
-import jp.mamori_i.app.service.BluetoothMonitoringService.Companion.maxQueueTime
-import jp.mamori_i.app.service.BluetoothMonitoringService.Companion.useBlacklist
 import jp.mamori_i.app.util.BLEUtil
 import kotlinx.coroutines.runBlocking
 import java.util.*
@@ -30,6 +26,10 @@ class StreetPassWorker(val context: Context, val tempIdManager: TempIdManager) {
 
     companion object {
         private const val TAG = "StreetPassWorker"
+        private const val USE_BLACK_LIST = true
+        private const val BLACKLIST_DURATION: Long = BuildConfig.BLACKLIST_DURATION
+        private const val CONNECTION_TIMEOUT: Long = BuildConfig.CONNECTION_TIMEOUT
+        private const val MAX_QUEUE_TIME: Long = BuildConfig.MAX_QUEUE_TIME
     }
 
     private val workQueue: PriorityBlockingQueue<Work> = PriorityBlockingQueue(5, Collections.reverseOrder<Work>())
@@ -169,7 +169,7 @@ class StreetPassWorker(val context: Context, val tempIdManager: TempIdManager) {
 
         //if its in blacklist - check for both mac address and manu data?
         //devices seem to cache manuData. needs further testing. temporarily disabling.
-        if (useBlacklist) {
+        if (USE_BLACK_LIST) {
             if (blacklist.any { it.uniqueIdentifier == work.device.address }) {
                 DebugLogger.log(TAG, "${work.device.address} is in blacklist, not adding to queue")
                 return false
@@ -185,7 +185,7 @@ class StreetPassWorker(val context: Context, val tempIdManager: TempIdManager) {
                     DebugLogger.log(TAG, "Work for ${work.device.address} removed from queue? : $result")
                     DebugLogger.central(TAG, "Work for ${work.device.address} removed from queue? : $result")
                 }
-            }, maxQueueTime)
+            }, MAX_QUEUE_TIME)
             return true
         }
         //this gadget is already in the queue, we can use the latest rssi and txpower? replace the entry
@@ -257,7 +257,7 @@ class StreetPassWorker(val context: Context, val tempIdManager: TempIdManager) {
         while (workToDo == null && workQueue.isNotEmpty()) {
             workToDo = workQueue.poll()
             workToDo?.let { work ->
-                if (now - work.timeStamp > maxQueueTime) {
+                if (now - work.timeStamp > MAX_QUEUE_TIME) {
                     Log.w(
                         TAG,
                         "Work request for ${work.device.address} too old. Not doing"
@@ -271,7 +271,7 @@ class StreetPassWorker(val context: Context, val tempIdManager: TempIdManager) {
 
             val device = currentWorkOrder.device
 
-            if (useBlacklist) {
+            if (USE_BLACK_LIST) {
                 if (blacklist.any { it.uniqueIdentifier == device.address }) {
                     Log.w(TAG, "Already worked on ${device.address}. Skip.")
                     doWork()
@@ -328,10 +328,10 @@ class StreetPassWorker(val context: Context, val tempIdManager: TempIdManager) {
 
                         timeoutHandler.postDelayed(
                             it.timeoutRunnable,
-                            BluetoothMonitoringService.connectionTimeout
+                            CONNECTION_TIMEOUT
                         )
                         it.timeout =
-                            System.currentTimeMillis() + BluetoothMonitoringService.connectionTimeout
+                            System.currentTimeMillis() + CONNECTION_TIMEOUT
 
                         DebugLogger.log(TAG, "Timeout scheduled for ${it.device.address}")
                     } catch (e: Throwable) {
@@ -549,15 +549,12 @@ class StreetPassWorker(val context: Context, val tempIdManager: TempIdManager) {
                                 work.connectable.rssi,
                                 work.connectable.transmissionPower
                             )
-                            //if the deserializing was a success, connectionRecord will not be null, save it
-                            connectionRecord?.let {
-                                BLEUtil.broadcastStreetPassReceived(
-                                    context,
-                                    connectionRecord
-                                )
-                                DebugLogger.central(TAG, it.toString())
-                                DebugLogger.central(TAG, "read data = ${dataBytes.toString(Charsets.UTF_8)}")
-                            }
+                            BLEUtil.broadcastStreetPassReceived(
+                                context,
+                                connectionRecord
+                            )
+                            DebugLogger.central(TAG, connectionRecord.toString())
+                            DebugLogger.central(TAG, "read data = ${dataBytes.toString(Charsets.UTF_8)}")
                         } catch (e: Throwable) {
                             Log.e(TAG, "Failed to process read payload - ${e.message}")
                         }
@@ -661,7 +658,7 @@ class StreetPassWorker(val context: Context, val tempIdManager: TempIdManager) {
                             TAG,
                             "blacklist for ${entry.uniqueIdentifier} removed? : $result"
                         )
-                    }, blacklistDuration)
+                    }, BLACKLIST_DURATION)
                 }
             }
         }

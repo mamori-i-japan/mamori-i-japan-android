@@ -9,7 +9,7 @@ import android.os.Handler
 import android.util.Log
 import jp.mamori_i.app.bluetooth.BLEScanner
 import jp.mamori_i.app.logger.DebugLogger
-import jp.mamori_i.app.service.BluetoothMonitoringService.Companion.infiniteScanning
+import jp.mamori_i.app.service.BluetoothMonitoringService.Companion.INFINITE_SCANNING
 import jp.mamori_i.app.util.BLEUtil
 
 class StreetPassScanner(
@@ -34,7 +34,7 @@ class StreetPassScanner(
         scanner.startScan(scanCallback)
         scannerCount++
 
-        if (!infiniteScanning) {
+        if (!INFINITE_SCANNING) {
             handler.postDelayed(
                 { stopScan() }
                 , scanDurationInMillis)
