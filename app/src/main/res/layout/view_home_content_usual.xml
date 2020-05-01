@@ -1,0 +1,63 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="32dp"
+    android:layout_marginEnd="32dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:textColor="@color/colorTextGray"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:text="行動指針"/>
+
+    <Button style="@style/GeneralButton"
+        android:id="@+id/stayHomeButton"
+        android:layout_width="match_parent"
+        android:layout_marginTop="8dp"
+        android:text="基本的に外出しない" />
+
+    <Button style="@style/GeneralButton"
+        android:id="@+id/hygieneButton"
+        android:layout_width="match_parent"
+        android:layout_marginTop="16dp"
+        android:text="マスクと手洗いをしてください" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/ic_polygon"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_marginTop="24dp"
+        android:textColor="@color/colorTextGray"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:text="医療機関に連絡するべきなのか\n確認しましょう"/>
+
+    <Button style="@style/GeneralButton"
+        android:id="@+id/contactButton"
+        android:layout_width="match_parent"
+        android:layout_marginTop="8dp"
+        android:text="不安、体調不良を相談したい" />
+
+    <Button style="@style/LinkButtonBlue"
+        android:id="@+id/shareButton"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        android:layout_gravity="center_horizontal"
+        android:text="このアプリをシェア" />
+
+</LinearLayout>

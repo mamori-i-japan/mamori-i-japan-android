@@ -1,3 +1,12 @@
 package jp.mamori_i.app.screen.home
 
-interface HomeNavigator
+import android.net.Uri
+
+interface HomeNavigator {
+    fun showProgress()
+    fun hideProgress()
+    fun goToMenu()
+    fun goToTraceHistory()
+    fun openWebBrowser(uri: Uri)
+    fun openShareComponent(title: String, content: String)
+}

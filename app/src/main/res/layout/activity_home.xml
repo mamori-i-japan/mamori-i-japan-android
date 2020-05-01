@@ -1,75 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBgWhite">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp">
-
-        <ImageButton
-            android:id="@+id/menuButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/ic_menu"/>
-
-        <Button style="@style/ExecuteButton"
-            android:id="@+id/debugButton"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:layout_marginStart="16dp"
-            android:text="デバッグ"
-            android:textSize="15sp"
-            android:layout_centerVertical="true"/>
-
-        <Button style="@style/ExecuteButton"
-            android:id="@+id/lowButton"
-            android:layout_width="40dp"
-            android:layout_height="32dp"
-            android:layout_toEndOf="@+id/debugButton"
-            android:layout_marginStart="16dp"
-            android:textSize="15sp"
-            android:text="Low"
-            android:layout_centerVertical="true"/>
-
-        <Button style="@style/ExecuteButton"
-            android:id="@+id/midButton"
-            android:layout_width="40dp"
-            android:layout_height="32dp"
-            android:layout_toEndOf="@+id/lowButton"
-            android:layout_marginStart="16dp"
-            android:textSize="15sp"
-            android:text="Mid"
-            android:layout_centerVertical="true"/>
-
-        <Button style="@style/ExecuteButton"
-            android:id="@+id/highButton"
-            android:layout_width="40dp"
-            android:layout_height="32dp"
-            android:layout_toEndOf="@+id/midButton"
-            android:layout_marginStart="16dp"
-            android:textSize="15sp"
-            android:text="High"
-            android:layout_centerVertical="true"/>
-
-    </RelativeLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/containerView"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/backgroundImageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_home_bg_usual"
+                android:adjustViewBounds="true"/>
+
+            <RelativeLayout
+                android:id="@+id/navigationBarView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp">
+
+                <ImageButton
+                    android:id="@+id/menuButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/ic_menu"/>
+
+                <Button style="@style/GeneralButton"
+                    android:id="@+id/debugButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="16dp"
+                    android:text="デバッグ"
+                    android:textSize="15sp"
+                    android:layout_centerVertical="true"/>
+
+                <Button style="@style/GeneralButton"
+                    android:id="@+id/usualButton"
+                    android:layout_width="40dp"
+                    android:layout_height="32dp"
+                    android:layout_toEndOf="@+id/debugButton"
+                    android:layout_marginStart="16dp"
+                    android:textSize="15sp"
+                    android:text="10"
+                    android:layout_centerVertical="true"/>
+
+                <Button style="@style/GeneralButton"
+                    android:id="@+id/semiUsualButton"
+                    android:layout_width="40dp"
+                    android:layout_height="32dp"
+                    android:layout_toEndOf="@+id/usualButton"
+                    android:layout_marginStart="16dp"
+                    android:textSize="15sp"
+                    android:text="25"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+
+            <jp.mamori_i.app.screen.home.HomeCardView
+                android:id="@+id/cardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/navigationBarView"/>
+
+            <LinearLayout
+                android:id="@+id/contentContainerView"
+                android:layout_below="@+id/cardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"/>
+
+        </RelativeLayout>
 
     </ScrollView>
 

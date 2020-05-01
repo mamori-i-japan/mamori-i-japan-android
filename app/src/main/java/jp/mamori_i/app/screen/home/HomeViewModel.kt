@@ -1,20 +1,14 @@
 package jp.mamori_i.app.screen.home
 
 import android.app.Activity
-import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import jp.mamori_i.app.data.model.RiskStatusType
+import jp.mamori_i.app.data.model.UserStatus
 import jp.mamori_i.app.screen.common.MIJError
-import jp.mamori_i.app.screen.common.MIJError.Reason.*
-import jp.mamori_i.app.screen.common.MIJError.Action.*
 import jp.mamori_i.app.data.repository.trase.TraceRepository
 import jp.mamori_i.app.screen.common.LogoutHelper
-import jp.mamori_i.app.util.AnalysisUtil
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -24,7 +18,7 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                     private val disposable: CompositeDisposable): ViewModel(), CoroutineScope {
 
     lateinit var navigator: HomeNavigator
-    val currentRiskStatus = PublishSubject.create<RiskStatusType>()
+    val userStatus = PublishSubject.create<UserStatus>()
     val statusCheckError = PublishSubject.create<MIJError>()
 
     private var job: Job = Job()
@@ -37,8 +31,44 @@ class HomeViewModel(private val traceRepository: TraceRepository,
         super.onCleared()
     }
 
-    fun doStatusCheck(activity: Activity) {
-        // まず陽性者リストを取得する
+    fun doAppStatusCheck(activity: Activity) {
+        // TODO
+    }
+
+    fun doUserStatusCheck(activity: Activity) {
+        // TODO
+        userStatus.onNext(UserStatus(UserStatus.UserStatusType.Usual, 2))
+    }
+
+    fun onClickMenuButton() {
+        navigator.goToMenu()
+    }
+
+    fun onClickDeepContactCount() {
+        navigator.goToTraceHistory()
+    }
+
+    fun onClickStayHomeButton() {
+        // TODO URL
+        navigator.openWebBrowser("https://yahoo.co.jp".toUri())
+    }
+
+    fun onClickHygieneButton() {
+        // TODO URL
+        navigator.openWebBrowser("https://yahoo.co.jp".toUri())
+    }
+
+    fun onClickContactButton() {
+        // TODO URL
+        navigator.openWebBrowser("https://yahoo.co.jp".toUri())
+    }
+
+    fun onClickShareButton() {
+        // TODO メッセージなど
+        navigator.openShareComponent("(TODO)シェアタイトル", "(TODO)シェアメッセージ")
+    }
+
+        /*
         traceRepository.fetchPositivePersons(activity)
             .subscribeOn(Schedulers.io())
             .subscribeBy(
@@ -82,6 +112,5 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                             else -> MIJError(reason, "文言検討15", DialogRetry)
                         })
                 }
-            ).addTo(disposable)
-    }
+            ).addTo(disposable)*/
 }

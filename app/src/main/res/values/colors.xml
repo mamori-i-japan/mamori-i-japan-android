@@ -39,9 +39,9 @@
     <color name="colorExecuteButtonBgDisabled">#D7D7D7</color>
 
     <!-- GeneralButton -->
-    <color name="colorGeneralButtonText">#4A4A4A</color>
+    <color name="colorGeneralButtonText">#00A0C3</color>
     <color name="colorGeneralButtonBg">#FFFFFF</color>
-    <color name="colorGeneralButtonBorder">#4A4A4A</color>
+    <color name="colorGeneralButtonBorder">#00A0C3</color>
     <color name="colorGeneralButtonSelected">#32333333</color>
 
     <!-- LinkButton -->
@@ -55,6 +55,10 @@
     <color name="colorTransparentButtonText">#00FFFFFF</color>
     <color name="colorTransparentButtonBg">#00FFFFFF</color>
     <color name="colorTransparentButtonSelected">#19000000</color>
+
+    <!-- SelectableView -->
+    <color name="colorSelectableViewBg">#EDF7F9</color>
+    <color name="colorSelectableViewSelected">#879699</color>
 
     <!-- List -->
     <color name="colorListItemBg">#FFFFFF</color>
