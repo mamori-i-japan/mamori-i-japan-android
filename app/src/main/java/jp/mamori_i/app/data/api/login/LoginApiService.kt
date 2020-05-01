@@ -7,6 +7,6 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface LoginApiService {
-    @POST("dev/auth/login")
+    @POST("auth/login")
     fun login(@Header("Authorization") authorization: String, @Body body: LoginRequestBody): Single<Any>
 }

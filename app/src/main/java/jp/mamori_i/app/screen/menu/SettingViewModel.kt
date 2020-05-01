@@ -63,13 +63,13 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
 
     fun onClickPrefecture() {
         _profile?.let {
-            navigator.goToInputPrefecture(InputPrefectureTransitionEntity(it, false))
+            navigator.goToInputPrefecture(InputPrefectureTransitionEntity(it.prefectureType()))
         }
     }
 
     fun onClickJob() {
         _profile?.let {
-            navigator.goToInputJob(InputJobTransitionEntity(it, false))
+            navigator.goToInputJob(InputJobTransitionEntity(it.job))
         }
     }
 

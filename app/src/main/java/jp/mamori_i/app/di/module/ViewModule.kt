@@ -10,10 +10,9 @@ import jp.mamori_i.app.screen.trace.TraceHistoryViewModel
 import jp.mamori_i.app.screen.menu.MenuViewModel
 import jp.mamori_i.app.screen.menu.SettingViewModel
 import jp.mamori_i.app.screen.start.SplashViewModel
-import jp.mamori_i.app.screen.register.InputPhoneNumberViewModel
-import jp.mamori_i.app.screen.register.AuthSmsViewModel
 import jp.mamori_i.app.screen.profile.InputPrefectureViewModel
 import jp.mamori_i.app.screen.profile.InputJobViewModel
+import jp.mamori_i.app.screen.start.AgreementViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -39,16 +38,13 @@ val viewModule = module {
         SettingViewModel(get(), get(), get())
     }
     viewModel {
-        AuthSmsViewModel(get(), get())
-    }
-    viewModel {
-        InputPhoneNumberViewModel(get(), get())
-    }
-    viewModel {
         InputPrefectureViewModel(get(), get(), get())
     }
     viewModel {
         InputJobViewModel(get(), get(), get())
+    }
+    viewModel {
+        AgreementViewModel(get(), get(), get())
     }
     viewModel {
         SplashViewModel(get(), get(), get(), get())

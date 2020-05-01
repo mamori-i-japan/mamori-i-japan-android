@@ -78,11 +78,16 @@ android {
         dev {
             applicationIdSuffix ".dev"
             buildConfigField("Boolean", "IS_IGONORE_SSL_ERROR", "false")
-            buildConfigField("String", "BASE_URL", '"https://35111ugog3.execute-api.ap-northeast-1.amazonaws.com/"')
+            buildConfigField("String", "BASE_URL", '"https://api-dev.mamori-i.jp/"')
+        }
+        stg {
+            applicationIdSuffix ".stg"
+            buildConfigField("Boolean", "IS_IGONORE_SSL_ERROR", "false")
+            buildConfigField("String", "BASE_URL", '"https://api-stg.mamori-i.jp/"')
         }
         prod {
             buildConfigField("Boolean", "IS_IGONORE_SSL_ERROR", "false")
-            buildConfigField("String", "BASE_URL", '"https://localhost"')
+            buildConfigField("String", "BASE_URL", '"https://api.mamori-i.jp/"')
         }
     }
 }

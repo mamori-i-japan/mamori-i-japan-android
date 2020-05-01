@@ -22,7 +22,7 @@ val repositoryModule = module {
     }
 
     factory <SessionRepository> {
-        SessionRepositoryImpl(PhoneAuthProvider.getInstance(), FirebaseAuth.getInstance(), get())
+        SessionRepositoryImpl(FirebaseAuth.getInstance(), get())
     }
 
     factory <ProfileRepository> {

@@ -14,6 +14,7 @@ import jp.mamori_i.app.screen.common.MIJError.Reason.*
 import jp.mamori_i.app.screen.common.MIJError.Action.*
 import jp.mamori_i.app.data.repository.profile.ProfileRepository
 import jp.mamori_i.app.screen.common.LogoutHelper
+import jp.mamori_i.app.screen.start.AgreementTransitionEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -29,41 +30,37 @@ class InputPrefectureViewModel(private val profileRepository: ProfileRepository,
         super.onCleared()
     }
 
-    fun onClickExecuteButton(inputPrefecture: PrefectureType?,
-                             profile: Profile,
-                             isRegistrationFlow: Boolean,
-                             activity: Activity) {
-        inputPrefecture?.let {
-            profile.prefecture = it.rawValue
-            if (isRegistrationFlow) {
-                navigator.goToInputWork(InputJobTransitionEntity(profile, isRegistrationFlow))
-            } else {
-                navigator.showProgress()
-                profileRepository.updateProfile(profile, activity)
-                    .subscribeOn(Schedulers.io())
-                    .subscribeBy(
-                    onSuccess = {
-                        navigator.hideProgress()
-                        navigator.finishWithCompleteMessage("更新しました。") // TODO メッセージ
-                    },
-                    onError = { e ->
-                        navigator.hideProgress()
-                        val reason = MIJError.mappingReason(e)
-                        if (reason == Auth) {
-                            // 認証エラーの場合はログアウト処理をする
-                            runBlocking (Dispatchers.IO) {
-                                logoutHelper.logout()
-                            }
+    fun onClickNextButton(inputPrefecture: PrefectureType) {
+        navigator.goToAgreement(AgreementTransitionEntity(inputPrefecture))
+    }
+
+    fun onClickUpdateButton(inputPrefecture: PrefectureType,
+                            activity: Activity) {
+        navigator.finishWithCompleteMessage("更新しました。") // TODO メッセージ
+        /*
+        profileRepository.updateProfile(profile, activity)
+            .subscribeOn(Schedulers.io())
+            .subscribeBy(
+                onSuccess = {
+                    navigator.hideProgress()
+                    navigator.finishWithCompleteMessage("更新しました。") // TODO メッセージ
+                },
+                onError = { e ->
+                    navigator.hideProgress()
+                    val reason = MIJError.mappingReason(e)
+                    if (reason == Auth) {
+                        // 認証エラーの場合はログアウト処理をする
+                        runBlocking (Dispatchers.IO) {
+                            logoutHelper.logout()
                         }
-                        updateError.onNext(
-                            when (reason) {
-                                NetWork -> MIJError(reason, "文言検討1", DialogCloseOnly)
-                                Auth -> MIJError(reason, "文言検討22", DialogLogout)
-                                else -> MIJError(reason, "文言検討2", DialogCloseOnly)
-                            })
                     }
-                ).addTo(disposable)
-            }
-        }
+                    updateError.onNext(
+                        when (reason) {
+                            NetWork -> MIJError(reason, "文言検討1", DialogCloseOnly)
+                            Auth -> MIJError(reason, "文言検討22", DialogLogout)
+                            else -> MIJError(reason, "文言検討2", DialogCloseOnly)
+                        })
+                }
+            ).addTo(disposable)*/
     }
 }

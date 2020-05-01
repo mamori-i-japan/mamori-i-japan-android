@@ -7,16 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
-import jp.mamori_i.app.data.model.Profile
 import jp.mamori_i.app.extension.setUpToolBar
-import jp.mamori_i.app.screen.profile.InputPrefectureActivity
-import jp.mamori_i.app.screen.profile.InputPrefectureTransitionEntity
+import jp.mamori_i.app.extension.showErrorDialog
+import jp.mamori_i.app.screen.permission.PermissionSettingActivity
+import jp.mamori_i.app.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_agreement.*
-import kotlinx.android.synthetic.main.activity_agreement.toolBar
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AgreementActivity: AppCompatActivity(), AgreementNavigator {
 
@@ -24,8 +23,10 @@ class AgreementActivity: AppCompatActivity(), AgreementNavigator {
         const val KEY = "jp.mamori_i.app.screen.start.AgreementActivity"
     }
 
+    private val viewModel: AgreementViewModel by viewModel()
     private val disposable: CompositeDisposable by inject()
-    
+    private lateinit var transitionEntity: AgreementTransitionEntity
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 初期設定
@@ -41,61 +42,49 @@ class AgreementActivity: AppCompatActivity(), AgreementNavigator {
         super.onDestroy()
     }
 
-    override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 1) {
-            supportFragmentManager.popBackStack()
-        } else {
-            finish()
-        }
-    }
-
     private fun initialize() {
         setContentView(R.layout.activity_agreement)
+        viewModel.navigator = this
+        intent?.let { intent ->
+            (intent.getSerializableExtra(KEY) as? AgreementTransitionEntity)?.let { entity ->
+                // 引き継ぎデータあり
+                transitionEntity = entity
+            }
+        }
     }
 
     private fun setupViews() {
-        setUpToolBar(toolBar, "") {
-            this.onBackPressed()
+        setUpToolBar(toolBar, "")
+
+        agreeButton.setOnClickListener {
+            viewModel.onClickAgree(transitionEntity.prefectureType)
         }
-        supportFragmentManager
-            .beginTransaction()
-            .replace(containerView.id, Agreement1Fragment(this).apply {
-                title.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy {
-                        supportActionBar?.title = it
-                    }
-                    .addTo(disposable)
-            })
-            .addToBackStack(null)
-            .commit()
+
+        linkButton.setOnClickListener {
+            viewModel.onClickAgreementLink()
+        }
     }
 
     private fun bind() {
+        viewModel.loginError
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { error ->
+                showErrorDialog(error)
+            }.addTo(disposable)
     }
 
-    override fun goToNext(pageType: AgreementNavigator.AgreementPageType) {
-        when(pageType) {
-            AgreementNavigator.AgreementPageType.Agreement1 -> {
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(containerView.id, Agreement2Fragment(this).apply {
-                        title.subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeBy {
-                                supportActionBar?.title = it
-                            }
-                            .addTo(disposable)
-                    })
-                    .addToBackStack(null)
-                    .commit()
-            }
-            AgreementNavigator.AgreementPageType.Agreement2 -> {
-                val intent = Intent(this, InputPrefectureActivity::class.java)
-                intent.putExtra(InputPrefectureActivity.KEY, InputPrefectureTransitionEntity(Profile(), true))
-                this.startActivity(intent)
-            }
-        }
+    override fun showProgress() {
+        ProgressHUD.show(this)
+    }
+
+    override fun hideProgress() {
+        ProgressHUD.hide()
+    }
+
+    override fun goToPermissionSetting() {
+        val intent = Intent(this, PermissionSettingActivity::class.java)
+        this.startActivity(intent)
     }
 
     override fun openWebBrowser(uri: Uri) {

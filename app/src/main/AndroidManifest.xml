@@ -40,10 +40,6 @@
         <activity android:name=".screen.profile.InputJobActivity"
             android:windowSoftInputMode="stateAlwaysVisible"/>
         <activity android:name=".screen.permission.PermissionSettingActivity" />
-        <activity android:name=".screen.register.AuthSmsActivity"
-            android:windowSoftInputMode="stateAlwaysVisible"/>
-        <activity android:name=".screen.register.InputPhoneNumberActivity"
-            android:windowSoftInputMode="stateAlwaysVisible"/>
         <activity android:name=".screen.start.AgreementActivity" />
         <activity
             android:name=".screen.start.SplashActivity"

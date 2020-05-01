@@ -67,6 +67,9 @@ class TraceRepositoryImpl (private val moshi: Moshi,
 
     override fun updateTempIds(): Single<Boolean> {
         return Single.create { result ->
+            // TODO ローカルで作る
+            result.onSuccess(true)
+            /*
             auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     task.result?.token?.let { token ->
@@ -87,7 +90,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
                 } else {
                     result.onError(MIJException(Auth))
                 }
-            }
+            }*/
         }
     }
 

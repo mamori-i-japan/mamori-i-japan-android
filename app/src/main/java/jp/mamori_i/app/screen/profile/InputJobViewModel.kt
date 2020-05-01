@@ -3,19 +3,11 @@ package jp.mamori_i.app.screen.profile
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import jp.mamori_i.app.data.model.Profile
-import jp.mamori_i.app.screen.common.MIJError
-import jp.mamori_i.app.screen.common.MIJError.Reason.*
-import jp.mamori_i.app.screen.common.MIJError.Action.*
 import jp.mamori_i.app.data.repository.profile.ProfileRepository
 import jp.mamori_i.app.screen.common.LogoutHelper
-import jp.mamori_i.app.screen.register.InputPhoneNumberTransitionEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import jp.mamori_i.app.screen.common.MIJError
 
 class InputJobViewModel(private val profileRepository: ProfileRepository,
                         private val logoutHelper: LogoutHelper,
@@ -33,6 +25,8 @@ class InputJobViewModel(private val profileRepository: ProfileRepository,
                              profile: Profile,
                              isRegistrationFlow: Boolean,
                              activity: Activity) {
+        // TODO
+        /*
         profile.job = inputWork?:""
         if (isRegistrationFlow) {
             navigator.goToInputPhoneNumber(InputPhoneNumberTransitionEntity(profile))
@@ -62,6 +56,6 @@ class InputJobViewModel(private val profileRepository: ProfileRepository,
                         })
                 }
             ).addTo(disposable)
-        }
+        }*/
     }
 }

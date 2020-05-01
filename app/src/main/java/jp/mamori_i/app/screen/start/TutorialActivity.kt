@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import jp.mamori_i.app.R
 import jp.mamori_i.app.extension.setUpToolBar
+import jp.mamori_i.app.screen.profile.InputPrefectureActivity
 import kotlinx.android.synthetic.main.activity_tutorial.*
 
 
@@ -61,24 +62,7 @@ class TutorialActivity: AppCompatActivity(),
     override fun goToNext(pageType: TutorialNavigator.TutorialPageType) {
         when(pageType) {
             TutorialNavigator.TutorialPageType.Tutorial1 -> {
-                toolBar.visibility = View.VISIBLE
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(containerView.id, Tutorial2Fragment(this))
-                    .addToBackStack(null)
-                    .commit()
-            }
-            TutorialNavigator.TutorialPageType.Tutorial2 -> {
-                toolBar.visibility = View.VISIBLE
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(containerView.id, Tutorial3Fragment(this))
-                    .addToBackStack(null)
-                    .commit()
-
-            }
-            TutorialNavigator.TutorialPageType.Tutorial3 -> {
-                val intent = Intent(this, AgreementActivity::class.java)
+                val intent = Intent(this, InputPrefectureActivity::class.java)
                 this.startActivity(intent)
             }
         }

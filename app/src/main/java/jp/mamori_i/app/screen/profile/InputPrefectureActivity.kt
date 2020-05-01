@@ -13,6 +13,8 @@ import jp.mamori_i.app.R
 import jp.mamori_i.app.data.model.PrefectureType
 import jp.mamori_i.app.extension.setUpToolBar
 import jp.mamori_i.app.extension.showErrorDialog
+import jp.mamori_i.app.screen.start.AgreementActivity
+import jp.mamori_i.app.screen.start.AgreementTransitionEntity
 import jp.mamori_i.app.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_input_prefecture.*
 import kotlinx.android.synthetic.main.activity_input_prefecture.toolBar
@@ -29,7 +31,7 @@ class InputPrefectureActivity: AppCompatActivity(),
 
     private val viewModel: InputPrefectureViewModel by viewModel()
     private val disposable: CompositeDisposable by inject()
-    private lateinit var transitionEntity: InputPrefectureTransitionEntity
+    private var transitionEntity: InputPrefectureTransitionEntity? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,21 +62,22 @@ class InputPrefectureActivity: AppCompatActivity(),
     private fun setupViews() {
         // ツールバー
         setUpToolBar(toolBar, "都道府県選択")
+
         executeButton.setOnClickListener {
-            viewModel.onClickExecuteButton(prefecturesSelectText.selectItem() as? PrefectureType,
-                transitionEntity.profile,
-                transitionEntity.isRegistrationFlow,
-                this)
+            val input = prefecturesSelectText.selectItem() as PrefectureType
+            transitionEntity?.let {
+                viewModel.onClickUpdateButton(input, this)
+            }?: viewModel.onClickNextButton(input)
         }
+
         prefecturesSelectText.setSelectDataSource(
             PrefectureType.selectableValues(),
-            transitionEntity.profile.prefectureType()
+            transitionEntity?.selected
         )
-        if (transitionEntity.isRegistrationFlow) {
-            executeButton.text = "次へ"
-        } else {
-            executeButton.text = "更新する"
-            prefecturesSelectText.setItem(transitionEntity.profile.prefectureType())
+
+        transitionEntity?.let {
+            executeButton.text = "設定する"
+            prefecturesSelectText.setItem(it.selected)
         }
     }
 
@@ -105,14 +108,13 @@ class InputPrefectureActivity: AppCompatActivity(),
         ProgressHUD.hide()
     }
 
-    override fun goToInputWork(transitionEntity: InputJobTransitionEntity) {
-        val intent = Intent(this, InputJobActivity::class.java)
-        intent.putExtra(InputJobActivity.KEY, transitionEntity)
+    override fun goToAgreement(transitionEntity: AgreementTransitionEntity) {
+        val intent = Intent(this, AgreementActivity::class.java)
+        intent.putExtra(AgreementActivity.KEY, transitionEntity)
         this.startActivity(intent)
     }
 
     override fun finishWithCompleteMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
         finish()
     }
 }

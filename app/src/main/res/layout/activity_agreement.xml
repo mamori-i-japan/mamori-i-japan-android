@@ -9,9 +9,66 @@
     <androidx.appcompat.widget.Toolbar style="@style/ToolBar" android:id="@+id/toolBar"/>
 
     <RelativeLayout
-        android:id="@+id/containerView"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/agreeButton">
+
+            <LinearLayout
+                android:id="@+id/contentView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="@color/colorTextBlack"
+                    android:textStyle="bold"
+                    android:textSize="28sp"
+                    android:maxLines="2"
+                    app:autoSizeTextType="uniform"
+                    app:autoSizeMinTextSize="20sp"
+                    app:autoSizeMaxTextSize="28sp"
+                    android:text="以下の利用規約に同意した上で登録に進んでください"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:src="@drawable/img_agreement_1"
+                    android:adjustViewBounds="true"/>
+
+                <Button style="@style/LinkButtonBlue"
+                    android:id="@+id/linkButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="28dp"
+                    android:layout_gravity="center"
+                    android:text="個人情報保護に関する規約全文を読む"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <Button style="@style/ExecuteButton"
+            android:id="@+id/agreeButton"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="規約に同意して進む"/>
+
+    </RelativeLayout>
 
 </LinearLayout>
