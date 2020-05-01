@@ -61,7 +61,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="34dp"
+                    android:layout_marginTop="24dp"
                     android:src="@drawable/img_tutorial"
                     android:adjustViewBounds="true"/>
 
@@ -74,8 +74,8 @@
             android:layout_width="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="24dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginEnd="36dp"
             android:text="次へ"/>
 
     </RelativeLayout>

@@ -54,7 +54,7 @@ class AgreementActivity: AppCompatActivity(), AgreementNavigator {
     }
 
     private fun setupViews() {
-        setUpToolBar(toolBar, "")
+        setUpToolBar(toolBar, "利用規約への同意")
 
         agreeButton.setOnClickListener {
             viewModel.onClickAgree(transitionEntity.prefectureType)

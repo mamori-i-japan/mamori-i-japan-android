@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,9 +10,66 @@
     <androidx.appcompat.widget.Toolbar style="@style/ToolBar" android:id="@+id/toolBar"/>
 
     <RelativeLayout
-        android:id="@+id/containerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/settingButton">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="@color/colorTextBlack"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:maxLines="2"
+                    app:autoSizeTextType="uniform"
+                    app:autoSizeMinTextSize="12sp"
+                    app:autoSizeMaxTextSize="20sp"
+                    android:text="接触を検知するために\nBluetoothをオンにしてください"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:text="あわせて通知設定をオンにしておけば\n前日の接触者数の更新もお知らせします"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:src="@drawable/img_permission"
+                    android:adjustViewBounds="true"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <Button style="@style/ExecuteButton"
+            android:id="@+id/settingButton"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:text="Bluetoothを設定する"/>
+
+    </RelativeLayout>
 
 
 </LinearLayout>

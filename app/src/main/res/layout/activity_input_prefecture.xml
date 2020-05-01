@@ -18,26 +18,40 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="32dp"
+            android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:textColor="@color/colorTextBlack"
             android:textStyle="bold"
             android:textSize="17sp"
-            android:text="連絡する保健所を定めるため\nお住まいの都道府県を選択してください"/>
+            android:text="お住まいの地域にあわせた\n情報をご提供するため\n都道府県を指定してください"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textColor="@color/colorTextGray"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:text="この情報は誰にも共有されません\n（開発者や行政機関にも通知されません）"/>
 
         <jp.mamori_i.app.ui.SelectText
             android:id="@+id/prefecturesSelectText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="32dp"
             app:selectText_hint="お住まいの都道府県を選択"/>
 
         <Button style="@style/ExecuteButton"
             android:id="@+id/executeButton"
             android:layout_width="match_parent"
             android:layout_marginTop="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:text="次へ"/>
 
     </LinearLayout>

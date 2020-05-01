@@ -72,7 +72,7 @@ class InputPrefectureActivity: AppCompatActivity(),
 
         prefecturesSelectText.setSelectDataSource(
             PrefectureType.selectableValues(),
-            transitionEntity?.selected
+            transitionEntity?.selected ?: PrefectureType.Tokyo
         )
 
         transitionEntity?.let {
