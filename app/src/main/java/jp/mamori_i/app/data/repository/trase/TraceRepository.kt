@@ -14,16 +14,10 @@ interface TraceRepository {
     // 陽性者リストの取得
     fun fetchPositivePersons(activity: Activity): Single<List<PositivePerson>>
 
-    // TempIdの更新
-    fun updateTempIds(): Single<Boolean>
     // TempIdのロード
     suspend fun loadTempIds(): List<TempUserId>
-    // 有効なTempIdの数を取得
-    suspend fun availableTempUserIdCount(currentTime: Long): Int
     // TempUserIdの取得
-    suspend fun getTempUserId(currentTime: Long): List<TempUserIdEntity>
-    // 期限の最後になるTempUserIdの取得
-    suspend fun getLatestTempUserId(): TempUserIdEntity
+    suspend fun getTempUserId(currentTime: Long): TempUserIdEntity
 
     // 接触者情報の登録
     suspend fun insertTraceData(entity: TraceDataEntity)

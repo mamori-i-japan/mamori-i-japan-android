@@ -91,9 +91,6 @@ class GattServer(private val context: Context, serviceUUIDString: String, privat
                                 0,
                                 value
                             )
-
-                            // tempIdを必要があれば更新
-                            tempIdManager.updateTempUserIdIfNeeded(currentTime)
                         }
                     }
                 } else {

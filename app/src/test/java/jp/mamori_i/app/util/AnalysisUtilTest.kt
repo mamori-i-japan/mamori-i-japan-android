@@ -4,6 +4,7 @@ import jp.mamori_i.app.data.database.deepcontactuser.DeepContactUserEntity
 import jp.mamori_i.app.data.database.tracedata.TraceDataEntity
 import jp.mamori_i.app.data.model.PositivePerson
 import jp.mamori_i.app.data.model.TempUserId
+import jp.mamori_i.app.extension.convertToUnixTime
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -390,7 +391,7 @@ class AnalysisUtilTest {
     }
 
     private fun createTestDate(id: String): TempUserId {
-        return TempUserId(id, "2020-01-01T22:22:22.000Z", "2020-01-01T22:22:22.000Z")
+        return TempUserId(id, 0, 0)
     }
 
     private fun createTestDate(id: String, start: Long, end: Long): DeepContactUserEntity {

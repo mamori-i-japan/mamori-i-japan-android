@@ -25,8 +25,6 @@ class HomeViewModel(private val traceRepository: TraceRepository,
 
     lateinit var navigator: HomeNavigator
     val currentRiskStatus = PublishSubject.create<RiskStatusType>()
-    val bleEnabled = PublishSubject.create<Boolean>()
-    val fetchTempIdError = PublishSubject.create<MIJError>()
     val statusCheckError = PublishSubject.create<MIJError>()
 
     private var job: Job = Job()
@@ -37,41 +35,6 @@ class HomeViewModel(private val traceRepository: TraceRepository,
         job.cancel()
         disposable.dispose()
         super.onCleared()
-    }
-
-    fun fetchTempIdIfNeeded() {
-        launch (Dispatchers.IO) {
-            // TempIDがない場合は取得処理
-            val tempIdCount = traceRepository.availableTempUserIdCount(System.currentTimeMillis())
-            if (tempIdCount == 0) {
-                traceRepository.updateTempIds()
-                    .subscribeOn(Schedulers.io())
-                    .subscribeBy(
-                        onSuccess = {
-                            bleEnabled.onNext(true)
-                        },
-                        onError = { e ->
-                            val reason = MIJError.mappingReason(e)
-                            if (reason == Auth) {
-                                // 認証エラーの場合はログアウト処理をする
-                                runBlocking (Dispatchers.IO) {
-                                    logoutHelper.logout()
-                                }
-                            }
-                            fetchTempIdError.onNext(
-                                when (reason) {
-                                    NetWork -> MIJError(reason, "", InView)
-                                    Auth -> MIJError(reason, "文言検討22", DialogLogout)
-                                    Parse -> MIJError(reason, "文言検討14", DialogRetry)
-                                    else -> MIJError(reason, "文言検討14", DialogRetry)
-                                })
-                        }
-                    )
-                    .addTo(disposable)
-            } else {
-                bleEnabled.onNext(true)
-            }
-        }
     }
 
     fun doStatusCheck(activity: Activity) {

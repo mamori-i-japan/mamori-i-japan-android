@@ -38,8 +38,8 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
         setupViews()
         // viewModelとのbind
         bind()
-        // TempIdのFetch
-        viewModel.fetchTempIdIfNeeded()
+        // BLE開始
+        BLEUtil.startBluetoothMonitoringService(this)
     }
 
     override fun onResume() {
@@ -94,35 +94,6 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
             .subscribeBy { status ->
                 containerView.removeAllViews()
                 containerView.addView(createContentView(status))
-            }
-            .addTo(disposable)
-
-        viewModel.bleEnabled
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy {
-                if (it) {
-                    // TODO: ここの前に権限等は確認済みなはず
-                    BLEUtil.startBluetoothMonitoringService(this)
-                }
-            }
-            .addTo(disposable)
-
-        viewModel.fetchTempIdError
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy { error ->
-                when(error.action) {
-                    InView -> {
-                        // TODO エラー画面を貼り、リトライする
-                        viewModel.fetchTempIdIfNeeded()
-                    }
-                    else -> {
-                        showErrorDialog(error) {
-                            viewModel.fetchTempIdIfNeeded()
-                        }
-                    }
-                }
             }
             .addTo(disposable)
 

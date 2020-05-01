@@ -5,6 +5,6 @@ import org.koin.dsl.module
 
 val managerModule = module {
     single <TempIdManager> {
-        TempIdManager(get(), get())
+        TempIdManager(get())
     }
 }

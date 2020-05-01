@@ -20,9 +20,14 @@ import jp.mamori_i.app.data.model.*
 import jp.mamori_i.app.data.storage.FirebaseStorageService
 import jp.mamori_i.app.data.storage.FirebaseStorageService.FileNameKey.PositivePersonList
 import jp.mamori_i.app.data.storage.LocalCacheService
+import jp.mamori_i.app.extension.convertSHA256HashString
+import jp.mamori_i.app.extension.convertToDateTimeString
+import jp.mamori_i.app.extension.convertToUnixTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.nio.charset.StandardCharsets.UTF_8
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.zip.GZIPInputStream
 
 
@@ -32,6 +37,10 @@ class TraceRepositoryImpl (private val moshi: Moshi,
                            private val localCacheService: LocalCacheService,
                            private val firebaseStorageService: FirebaseStorageService,
                            private val db: MIJDatabase): TraceRepository {
+
+    companion object {
+        private const val TEMP_ID_SPLIT_TIME = "040000"
+    }
 
     override fun fetchPositivePersons(activity: Activity): Single<List<PositivePerson>> {
         return Single.create { result ->
@@ -65,39 +74,18 @@ class TraceRepositoryImpl (private val moshi: Moshi,
         }
     }
 
-    override fun updateTempIds(): Single<Boolean> {
-        return Single.create { result ->
-            // TODO ローカルで作る
-            result.onSuccess(true)
-            /*
-            auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    task.result?.token?.let { token ->
-                        api.fetchTempIds("Bearer $token")
-                            .subscribeOn(Schedulers.io())
-                            .subscribeBy (
-                                onSuccess = { data ->
-                                    runBlocking (Dispatchers.IO) {
-                                        saveTempIds(data)
-                                    }
-                                    result.onSuccess(true)
-                                },
-                                onError = { e ->
-                                    result.onError(e)
-                                }
-                            )
-                    }?: result.onError(MIJException(Auth))
-                } else {
-                    result.onError(MIJException(Auth))
-                }
-            }*/
+    override suspend fun loadTempIds(): List<TempUserId> = db.tempUserIdDao().selectAll().map { TempUserId.create(it) }
+
+    override suspend fun getTempUserId(currentTime: Long): TempUserIdEntity {
+        val results = db.tempUserIdDao().getTempUserId(currentTime)
+        return if (results.isNotEmpty()) {
+            results.first()
+        } else {
+            val entity = createTempId(currentTime)
+            db.tempUserIdDao().insert(entity)
+            entity
         }
     }
-
-    override suspend fun loadTempIds(): List<TempUserId> = db.tempUserIdDao().selectAll().map { TempUserId.create(it) }
-    override suspend fun availableTempUserIdCount(currentTime: Long): Int = db.tempUserIdDao().availableTempUserIdCount(currentTime)
-    override suspend fun getTempUserId(currentTime: Long): List<TempUserIdEntity> = db.tempUserIdDao().getTempUserId(currentTime)
-    override suspend fun getLatestTempUserId(): TempUserIdEntity = db.tempUserIdDao().getLatestTempUserId()
 
     override suspend fun insertTraceData(entity: TraceDataEntity) = db.traceDataDao().insert(entity)
     override fun selectAllTraceData(): LiveData<List<TraceDataEntity>> = db.traceDataDao().selectAll()
@@ -154,5 +142,20 @@ class TraceRepositoryImpl (private val moshi: Moshi,
         db.tempUserIdDao().deleteAll()
         db.deepContactUserDao().deleteAll()
         db.traceDataDao().deleteAll()
+    }
+
+    private fun createTempId(currentTime: Long): TempUserIdEntity {
+        var date = currentTime.convertToDateTimeString("yyyyMMdd")
+        val zeroTime = (date + "000000").convertToUnixTime("yyyyMMddHHmmss")
+        val splitTime = (date + TEMP_ID_SPLIT_TIME).convertToUnixTime("yyyyMMddHHmmss")
+        // 00:00:00-04:00:00は前日の日付に補正
+        if (currentTime in zeroTime until splitTime) {
+            date = (zeroTime - 1 * 1000).convertToDateTimeString("yyyyMMdd")
+        }
+
+        val start = (date + TEMP_ID_SPLIT_TIME).convertToUnixTime("yyyyMMddHHmmss")
+        val end = start + 24 * 60 * 60 * 1000
+        val tempId = UUID.randomUUID().toString() + "$start + $end"
+        return TempUserIdEntity(tempId.convertSHA256HashString(), start , end)
     }
 }
