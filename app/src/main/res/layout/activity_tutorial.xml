@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,8 +10,74 @@
     <androidx.appcompat.widget.Toolbar style="@style/ToolBar" android:id="@+id/toolBar"/>
 
     <RelativeLayout
-        android:id="@+id/containerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/startButton">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:textColor="@color/colorTextGray"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:text="どんなアプリなの？"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="@color/colorTextBlack"
+                    android:textStyle="bold"
+                    android:textSize="26sp"
+                    android:maxLines="3"
+                    app:autoSizeTextType="uniform"
+                    app:autoSizeMinTextSize="20sp"
+                    app:autoSizeMaxTextSize="26sp"
+                    android:text="まもりあいJapanを\n入れているスマホ同士の\n接触を検知します"/>
+
+                <Button style="@style/LinkButtonBlue"
+                    android:id="@+id/linkButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:layout_gravity="center"
+                    android:text="安全なの？仕組みを知りたい"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="34dp"
+                    android:src="@drawable/img_tutorial"
+                    android:adjustViewBounds="true"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <Button style="@style/ExecuteButton"
+            android:id="@+id/startButton"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="次へ"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

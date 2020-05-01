@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import jp.mamori_i.app.R
 import jp.mamori_i.app.util.BLEUtil
-import kotlinx.android.synthetic.main.fragment_tutorial_1.*
+import kotlinx.android.synthetic.main.fragment_ble_permission_setting.*
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 

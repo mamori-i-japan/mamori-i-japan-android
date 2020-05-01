@@ -13,6 +13,7 @@ import jp.mamori_i.app.screen.start.SplashViewModel
 import jp.mamori_i.app.screen.profile.InputPrefectureViewModel
 import jp.mamori_i.app.screen.profile.InputJobViewModel
 import jp.mamori_i.app.screen.start.AgreementViewModel
+import jp.mamori_i.app.screen.start.TutorialViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -48,6 +49,9 @@ val viewModule = module {
     }
     viewModel {
         SplashViewModel(get(), get(), get(), get())
+    }
+    viewModel {
+        TutorialViewModel(get())
     }
     viewModel {
         TraceDataUploadViewModel(get(), get(), get())

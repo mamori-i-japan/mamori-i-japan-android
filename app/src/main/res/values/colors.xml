@@ -18,7 +18,7 @@
     <color name="colorTextBlack">#05182E</color>
     <color name="colorTextError">#FF0000</color>
     <color name="colorTextWhite">#FFFFFF</color>
-    <color name="colorTextGray">#5C5C5C</color>
+    <color name="colorTextGray">#6F707E</color>
     <color name="colorTextRed">#D3323A</color>
     <color name="colorTextDarkGray">#303030</color>
     <color name="colorTextLightGray">#7C7C7C</color>
@@ -34,8 +34,8 @@
 
     <!-- ExecuteButton -->
     <color name="colorExecuteButtonText">#FFFFFF</color>
-    <color name="colorExecuteButtonBg">#003E9B</color>
-    <color name="colorExecuteButtonSelected">#011B41</color>
+    <color name="colorExecuteButtonBg">#00A0C3</color>
+    <color name="colorExecuteButtonSelected">#035668</color>
     <color name="colorExecuteButtonBgDisabled">#D7D7D7</color>
 
     <!-- GeneralButton -->
@@ -47,7 +47,7 @@
     <!-- LinkButton -->
     <color name="colorLinkButtonTextGray">#5C5C5C</color>
     <color name="colorLinkButtonTextRed">#D3323A</color>
-    <color name="colorLinkButtonTextBlue">#007AFF</color>
+    <color name="colorLinkButtonTextBlue">#008FAE</color>
     <color name="colorLinkButtonSelected">#19000000</color>
     <color name="colorLinkButtonBg">#00FFFFFF</color>
 

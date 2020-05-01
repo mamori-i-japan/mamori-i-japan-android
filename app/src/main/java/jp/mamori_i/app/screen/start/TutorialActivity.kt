@@ -1,20 +1,23 @@
 package jp.mamori_i.app.screen.start
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import jp.mamori_i.app.R
 import jp.mamori_i.app.extension.setUpToolBar
 import jp.mamori_i.app.screen.profile.InputPrefectureActivity
 import kotlinx.android.synthetic.main.activity_tutorial.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class TutorialActivity: AppCompatActivity(),
-    TutorialNavigator {
+class TutorialActivity: AppCompatActivity(), TutorialNavigator {
+
     companion object {
         const val KEY = "jp.mamori_i.app.screen.start.TutorialActivity"
     }
+
+    private val viewModel: TutorialViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,44 +30,37 @@ class TutorialActivity: AppCompatActivity(),
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 1) {
-            if (supportFragmentManager.backStackEntryCount == 2) {
-                // 先頭に戻るときはToolBarを非表示にする
-                toolBar.visibility = View.INVISIBLE
-            }
-            supportFragmentManager.popBackStack()
-        } else {
-            // バックキー押下時はアプリをバックグラウンドに落とす
-            moveTaskToBack(true)
-        }
+        // バックキー押下時はアプリをバックグラウンドに落とす
+        moveTaskToBack(true)
     }
 
     private fun initialize() {
         setContentView(R.layout.activity_tutorial)
+        viewModel.navigator = this
     }
 
     private fun setupViews() {
-        setUpToolBar(toolBar, "") {
-            this.onBackPressed()
+        setUpToolBar(toolBar, "", "", false)
+
+        startButton.setOnClickListener {
+            viewModel.onClickStart()
         }
 
-        toolBar.visibility = View.INVISIBLE // 先頭の時は非表示
-        supportFragmentManager
-            .beginTransaction()
-            .replace(containerView.id, Tutorial1Fragment(this))
-            .addToBackStack(null)
-            .commit()
+        linkButton.setOnClickListener {
+            viewModel.onClickWebLink()
+        }
     }
 
     private fun bind() {
     }
 
-    override fun goToNext(pageType: TutorialNavigator.TutorialPageType) {
-        when(pageType) {
-            TutorialNavigator.TutorialPageType.Tutorial1 -> {
-                val intent = Intent(this, InputPrefectureActivity::class.java)
-                this.startActivity(intent)
-            }
-        }
+    override fun goToInputPrefecture() {
+        val intent = Intent(this, InputPrefectureActivity::class.java)
+        this.startActivity(intent)
+    }
+
+    override fun openWebBrowser(uri: Uri) {
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        this.startActivity(intent)
     }
 }

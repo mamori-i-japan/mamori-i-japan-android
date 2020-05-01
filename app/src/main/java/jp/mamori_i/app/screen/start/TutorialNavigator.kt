@@ -1,11 +1,9 @@
 package jp.mamori_i.app.screen.start
 
+import android.net.Uri
+
 
 interface TutorialNavigator {
-
-    enum class TutorialPageType {
-        Tutorial1
-    }
-
-    fun goToNext(pageType: TutorialPageType)
+    fun goToInputPrefecture()
+    fun openWebBrowser(uri: Uri)
 }
