@@ -3,29 +3,31 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBgWhite">
+    android:background="@color/colorBgGray">
 
     <androidx.appcompat.widget.Toolbar style="@style/ToolBar" android:id="@+id/toolBar"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="55dp">
+        android:layout_height="56dp"
+        android:layout_marginTop="24dp"
+        android:background="@color/colorBgWhite">
 
         <TextView
             android:id="@+id/prefectureKeyTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_centerVertical="true"
-            android:textSize="15sp"
-            android:textColor="@color/colorTextBlack"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="26dp"
+            android:gravity="center_vertical"
+            android:textSize="17sp"
+            android:textColor="@color/colorTextBlue"
             android:text="都道府県"/>
 
         <View
             android:layout_width="wrap_content"
             android:layout_height="0.8dp"
             android:layout_alignStart="@+id/prefectureKeyTextView"
-            android:layout_alignParentEnd="true"
+            android:layout_alignEnd="@+id/prefectureKeyTextView"
             android:layout_alignParentBottom="true"
             android:background="@color/colorListSeparator" />
 
@@ -34,9 +36,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toStartOf="@+id/prefectureArrowImageView"
-            android:layout_marginEnd="32dp"
+            android:layout_marginEnd="24dp"
             android:layout_centerVertical="true"
-            android:textSize="15sp"
+            android:textSize="17sp"
             android:textColor="@color/colorTextBlack"/>
 
         <ImageView
@@ -45,11 +47,11 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="20dp"
             android:src="@drawable/ic_arrow_next_gray"/>
 
         <Button style="@style/TransparentButton"
-            android:id="@+id/prefectureButton"
+            android:id="@+id/prefectureSelectButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
@@ -57,49 +59,59 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="55dp">
+        android:layout_height="56dp"
+        android:background="@color/colorBgWhite">
 
         <TextView
-            android:id="@+id/jobKeyTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_centerVertical="true"
-            android:textSize="15sp"
-            android:textColor="@color/colorTextBlack"
-            android:text="職業"/>
+            android:id="@+id/organizationCodeKeyTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="26dp"
+            android:gravity="center_vertical"
+            android:textSize="17sp"
+            android:textColor="@color/colorTextBlue"
+            android:text="組織コード"/>
 
         <View
             android:layout_width="wrap_content"
             android:layout_height="0.8dp"
-            android:layout_alignStart="@+id/jobKeyTextView"
-            android:layout_alignParentEnd="true"
+            android:layout_alignStart="@+id/organizationCodeKeyTextView"
+            android:layout_alignEnd="@+id/organizationCodeKeyTextView"
             android:layout_alignParentBottom="true"
             android:background="@color/colorListSeparator" />
 
         <TextView
-            android:id="@+id/jobValueTextView"
+            android:id="@+id/organizationCodeValueTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/jobArrowImageView"
-            android:layout_marginEnd="32dp"
+            android:layout_toStartOf="@+id/organizationCodeArrowImageView"
+            android:layout_marginEnd="24dp"
             android:layout_centerVertical="true"
-            android:textSize="15sp"
+            android:textSize="17sp"
             android:textColor="@color/colorTextBlack"/>
 
         <ImageView
-            android:id="@+id/jobArrowImageView"
+            android:id="@+id/organizationCodeArrowImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="20dp"
             android:src="@drawable/ic_arrow_next_gray"/>
 
         <Button style="@style/TransparentButton"
-            android:id="@+id/jobButton"
+            android:id="@+id/organizationCodeSelectButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
     </RelativeLayout>
+
+    <Button style="@style/GeneralButton"
+        android:id="@+id/organizationClearButton"
+        android:layout_width="match_parent"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
+        android:text="組織コードをクリアする"/>
+
 </LinearLayout>

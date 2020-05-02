@@ -62,7 +62,7 @@ class MenuViewModel(private val profileRepository: ProfileRepository,
             navigator.goToSetting()
         })
 
-        if (!profile?.job.isNullOrEmpty()) {
+        if (!profile?.organizationCode.isNullOrEmpty()) {
             items.add(MenuListItem(DataUpload, "データのアップロード") {
                 navigator.goToTraceDataUpload()
             })

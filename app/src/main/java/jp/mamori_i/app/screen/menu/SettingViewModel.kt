@@ -26,6 +26,7 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
     lateinit var navigator: SettingNavigator
     val profile = PublishSubject.create<Profile>()
     val fetchError = PublishSubject.create<MIJError>()
+    val clearError = PublishSubject.create<MIJError>()
 
     private var _profile: Profile? = null
 
@@ -35,14 +36,17 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
     }
 
     fun fetchProfile(activity: Activity) {
+        navigator.showProgress()
         profileRepository.fetchProfile(activity)
             .subscribeOn(Schedulers.io())
             .subscribeBy(
                 onSuccess = {
+                    navigator.hideProgress()
                     _profile = it
                     profile.onNext(it)
                 },
                 onError = { e ->
+                    navigator.hideProgress()
                     val reason = MIJError.mappingReason(e)
                     if (reason == Auth) {
                         // 認証エラーの場合はログアウト処理をする
@@ -67,10 +71,41 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
         }
     }
 
-    fun onClickJob() {
+    fun onClickOrganization() {
         _profile?.let {
-            navigator.goToInputJob(InputJobTransitionEntity(it.job))
+            navigator.goToInputJob(InputJobTransitionEntity(it.organizationCode))
         }
+    }
+
+    fun clearOrganization() {
+        navigator.showProgress()
+        navigator.hideProgress()
+        navigator.clearFinishWithCompleteMessage("完了") // TODO
+        /*
+        profileRepository.fetchProfile(activity)
+            .subscribeOn(Schedulers.io())
+            .subscribeBy(
+                onSuccess = {
+                    _profile = it
+                    profile.onNext(it)
+                },
+                onError = { e ->
+                    val reason = MIJError.mappingReason(e)
+                    if (reason == Auth) {
+                        // 認証エラーの場合はログアウト処理をする
+                        runBlocking (Dispatchers.IO) {
+                            logoutHelper.logout()
+                        }
+                    }
+                    fetchError.onNext(
+                        when (reason) {
+                            NetWork -> MIJError(reason, "文言検討20", DialogBack)
+                            Auth -> MIJError(reason, "文言検討22", DialogLogout)
+                            Parse -> MIJError(reason, "文言検討21", DialogBack)
+                            else -> MIJError(reason, "文言検討21", DialogBack)
+                        })
+                }
+            ).addTo(disposable)*/
     }
 
 }

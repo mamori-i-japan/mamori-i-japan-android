@@ -2,6 +2,7 @@ package jp.mamori_i.app.screen.menu
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -14,6 +15,7 @@ import jp.mamori_i.app.screen.profile.InputPrefectureActivity
 import jp.mamori_i.app.screen.profile.InputPrefectureTransitionEntity
 import jp.mamori_i.app.screen.profile.InputJobActivity
 import jp.mamori_i.app.screen.profile.InputJobTransitionEntity
+import jp.mamori_i.app.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_menu.toolBar
 import kotlinx.android.synthetic.main.activity_setting.*
 import org.koin.android.ext.android.inject
@@ -58,12 +60,16 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
         // ツールバー
         setUpToolBar(toolBar, "設定")
 
-        prefectureButton.setOnClickListener {
+        prefectureSelectButton.setOnClickListener {
             viewModel.onClickPrefecture()
         }
 
-        jobButton.setOnClickListener {
-            viewModel.onClickJob()
+        organizationCodeSelectButton.setOnClickListener {
+            viewModel.onClickOrganization()
+        }
+
+        organizationClearButton.setOnClickListener {
+            viewModel.clearOrganization()
         }
     }
 
@@ -73,7 +79,12 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { profile ->
                 prefectureValueTextView.text = profile.prefectureType().description()
-                jobValueTextView.text = if (profile.job.isNullOrEmpty()) "未入力" else profile.job
+                organizationCodeValueTextView.text = if (profile.organizationCode.isEmpty()) "未入力" else profile.organizationCode
+                if (profile.organizationCode.isNotEmpty()) {
+                    organizationClearButton.visibility = View.VISIBLE
+                } else {
+                    organizationClearButton.visibility = View.GONE
+                }
             }.addTo(disposable)
 
         viewModel.fetchError
@@ -82,6 +93,14 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
             .subscribe { error ->
                 showErrorDialog(error)
             }.addTo(disposable)
+    }
+
+    override fun showProgress() {
+        ProgressHUD.show(this)
+    }
+
+    override fun hideProgress() {
+        ProgressHUD.hide()
     }
 
     override fun goToInputPrefecture(transitionEntity: InputPrefectureTransitionEntity) {
@@ -94,5 +113,9 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
         val intent = Intent(this, InputJobActivity::class.java)
         intent.putExtra(InputJobActivity.KEY, transitionEntity)
         this.startActivity(intent)
+    }
+
+    override fun clearFinishWithCompleteMessage(message: String) {
+        viewModel.fetchProfile(this)
     }
 }
