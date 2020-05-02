@@ -3,11 +3,18 @@ package jp.mamori_i.app.screen.menu
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
 import jp.mamori_i.app.extension.setUpToolBar
+import jp.mamori_i.app.extension.showErrorDialog
 import jp.mamori_i.app.screen.start.SplashActivity
+import jp.mamori_i.app.screen.trace.TraceDataUploadActivity
 import kotlinx.android.synthetic.main.activity_menu.*
+import kotlinx.android.synthetic.main.activity_menu.toolBar
+import kotlinx.android.synthetic.main.activity_setting.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -30,6 +37,11 @@ class MenuActivity: AppCompatActivity(), MenuNavigator {
         bind()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchProfile(this)
+    }
+
     override fun onDestroy() {
         disposable.dispose()
         super.onDestroy()
@@ -42,34 +54,35 @@ class MenuActivity: AppCompatActivity(), MenuNavigator {
 
     private fun setupViews() {
         // ツールバー
-        setUpToolBar(toolBar, "")
-
-        settingButton.setOnClickListener {
-            viewModel.onClickSetting()
-        }
-
-        aboutButton.setOnClickListener {
-            viewModel.onClickAbout()
-        }
-
-        licenseButton.setOnClickListener {
-            viewModel.onClickLicense()
-        }
-
-        // TODO デバッグ用
-        logoutButton.setOnClickListener {
-            viewModel.onClickLogout()
-        }
-        restartButton.setOnClickListener {
-            viewModel.onClickRestart()
-        }
+        setUpToolBar(toolBar, "メニュー")
     }
 
     private fun bind() {
+        viewModel.menuItems
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { menuItems ->
+                containerView.removeAllViews()
+                menuItems.forEach {
+                    containerView.addView(MenuListItemView(this, it))
+                }
+            }.addTo(disposable)
+
+        viewModel.fetchError
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { error ->
+                showErrorDialog(error)
+            }.addTo(disposable)
     }
 
     override fun goToSetting() {
         val intent = Intent(this, SettingActivity::class.java)
+        this.startActivity(intent)
+    }
+
+    override fun goToTraceDataUpload() {
+        val intent = Intent(this, TraceDataUploadActivity::class.java)
         this.startActivity(intent)
     }
 

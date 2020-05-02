@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import jp.mamori_i.app.R
 import kotlinx.android.synthetic.main.view_home_content_usual.view.*
-import kotlinx.android.synthetic.main.view_home_risk_low.view.shareButton
 
 class HomeUsualContentView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : LinearLayout(context, attrs, defStyle) {
 

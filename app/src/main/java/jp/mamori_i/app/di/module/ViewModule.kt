@@ -33,7 +33,7 @@ val viewModule = module {
         TestBLEViewModel(get())
     }
     viewModel {
-        MenuViewModel(get())
+        MenuViewModel(get(), get(), get())
     }
     viewModel {
         SettingViewModel(get(), get(), get())

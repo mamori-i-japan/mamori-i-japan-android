@@ -5,13 +5,8 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#00A0C3</color>
 
-    <!-- 状態色 -->
-    <color name="colorRiskLow">#322F80ED</color>
-    <color name="colorRiskMiddle">#FFE0B0</color>
-    <color name="colorRiskHigh">#FFB0B0</color>
-
     <!-- Bg -->
-    <color name="colorBgGray">#EFEFF4</color>
+    <color name="colorBgGray">#F2F5F6</color>
     <color name="colorBgWhite">#FFFFFF</color>
 
     <!-- Text -->
@@ -20,17 +15,13 @@
     <color name="colorTextWhite">#FFFFFF</color>
     <color name="colorTextGray">#6F707E</color>
     <color name="colorTextRed">#D3323A</color>
+    <color name="colorTextBlue">#00A0C3</color>
     <color name="colorTextDarkGray">#303030</color>
     <color name="colorTextLightGray">#7C7C7C</color>
 
     <!-- EditText -->
     <color name="colorEditTextHint">#C8C8C8</color>
     <color name="colorEditTextError">#FF0000</color>
-
-    <!-- CodeInputText -->
-    <color name="colorCodeInputFocus">#109AC5</color>
-    <color name="colorCodeInputUnFocus">#B8B8C0</color>
-    <color name="colorCodeInputError">#FF0000</color>
 
     <!-- ExecuteButton -->
     <color name="colorExecuteButtonText">#FFFFFF</color>
@@ -63,7 +54,7 @@
     <!-- List -->
     <color name="colorListItemBg">#FFFFFF</color>
     <color name="colorListItemSelected">#19000000</color>
-    <color name="colorListSeparator">#D8D8D8</color>
+    <color name="colorListSeparator">#F2F5F6</color>
 
     <!-- TODO: 持ち込みなので不要なら削除 -->
     <color name="notification_tint">#499dd6</color>
