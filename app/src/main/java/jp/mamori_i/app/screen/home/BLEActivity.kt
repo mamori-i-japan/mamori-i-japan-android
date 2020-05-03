@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import jp.mamori_i.app.R
-import jp.mamori_i.app.data.repository.session.SessionRepository
 import jp.mamori_i.app.data.repository.trase.TraceRepository
 import jp.mamori_i.app.extension.convertToDateTimeString
 import jp.mamori_i.app.extension.setUpToolBar
@@ -42,7 +41,6 @@ class BLEActivity : AppCompatActivity(), CoroutineScope {
         private const val REQUEST_ENABLE_BT = 333
     }
 
-    private val sessionRepository: SessionRepository by inject()
     private val traceRepository: TraceRepository by inject()
     private val tempIdManager: TempIdManager by inject()
 
@@ -124,15 +122,16 @@ class BLEActivity : AppCompatActivity(), CoroutineScope {
     private fun bind() {
         traceRepository.selectAllTraceData().observe(this@BLEActivity, Observer {
             contactList.clear()
-            contactList.addAll(it.map { entity ->
-                ContactModel(
-                    BLEType.CENTRAL,
-                    entity.tempId,
-                    BLEUtil.getDate(entity.timestamp),
-                    entity.rssi,
-                    entity.txPower
-                )
-            })
+            contactList.addAll(
+                it.map { entity ->
+                    ContactModel(
+                        BLEType.CENTRAL,
+                        entity.tempId,
+                        BLEUtil.getDate(entity.timestamp),
+                        entity.rssi,
+                        entity.txPower
+                    )
+                }.reversed())
             contact_list.adapter?.notifyDataSetChanged()
         })
     }
@@ -168,7 +167,6 @@ class BLEActivity : AppCompatActivity(), CoroutineScope {
             }
             return true
         } ?: run {
-            // TODO: ここどうする？そもそもBLEが使えない機種の可能性がある
             return false
         }
     }
@@ -193,9 +191,9 @@ class ContactViewAdapter(private val context: Context, private val contactList: 
     class ContactViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val typeTextView: TextView = view.typeTextView
         val connectedIDTextView: TextView = view.connectedIDTextView
-        val registDateTextView: TextView = view.registDateTextView
+        val registerDateTextView: TextView = view.regisertDateTextView
         val rssiTextView: TextView = view.rssiTextView
-        val txPoweTextView: TextView = view.txPoweTextViewr
+        val txPowerTextView: TextView = view.txPoweTextViewr
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder = ContactViewHolder(LayoutInflater.from(context).inflate(R.layout.ble_contact_row_item, parent, false))
@@ -206,16 +204,16 @@ class ContactViewAdapter(private val context: Context, private val contactList: 
         val model = contactList[position]
         holder.typeTextView.text = model.type.toString()
         holder.connectedIDTextView.text = model.connectedID
-        holder.registDateTextView.text = model.registDate
-        holder.rssiTextView.text = "RSSI: ${model.rssi.toString()}"
-        holder.txPoweTextView.text = "TX Power: ${model.txPower.toString()}"
+        holder.registerDateTextView.text = model.registerDate
+        holder.rssiTextView.text = "RSSI: ${model.rssi}"
+        holder.txPowerTextView.text = "TX Power: ${model.txPower.toString()}"
     }
 }
 
 data class ContactModel(
     val type: BLEType,
     val connectedID: String,
-    val registDate: String,
+    val registerDate: String,
     val rssi: Int,
     val txPower: Int?) {
 }
