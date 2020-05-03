@@ -97,10 +97,10 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
                     }
                     clearError.onNext(
                         when (reason) {
-                            NetWork -> MIJError(reason, "文言検討20", DialogBack)
+                            NetWork -> MIJError(reason, "文言検討20", DialogCloseOnly)
                             Auth -> MIJError(reason, "文言検討22", DialogLogout)
-                            Parse -> MIJError(reason, "文言検討21", DialogBack)
-                            else -> MIJError(reason, "文言検討21", DialogBack)
+                            Parse -> MIJError(reason, "文言検討21", DialogCloseOnly)
+                            else -> MIJError(reason, "文言検討21", DialogCloseOnly)
                         })
                 }
             ).addTo(disposable)

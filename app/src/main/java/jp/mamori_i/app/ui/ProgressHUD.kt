@@ -24,6 +24,7 @@ class ProgressHUD {
             hud = Dialog(context).apply {
                 requestWindowFeature(Window.FEATURE_NO_TITLE)
                 setContentView(R.layout.dialog_progress_hud)
+                setCancelable(false)
                 show()
             }
             owner = context

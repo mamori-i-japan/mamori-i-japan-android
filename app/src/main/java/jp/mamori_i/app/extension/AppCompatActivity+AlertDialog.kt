@@ -33,6 +33,14 @@ fun AppCompatActivity.showErrorDialog(error: MIJError,
                 else -> {}
             }
         }
+        .setCancelable(
+            when(error.action) {
+                DialogLogout,
+                DialogBack,
+                DialogRetry -> false
+                else -> true
+            }
+        )
         .show()
 }
 
@@ -44,5 +52,6 @@ fun AppCompatActivity.showSimpleMessageAlert(message: String,
         .setPositiveButton("OK") { _, _ ->
             completion?.invoke()
         }
+        .setCancelable(completion == null)
         .show()
 }
