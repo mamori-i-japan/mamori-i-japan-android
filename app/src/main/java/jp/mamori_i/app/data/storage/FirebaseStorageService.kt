@@ -11,5 +11,5 @@ interface FirebaseStorageService {
         AppStatus("app_status.json")
     }
 
-    fun loadDataIfNeeded(fileName: FileNameKey, generation: String, activity: Activity): Single<FirebaseStorageData>
+    fun loadDataIfNeeded(fileName: FileNameKey, subDirectory: String?, generation: String, activity: Activity): Single<FirebaseStorageData>
 }

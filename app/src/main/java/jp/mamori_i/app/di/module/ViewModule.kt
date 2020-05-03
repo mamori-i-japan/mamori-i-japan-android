@@ -27,7 +27,7 @@ val viewModule = module {
 
     /* ViewModels */
     viewModel {
-        HomeViewModel(get(), get(), get())
+        HomeViewModel(get(), get(), get(), get(), get())
     }
     viewModel {
         TestBLEViewModel(get())

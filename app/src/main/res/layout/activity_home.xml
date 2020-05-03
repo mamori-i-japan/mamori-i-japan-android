@@ -18,7 +18,6 @@
                 android:id="@+id/backgroundImageView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/img_home_bg_usual"
                 android:adjustViewBounds="true"/>
 
             <RelativeLayout
@@ -66,21 +65,50 @@
                     android:text="25"
                     android:layout_centerVertical="true"/>
 
+                <Button style="@style/GeneralButton"
+                    android:id="@+id/notifyButton"
+                    android:layout_width="60dp"
+                    android:layout_height="32dp"
+                    android:layout_toEndOf="@+id/semiUsualButton"
+                    android:layout_marginStart="16dp"
+                    android:textSize="15sp"
+                    android:text="notify"
+                    android:layout_centerVertical="true"/>
+
             </RelativeLayout>
 
-            <jp.mamori_i.app.screen.home.HomeCardView
-                android:id="@+id/cardView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/navigationBarView"/>
-
             <LinearLayout
-                android:id="@+id/contentContainerView"
-                android:layout_below="@+id/cardView"
+                android:id="@+id/mainContentView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="vertical"/>
+                android:layout_below="@+id/navigationBarView"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <jp.mamori_i.app.screen.home.HomeCardView
+                    android:id="@+id/cardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"/>
+
+                <jp.mamori_i.app.screen.home.HomeNotificationView
+                    android:id="@+id/notificationView"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:id="@+id/contentContainerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical"/>
+
+            </LinearLayout>
 
         </RelativeLayout>
 

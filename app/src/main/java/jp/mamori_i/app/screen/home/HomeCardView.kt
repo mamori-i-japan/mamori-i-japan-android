@@ -6,8 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.RelativeLayout
 import jp.mamori_i.app.R
-import jp.mamori_i.app.data.model.UserStatus
-import jp.mamori_i.app.data.model.UserStatus.UserStatusType.*
+import jp.mamori_i.app.screen.home.HomeStatus.HomeStatusType.*
 import kotlinx.android.synthetic.main.view_home_card.view.*
 
 class HomeCardView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : RelativeLayout(context, attrs, defStyle) {
@@ -25,11 +24,11 @@ class HomeCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
         }
     }
 
-    fun updateContent(status: UserStatus) {
+    fun updateContent(status: HomeStatus) {
         // TODO メッセージ
         // TODO 種別増えたらさらにサブビューにして切り替える
         when (status.statusType) {
-            Usual -> {
+            HomeStatus.HomeStatusType.Usual -> {
                 mainMessageTextView.text = "一緒に日本を守ってくれて\nありがとうございます"
                 subMessageTextView.text = "引き続き接触を控えましょう"
                 subMessageTextView.visibility = View.VISIBLE

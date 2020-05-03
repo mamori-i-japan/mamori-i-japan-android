@@ -18,7 +18,7 @@ class ConfigRepositoryImpl(private val moshi: Moshi,
     override fun fetchAppStatus(activity: Activity): Single<AndroidAppStatus> {
         return Single.create { result ->
             // データを取得
-            firebaseStorageService.loadDataIfNeeded(FirebaseStorageService.FileNameKey.AppStatus, localCacheService.appStatusGeneration?:"0", activity).subscribeBy (
+            firebaseStorageService.loadDataIfNeeded(FirebaseStorageService.FileNameKey.AppStatus, null, localCacheService.appStatusGeneration?:"0", activity).subscribeBy (
                 onSuccess = { data ->
                     // データの取得に成功
                     data.data?.let {

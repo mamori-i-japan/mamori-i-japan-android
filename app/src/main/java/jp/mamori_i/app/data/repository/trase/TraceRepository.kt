@@ -13,6 +13,8 @@ import jp.mamori_i.app.data.model.TempUserId
 interface TraceRepository {
     // 陽性者リストの取得
     fun fetchPositivePersons(activity: Activity): Single<List<PositivePerson>>
+    // 組織コード別陽性者リストの取得
+    fun fetchPositivePersons(organizationCode: String, activity: Activity): Single<List<PositivePerson>>
 
     // TempIdのロード
     suspend fun loadTempIds(): List<TempUserId>
@@ -32,6 +34,8 @@ interface TraceRepository {
     fun selectAllLiveDataDeepContactUsers(): LiveData<List<DeepContactUserEntity>>
     // 濃厚接触者の全件取得
     suspend fun selectAllDeepContactUsers(): List<DeepContactUserEntity>
+    // 昨日の濃厚接触者数の取得
+    suspend fun countDeepContactUsersAtYesterday(): Int
 
     // 濃厚接触者の取得
     suspend fun selectDeepContactUsers(ids: List<String>): List<DeepContactUserEntity>

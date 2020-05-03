@@ -23,10 +23,7 @@ import jp.mamori_i.app.data.storage.LocalCacheService
 import jp.mamori_i.app.extension.convertSHA256HashString
 import jp.mamori_i.app.extension.convertToDateTimeString
 import jp.mamori_i.app.extension.convertToUnixTime
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import java.nio.charset.StandardCharsets.UTF_8
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.zip.GZIPInputStream
 
@@ -45,7 +42,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
     override fun fetchPositivePersons(activity: Activity): Single<List<PositivePerson>> {
         return Single.create { result ->
             // データを取得
-            firebaseStorageService.loadDataIfNeeded(PositivePersonList, localCacheService.positivePersonListGeneration?:"0", activity)
+            firebaseStorageService.loadDataIfNeeded(PositivePersonList, null, localCacheService.positivePersonListGeneration?:"0", activity)
                 .subscribeOn(Schedulers.io())
                 .subscribeBy (
                     onSuccess = { data ->
@@ -74,6 +71,38 @@ class TraceRepositoryImpl (private val moshi: Moshi,
         }
     }
 
+    override fun fetchPositivePersons(organizationCode: String, activity: Activity): Single<List<PositivePerson>> {
+        return Single.create { result ->
+            // データを取得
+            firebaseStorageService.loadDataIfNeeded(PositivePersonList, organizationCode, localCacheService.positivePersonListGeneration(organizationCode)?:"0", activity)
+                .subscribeOn(Schedulers.io())
+                .subscribeBy (
+                    onSuccess = { data ->
+                        // データの取得に成功
+                        data.data?.let { listData ->
+                            // 取得データあり = 更新する
+                            val dataStr = GZIPInputStream(listData.inputStream()).bufferedReader(UTF_8).use { it.readText() }
+                            try {
+                                // パースする
+                                moshi.adapter(PositivePersons::class.java).fromJson(dataStr)?.let { parseResult ->
+                                    // パース成功
+                                    localCacheService.setPositivePersonList(organizationCode, parseResult.data)
+                                    localCacheService.setPositivePersonListGeneration(organizationCode, data.generation)
+                                    result.onSuccess(parseResult.data)
+                                }?: result.onError( MIJException(Parse)) // データなしもパース失敗扱いとする
+                            } catch (e: Throwable) {
+                                // パース失敗
+                                result.onError(e)
+                            }
+                        }?: result.onSuccess(localCacheService.positivePersonList(organizationCode)) // 取得データなし = キャッシュのやつを使用する
+                    },
+                    onError = { e ->
+                        result.onError(e)
+                    }
+                )
+        }
+    }
+
     override suspend fun loadTempIds(): List<TempUserId> = db.tempUserIdDao().selectAll().map { TempUserId.create(it) }
 
     override suspend fun getTempUserId(currentTime: Long): TempUserIdEntity {
@@ -94,6 +123,10 @@ class TraceRepositoryImpl (private val moshi: Moshi,
 
     override fun selectAllLiveDataDeepContactUsers(): LiveData<List<DeepContactUserEntity>> = db.deepContactUserDao().selectAllLiveData()
     override suspend fun selectAllDeepContactUsers(): List<DeepContactUserEntity> = db.deepContactUserDao().selectAll()
+    override suspend fun countDeepContactUsersAtYesterday(): Int {
+        // TODO
+        return 334
+    }
 
     override suspend fun selectDeepContactUsers(ids: List<String>): List<DeepContactUserEntity> = db.deepContactUserDao().select(ids)
 

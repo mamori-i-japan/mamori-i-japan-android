@@ -3,23 +3,42 @@ package jp.mamori_i.app.screen.home
 import android.app.Activity
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import jp.mamori_i.app.data.model.UserStatus
-import jp.mamori_i.app.screen.common.MIJError
+import jp.mamori_i.app.data.model.AndroidAppStatus
+import jp.mamori_i.app.data.repository.config.ConfigRepository
+import jp.mamori_i.app.data.repository.profile.ProfileRepository
 import jp.mamori_i.app.data.repository.trase.TraceRepository
 import jp.mamori_i.app.screen.common.LogoutHelper
+import jp.mamori_i.app.screen.common.MIJError
+import jp.mamori_i.app.screen.home.HomeStatus.HomeStatusType.*
+import jp.mamori_i.app.util.AnalysisUtil
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-
 class HomeViewModel(private val traceRepository: TraceRepository,
+                    private val configRepository: ConfigRepository,
+                    private val profileRepository: ProfileRepository,
                     private val logoutHelper: LogoutHelper,
                     private val disposable: CompositeDisposable): ViewModel(), CoroutineScope {
 
+    companion object {
+        // TODO: BuildConfigには出す？
+        private const val BORDER_TIME = (3 * 60 * 1000).toLong()
+        private const val CONTINUATION_INTERVAL =  (3 * 60 * 1000).toLong()
+        private const val DENSITY_INTERVAL =  (5 * 60 * 1000).toLong()
+    }
+
     lateinit var navigator: HomeNavigator
-    val userStatus = PublishSubject.create<UserStatus>()
-    val statusCheckError = PublishSubject.create<MIJError>()
+    val homeStatus = PublishSubject.create<HomeStatus>()
+    val notification = PublishSubject.create<String>()
+    val error = PublishSubject.create<MIJError>()
 
     private var job: Job = Job()
     override val coroutineContext: CoroutineContext
@@ -31,13 +50,19 @@ class HomeViewModel(private val traceRepository: TraceRepository,
         super.onCleared()
     }
 
-    fun doAppStatusCheck(activity: Activity) {
-        // TODO
-    }
-
-    fun doUserStatusCheck(activity: Activity) {
-        // TODO
-        userStatus.onNext(UserStatus(UserStatus.UserStatusType.Usual, 2))
+    fun onResume(activity: Activity) {
+        // アプリステータスチェック
+        doAppStatusCheck(activity)
+        // 濃厚接触情報の抽出
+        doAnalyzeDeepContact()
+            .subscribeOn(Schedulers.io())
+            .subscribeBy {
+                // ステータスチェック
+                doHomeStatusCheck()
+                // 組織コード別のお知らせを取得する
+                fetchOrganizationNotification(activity)
+            }
+            .addTo(disposable)
     }
 
     fun onClickMenuButton() {
@@ -46,6 +71,10 @@ class HomeViewModel(private val traceRepository: TraceRepository,
 
     fun onClickDeepContactCount() {
         navigator.goToTraceHistory()
+    }
+
+    fun onClickNotification() {
+        navigator.goToNotification()
     }
 
     fun onClickStayHomeButton() {
@@ -68,49 +97,132 @@ class HomeViewModel(private val traceRepository: TraceRepository,
         navigator.openShareComponent("(TODO)シェアタイトル", "(TODO)シェアメッセージ")
     }
 
-        /*
-        traceRepository.fetchPositivePersons(activity)
+    private fun doAppStatusCheck(activity: Activity) {
+        // 設定を取得
+        configRepository.fetchAppStatus(activity)
             .subscribeOn(Schedulers.io())
             .subscribeBy(
-                onSuccess = { positivePersonList ->
-                    launch (Dispatchers.IO) {
-                        // 陽性チェック(危険度高)
-                        // DBに保存されている自身のTempIDリストを取得し、陽性判定
-                        if (AnalysisUtil.analysisPositive(positivePersonList, traceRepository.loadTempIds())) {
-                                currentRiskStatus.onNext(RiskStatusType.High)
-                                return@launch
+                onSuccess = { appStatus ->
+                    when {
+                        appStatus.status() == AndroidAppStatus.Status.Maintenance -> {
+                            // メンテナンス
+                            navigator.showMaintenanceDialog("メンテナンス中です") // TODO メッセージ
+                            return@subscribeBy
                         }
-
-                        // 濃厚接触チェック(危険度中)
-                        // DBに保存されている濃厚接触リストを取得し、陽性者との濃厚接触判定
-                        val deepContacts = traceRepository.selectDeepContactUsers(positivePersonList.map { it.tempId })
-                        AnalysisUtil.analysisDeepContactWithPositivePerson(positivePersonList, deepContacts)?.let {
-                            // TODO 最後の濃厚接触データを使って表示文言を生成し、連携する
-                            Log.d("hoge", it.tempId)
-                            currentRiskStatus.onNext(RiskStatusType.Middle)
-                            return@launch
+                        appStatus.status() == AndroidAppStatus.Status.ForceUpdate -> {
+                            // 強制アップデート
+                            navigator.showForceUpdateDialog("最新のバージョンがあります。", appStatus.storeUrl.toUri()) // TODO メッセージ
+                            return@subscribeBy
                         }
-
-                        // ここまで該当なし(危険度小)
-                        currentRiskStatus.onNext(RiskStatusType.Low)
                     }
                 },
+                onError = {
+                    // エラーは無視する
+                }
+            ).addTo(disposable)
+    }
 
+    private fun doAnalyzeDeepContact(): Single<Boolean> {
+        return Single.create {
+            viewModelScope.launch {
+                val tempIds = traceRepository.selectTraceTempIdByTempIdGroup()
+                val results = tempIds.map { tempId ->
+                    val targetList = traceRepository.selectTraceData(tempId)
+                    // NOTE ここでPairにしてTempIDと紐づけておかないと
+                    // 濃厚接触0件の場合に後にtempIDがわからなくなる
+                    Pair(
+                        AnalysisUtil.analysisDeepContacts(
+                            targetList,
+                            System.currentTimeMillis() - BORDER_TIME,
+                            CONTINUATION_INTERVAL,
+                            DENSITY_INTERVAL
+                        ),
+                        tempId
+                    )
+                }
+
+                results.forEach { (result, tempId) ->
+                    result?.let {
+                        traceRepository.insertDeepContactUsers(it, tempId)
+                    }
+                }
+                it.onSuccess(true)
+            }
+        }
+    }
+
+    private fun doHomeStatusCheck() {
+        launch(Dispatchers.IO) {
+            // まず昨日の濃厚接触数を取得
+            when (val count = traceRepository.countDeepContactUsersAtYesterday()) {
+                in 0 until 25 -> {
+                    homeStatus.onNext(HomeStatus(Usual, count))
+                }
+                else -> {
+                    homeStatus.onNext(HomeStatus(SemiUsual, count))
+                }
+            }
+        }
+    }
+
+    private fun fetchOrganizationNotification(activity: Activity) {
+        // まずプロフィールを取得
+        profileRepository.fetchProfile(activity)
+            .subscribeOn(Schedulers.io())
+            .subscribeBy(
+                onSuccess = { profile ->
+                    if (profile.organizationCode.isNotEmpty()) {
+                        // 組織コード別陽性者リスト取得
+                        traceRepository.fetchPositivePersons(profile.organizationCode, activity)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeBy(
+                                onSuccess = { positivePersons ->
+                                    // DBの濃厚接触リストを取得し、突合させる
+                                    launch(Dispatchers.IO) {
+                                        val deepContacts = traceRepository.selectAllDeepContactUsers()
+                                        AnalysisUtil.analysisDeepContactWithPositivePerson(positivePersons, deepContacts)?.let { _ ->
+                                            // 該当者がいればお知らせを表示する
+                                            // TODO お知らせの内容
+                                            notification.onNext("(TODO)お知らせの内容")
+                                        }?: notification.onNext("") // 該当者がいない場合はお知らせクリア
+                                    }
+                                },
+                                onError = { e ->
+                                    notification.onNext("") // エラー発生時はお知らせクリア
+                                    val reason = MIJError.mappingReason(e)
+                                    if (reason == MIJError.Reason.Auth) {
+                                        // 認証エラーの場合はログアウト処理をする
+                                        runBlocking (Dispatchers.IO) {
+                                            logoutHelper.logout()
+                                        }
+                                        // 認証エラーの場合のみ通知し、それ以外は無視する
+                                        error.onNext(MIJError(reason, "文言検討22",
+                                            MIJError.Action.DialogLogout
+                                        ))
+                                    }
+                                }
+                            ).addTo(disposable)
+                    } else {
+                        // 職業コードなしの場合はお知らせクリア
+                        notification.onNext("")
+                    }
+                },
                 onError = { e ->
+                    notification.onNext("") // エラー発生時はお知らせクリア
                     val reason = MIJError.mappingReason(e)
-                    if (reason == Auth) {
+                    if (reason == MIJError.Reason.Auth) {
                         // 認証エラーの場合はログアウト処理をする
                         runBlocking (Dispatchers.IO) {
                             logoutHelper.logout()
                         }
+                        // 認証エラーの場合のみ通知し、それ以外は無視する
+                        error.onNext(MIJError(reason, "文言検討22",
+                            MIJError.Action.DialogLogout
+                        ))
                     }
-                    statusCheckError.onNext(
-                        when (reason) {
-                            NetWork -> MIJError(reason, "", InView)
-                            Auth -> MIJError(reason, "文言検討22", DialogLogout)
-                            Parse -> MIJError(reason, "文言検討15", DialogRetry)
-                            else -> MIJError(reason, "文言検討15", DialogRetry)
-                        })
                 }
-            ).addTo(disposable)*/
+            ).addTo(disposable)
+
+    }
 }

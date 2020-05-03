@@ -3,6 +3,7 @@ package jp.mamori_i.app.data.storage
 import android.app.Activity
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
+import com.google.firebase.storage.StorageReference
 import io.reactivex.Single
 import jp.mamori_i.app.data.exception.MIJException
 import jp.mamori_i.app.data.exception.MIJException.Reason.*
@@ -11,8 +12,10 @@ import jp.mamori_i.app.data.model.FirebaseStorageData
 class FirebaseStorageServiceImpl(private val storage: FirebaseStorage):
     FirebaseStorageService {
 
-    override fun loadDataIfNeeded(fileName: FirebaseStorageService.FileNameKey, generation: String, activity: Activity): Single<FirebaseStorageData> {
-        val pathReference = storage.reference.child(fileName.rawValue)
+    override fun loadDataIfNeeded(fileName: FirebaseStorageService.FileNameKey, subDirectory: String?, generation: String, activity: Activity): Single<FirebaseStorageData> {
+        val pathReference = subDirectory?.let {
+            storage.reference.child(it).child(fileName.rawValue)
+        }?: storage.reference.child(fileName.rawValue)
         return Single.create { result ->
             pathReference.metadata.addOnSuccessListener { metaData ->
                 if (metaData.newerThan(generation)) {
