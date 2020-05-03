@@ -20,6 +20,9 @@ interface TempUserIdDao {
     @Query("SELECT * FROM temp_user_id_table")
     suspend fun selectAll(): List<TempUserIdEntity>
 
+    @Query("SELECT * FROM temp_user_id_table WHERE :period <= startTime ORDER BY startTime ASC")
+    suspend fun getTempUserIdInPeriod(period: Long): List<TempUserIdEntity>
+
     @Query("SELECT * FROM temp_user_id_table WHERE startTime <= :currentTime AND :currentTime < expiryTime ORDER BY startTime ASC")
     suspend fun getTempUserId(currentTime: Long): List<TempUserIdEntity>
 
@@ -31,6 +34,9 @@ interface TempUserIdDao {
 
     @Query("DELETE FROM temp_user_id_table WHERE tempId IN (:ids)")
     suspend fun deleteTempId(ids: List<String>)
+
+    @Query("DELETE FROM temp_user_id_table WHERE startTime < :period")
+    suspend fun deleteOldTempId(period: Long)
 
     @Query("DELETE FROM temp_user_id_table")
     suspend fun deleteAll()

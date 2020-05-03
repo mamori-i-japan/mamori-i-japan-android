@@ -24,6 +24,7 @@ import jp.mamori_i.app.data.storage.LocalStorageService
 import jp.mamori_i.app.extension.convertSHA256HashString
 import jp.mamori_i.app.extension.convertToDateTimeString
 import jp.mamori_i.app.extension.convertToUnixTime
+import jp.mamori_i.app.extension.*
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.*
 import java.util.zip.GZIPInputStream
@@ -146,6 +147,18 @@ class TraceRepositoryImpl (private val moshi: Moshi,
         }
     }
 
+    override suspend fun getTempUserIdInTwoWeeks(): List<TempUserIdEntity> {
+        val currentTime = System.currentTimeMillis()
+        val twoWeeks = currentTime.twoWeeks()
+        return db.tempUserIdDao().getTempUserIdInPeriod(twoWeeks)
+    }
+
+    override suspend fun deleteTempIdInTwoWeeks() {
+        val currentTime = System.currentTimeMillis()
+        val twoWeeks = currentTime.twoWeeks()
+        db.tempUserIdDao().deleteOldTempId(twoWeeks)
+    }
+
     override suspend fun insertTraceData(entity: TraceDataEntity) = db.traceDataDao().insert(entity)
     override fun selectAllTraceData(): LiveData<List<TraceDataEntity>> = db.traceDataDao().selectAll()
     override suspend fun selectTraceTempIdByTempIdGroup(): List<String> = db.traceDataDao().selectTempIdByTempIdGroup()
@@ -154,8 +167,9 @@ class TraceRepositoryImpl (private val moshi: Moshi,
     override fun selectAllLiveDataDeepContactUsers(): LiveData<List<DeepContactUserEntity>> = db.deepContactUserDao().selectAllLiveData()
     override suspend fun selectAllDeepContactUsers(): List<DeepContactUserEntity> = db.deepContactUserDao().selectAll()
     override suspend fun countDeepContactUsersAtYesterday(): Int {
-        // TODO
-        return 334
+        val currentTime = System.currentTimeMillis()
+        val yesterday = currentTime.yesterdayPeriod()
+        return db.deepContactUserDao().countDeepContactUsers(yesterday.first, yesterday.second)
     }
 
     override suspend fun selectDeepContactUsers(ids: List<String>): List<DeepContactUserEntity> = db.deepContactUserDao().select(ids)
