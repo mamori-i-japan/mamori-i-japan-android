@@ -1,6 +1,5 @@
 package jp.mamori_i.app.service
 
-import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
@@ -40,10 +39,6 @@ import kotlin.coroutines.CoroutineContext
 class BluetoothMonitoringService : Service(), CoroutineScope {
 
     companion object {
-        private const val TAG = "BTMService"
-
-        private const val NOTIFICATION_ID = BuildConfig.SERVICE_FOREGROUND_NOTIFICATION_ID
-        private const val CHANNEL_ID = BuildConfig.SERVICE_FOREGROUND_CHANNEL_ID
         const val CHANNEL_SERVICE = BuildConfig.SERVICE_FOREGROUND_CHANNEL_NAME
         const val COMMAND_KEY = "${BuildConfig.APPLICATION_ID}_CMD"
 
@@ -53,18 +48,18 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         const val PENDING_HEALTH_CHECK_CODE = 9
         const val PENDING_WIZARD_REQ_CODE = 10
 
-        val connectionTimeout: Long = BuildConfig.CONNECTION_TIMEOUT
-        val maxQueueTime: Long = BuildConfig.MAX_QUEUE_TIME
-        val blacklistDuration: Long = BuildConfig.BLACKLIST_DURATION
-        val healthCheckInterval: Long = BuildConfig.HEALTH_CHECK_INTERVAL
-        val advertisingDuration: Long = BuildConfig.ADVERTISING_DURATION
-        val scanDuration: Long = BuildConfig.SCAN_DURATION
-        val scanInterval: Long = BuildConfig.SCAN_INTERVAL
-        val advertisingGap: Long = BuildConfig.ADVERTISING_INTERVAL
-        val infiniteAdvertising = BuildConfig.INFINITE_ADVERTISING
-        val infiniteScanning = BuildConfig.INFINITE_SCANNING
+        const val INFINITE_ADVERTISING = BuildConfig.INFINITE_ADVERTISING
+        const val INFINITE_SCANNING = BuildConfig.INFINITE_SCANNING
 
-        val useBlacklist = true
+        private const val TAG = "BTMService"
+
+        private const val ADVERTISING_INTERVAL: Long = BuildConfig.ADVERTISING_INTERVAL
+        private const val ADVERTISING_DURATION: Long = BuildConfig.ADVERTISING_DURATION
+        private const val SCAN_INTERVAL: Long = BuildConfig.SCAN_INTERVAL
+        private const val SCAN_DURATION: Long = BuildConfig.SCAN_DURATION
+        private const val NOTIFICATION_ID = BuildConfig.SERVICE_FOREGROUND_NOTIFICATION_ID
+        private const val CHANNEL_ID = BuildConfig.SERVICE_FOREGROUND_CHANNEL_ID
+        private const val healthCheckInterval: Long = BuildConfig.HEALTH_CHECK_INTERVAL
     }
 
     // TODO: ServiceクラスなのでViewModel化が難しい
@@ -79,7 +74,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
     private var streetPassScanner: StreetPassScanner? = null
     private var advertiser: BLEAdvertiser? = null
 
-    var worker: StreetPassWorker? = null
+    private var worker: StreetPassWorker? = null
 
     private val streetPassReceiver = StreetPassReceiver()
     private val bluetoothStatusReceiver = BluetoothStatusReceiver()
@@ -90,7 +85,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
 
     private lateinit var localBroadcastManager: LocalBroadcastManager
 
-    private var notificationShown: NOTIFICATION_STATE? = null
+    private var notificationShown: NotificationState? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -149,30 +144,25 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
     }
 
     private fun notifyLackingThings(override: Boolean = false) {
-        if (notificationShown != NOTIFICATION_STATE.LACKING_THINGS || override) {
-            var notif =
+        if (notificationShown != NotificationState.LACKING_THINGS || override) {
+            val notification =
                 NotificationTemplates.lackingThingsNotification(this.applicationContext, CHANNEL_ID)
-            startForeground(NOTIFICATION_ID, notif)
-            notificationShown = NOTIFICATION_STATE.LACKING_THINGS
+            startForeground(NOTIFICATION_ID, notification)
+            notificationShown = NotificationState.LACKING_THINGS
         }
     }
 
     private fun notifyRunning(override: Boolean = false) {
-        if (notificationShown != NOTIFICATION_STATE.RUNNING || override) {
-            var notif =
+        if (notificationShown != NotificationState.RUNNING || override) {
+            val notification =
                 NotificationTemplates.getRunningNotification(this.applicationContext, CHANNEL_ID)
-            startForeground(NOTIFICATION_ID, notif)
-            notificationShown = NOTIFICATION_STATE.RUNNING
+            startForeground(NOTIFICATION_ID, notification)
+            notificationShown = NotificationState.RUNNING
         }
     }
 
     private fun hasLocationPermissions(): Boolean {
         val perms = BLEUtil.getRequiredPermissions()
-        return EasyPermissions.hasPermissions(this.applicationContext, *perms)
-    }
-
-    private fun hasWritePermissions(): Boolean {
-        val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         return EasyPermissions.hasPermissions(this.applicationContext, *perms)
     }
 
@@ -220,8 +210,6 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
     }
 
     fun runService(cmd: Command?) {
-
-        var doWork = true
         DebugLogger.log(TAG, "Command is:${cmd?.string}")
 
         //check for permissions
@@ -246,17 +234,12 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
 
             Command.ACTION_SCAN -> {
                 scheduleScan()
-
-                if (doWork) {
-                    actionScan()
-                }
+                actionScan()
             }
 
             Command.ACTION_ADVERTISE -> {
                 scheduleAdvertisement()
-                if (doWork) {
-                    actionAdvertise()
-                }
+                actionAdvertise()
             }
 
             Command.ACTION_STOP -> {
@@ -265,9 +248,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
 
             Command.ACTION_SELF_CHECK -> {
                 BLEUtil.scheduleNextHealthCheck(this.applicationContext, healthCheckInterval)
-                if (doWork) {
-                    actionHealthCheck()
-                }
+                actionHealthCheck()
             }
 
             else -> DebugLogger.log(TAG, "Invalid / ignored command: $cmd. Nothing to do")
@@ -296,7 +277,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
     private fun actionAdvertise() {
         setupAdvertiser()
         if (isBluetoothEnabled()) {
-            advertiser?.startAdvertising(advertisingDuration)
+            advertiser?.startAdvertising(ADVERTISING_DURATION)
         } else {
             Log.w(TAG, "Unable to start advertising, bluetooth is off")
         }
@@ -313,7 +294,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         streetPassScanner = streetPassScanner ?: StreetPassScanner(
             this,
             serviceUUID,
-            scanDuration
+            SCAN_DURATION
         )
     }
 
@@ -340,14 +321,14 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
     }
 
     private fun scheduleScan() {
-        if (!infiniteScanning) {
-            commandHandler.scheduleNextScan(scanInterval)
+        if (!INFINITE_SCANNING) {
+            commandHandler.scheduleNextScan(SCAN_INTERVAL)
         }
     }
 
     private fun scheduleAdvertisement() {
-        if (!infiniteAdvertising) {
-            commandHandler.scheduleNextAdvertise(advertisingDuration + advertisingGap)
+        if (!INFINITE_ADVERTISING) {
+            commandHandler.scheduleNextAdvertise(ADVERTISING_DURATION + ADVERTISING_INTERVAL)
         }
     }
 
@@ -382,7 +363,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         //ensure our service is there
         setupService()
 
-        if (!infiniteScanning) {
+        if (!INFINITE_SCANNING) {
             if (!commandHandler.hasScanScheduled()) {
                 Log.w(TAG, "Missing Scan Schedule - rectifying")
                 commandHandler.scheduleNextScan(100)
@@ -393,7 +374,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
             Log.w(TAG, "Should be operating under infinite scan mode")
         }
 
-        if (!infiniteAdvertising) {
+        if (!INFINITE_ADVERTISING) {
             if (!commandHandler.hasAdvertiseScheduled()) {
                 Log.w(TAG, "Missing Advertise Schedule - rectifying")
                 commandHandler.scheduleNextAdvertise(100)
@@ -461,9 +442,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
             intent?.let {
                 val action = intent.action
                 if (action == BluetoothAdapter.ACTION_STATE_CHANGED) {
-                    var state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)
-
-                    when (state) {
+                    when (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)) {
                         BluetoothAdapter.STATE_TURNING_OFF -> {
                             DebugLogger.log(TAG, "BluetoothAdapter.STATE_TURNING_OFF")
                             notifyLackingThings()
@@ -492,7 +471,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         override fun onReceive(context: Context, intent: Intent) {
 
             if (ACTION_RECEIVED_STREETPASS == intent.action) {
-                var connRecord: ConnectionRecord = intent.getParcelableExtra(STREET_PASS)
+                val connRecord: ConnectionRecord = intent.getParcelableExtra(STREET_PASS) ?: return
                 DebugLogger.service(TAG, "+-+- StreetPass received: $connRecord")
 
                 if (connRecord.id.isNotEmpty()) {
@@ -504,7 +483,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
                             txPower = connRecord.txPower
                         )
                         traceRepository.insertTraceData(entity)
-                        DebugLogger.service(TAG, "Saving TraceDataEntity: ${entity.toString()}")
+                        DebugLogger.service(TAG, "Saving TraceDataEntity: ${entity}")
                     }
                 }
             }
@@ -525,7 +504,7 @@ class BluetoothMonitoringService : Service(), CoroutineScope {
         }
     }
 
-    enum class NOTIFICATION_STATE() {
+    enum class NotificationState() {
         RUNNING,
         LACKING_THINGS
     }

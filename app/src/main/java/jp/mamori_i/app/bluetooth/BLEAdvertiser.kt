@@ -9,7 +9,7 @@ import android.os.Handler
 import android.os.ParcelUuid
 import android.util.Log
 import jp.mamori_i.app.logger.DebugLogger
-import jp.mamori_i.app.service.BluetoothMonitoringService.Companion.infiniteAdvertising
+import jp.mamori_i.app.service.BluetoothMonitoringService.Companion.INFINITE_ADVERTISING
 import java.util.*
 
 
@@ -113,7 +113,7 @@ class BLEAdvertiser(serviceUUID: String) {
             Log.e(TAG, "Failed to start advertising legacy: ${e.message}")
         }
 
-        if (!infiniteAdvertising) {
+        if (!INFINITE_ADVERTISING) {
             handler.removeCallbacksAndMessages(stopRunnable)
             handler.postDelayed(stopRunnable, timeoutInMillis)
         }

@@ -39,6 +39,7 @@ android {
         buildConfigField "boolean", "INFINITE_ADVERTISING", 'true'
         buildConfigField "long", "ADVERTISING_DURATION", '180000'
         buildConfigField "long", "ADVERTISING_INTERVAL", '5000'
+        buildConfigField "int", "HOLD_TEMP_ID_COUNT", '2'
     }
 
     signingConfigs {
