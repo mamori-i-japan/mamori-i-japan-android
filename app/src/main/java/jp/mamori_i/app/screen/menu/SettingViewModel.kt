@@ -14,7 +14,7 @@ import jp.mamori_i.app.screen.common.MIJError
 import jp.mamori_i.app.screen.common.MIJError.Reason.*
 import jp.mamori_i.app.screen.common.MIJError.Action.*
 import jp.mamori_i.app.screen.profile.InputPrefectureTransitionEntity
-import jp.mamori_i.app.screen.profile.InputJobTransitionEntity
+import jp.mamori_i.app.screen.profile.InputOrganizationCodeTransitionEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -73,23 +73,21 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
 
     fun onClickOrganization() {
         _profile?.let {
-            navigator.goToInputJob(InputJobTransitionEntity(it.organizationCode))
+            navigator.goToInputOrganizationCode(InputOrganizationCodeTransitionEntity(it.organizationCode))
         }
     }
 
     fun clearOrganization() {
         navigator.showProgress()
-        navigator.hideProgress()
-        navigator.clearFinishWithCompleteMessage("完了") // TODO
-        /*
-        profileRepository.fetchProfile(activity)
+        profileRepository.clearOrganizationCode()
             .subscribeOn(Schedulers.io())
             .subscribeBy(
                 onSuccess = {
-                    _profile = it
-                    profile.onNext(it)
+                    navigator.hideProgress()
+                    navigator.clearFinishWithCompleteMessage("完了") // TODO
                 },
                 onError = { e ->
+                    navigator.hideProgress()
                     val reason = MIJError.mappingReason(e)
                     if (reason == Auth) {
                         // 認証エラーの場合はログアウト処理をする
@@ -97,7 +95,7 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
                             logoutHelper.logout()
                         }
                     }
-                    fetchError.onNext(
+                    clearError.onNext(
                         when (reason) {
                             NetWork -> MIJError(reason, "文言検討20", DialogBack)
                             Auth -> MIJError(reason, "文言検討22", DialogLogout)
@@ -105,7 +103,6 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
                             else -> MIJError(reason, "文言検討21", DialogBack)
                         })
                 }
-            ).addTo(disposable)*/
+            ).addTo(disposable)
     }
-
 }

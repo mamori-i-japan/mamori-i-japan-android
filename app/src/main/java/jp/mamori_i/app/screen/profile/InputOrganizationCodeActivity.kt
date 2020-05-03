@@ -2,6 +2,7 @@ package jp.mamori_i.app.screen.profile
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.jakewharton.rxbinding3.widget.textChanges
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -10,20 +11,22 @@ import jp.mamori_i.app.R
 import jp.mamori_i.app.extension.setUpToolBar
 import jp.mamori_i.app.extension.showErrorDialog
 import jp.mamori_i.app.ui.ProgressHUD
-import kotlinx.android.synthetic.main.activity_input_job.*
+import kotlinx.android.synthetic.main.activity_input_organization_code.*
+import kotlinx.android.synthetic.main.activity_input_organization_code.toolBar
+import kotlinx.android.synthetic.main.ui_select_text.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class InputJobActivity: AppCompatActivity(),
-    InputJobNavigator {
+class InputOrganizationCodeActivity: AppCompatActivity(),
+    InputOrganizationCodeNavigator {
     companion object {
-        const val KEY = "jp.mamori_i.app.screen.profile.InputWorkActivity"
+        const val KEY = "jp.mamori_i.app.screen.profile.InputOrganizationCodeActivity"
     }
 
-    private val viewModel: InputJobViewModel by viewModel()
+    private val viewModel: InputOrganizationCodeViewModel by viewModel()
     private val disposable: CompositeDisposable by inject()
-    private lateinit var transitionEntity: InputJobTransitionEntity
+    private lateinit var transitionEntity: InputOrganizationCodeTransitionEntity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,10 +44,10 @@ class InputJobActivity: AppCompatActivity(),
     }
 
     private fun initialize() {
-        setContentView(R.layout.activity_input_job)
+        setContentView(R.layout.activity_input_organization_code)
         viewModel.navigator = this
         intent?.let { intent ->
-            (intent.getSerializableExtra(KEY) as? InputJobTransitionEntity)?.let { entity ->
+            (intent.getSerializableExtra(KEY) as? InputOrganizationCodeTransitionEntity)?.let { entity ->
                 // 引き継ぎデータあり
                 transitionEntity = entity
             }
@@ -53,24 +56,22 @@ class InputJobActivity: AppCompatActivity(),
 
     private fun setupViews() {
         // ツールバー
-        setUpToolBar(toolBar, "職業を選択")
+        setUpToolBar(toolBar, "組織コード")
 
-        workInputText.requestFocus()
-        executeButton.setOnClickListener {
-            /*
-            viewModel.onClickExecuteButton(workInputText.text.toString(),
-                transitionEntity.profile,
-                transitionEntity.isRegistrationFlow,
-                this)*/
+        codeInputText.requestFocus()
+        codeInputText.textChanges()
+            .map { code ->
+                code.isNotBlank()
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { enabled ->
+                updateButton.isEnabled = enabled
+            }.addTo(disposable)
+
+        updateButton.setOnClickListener {
+            viewModel.onClickUpdateButton(codeInputText.text.toString())
         }
-
-        /*
-        if (transitionEntity.isRegistrationFlow) {
-            executeButton.text = "次へ"
-        } else {
-            executeButton.text = "更新する"
-            workInputText.setText(transitionEntity.profile.job, TextView.BufferType.NORMAL)
-        }*/
     }
 
     private fun bind() {

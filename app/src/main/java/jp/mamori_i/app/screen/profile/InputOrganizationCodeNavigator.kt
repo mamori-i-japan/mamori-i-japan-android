@@ -1,6 +1,6 @@
 package jp.mamori_i.app.screen.profile
 
-interface InputJobNavigator {
+interface InputOrganizationCodeNavigator {
     fun showProgress()
     fun hideProgress()
     fun finishWithCompleteMessage(message: String)

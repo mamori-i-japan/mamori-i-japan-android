@@ -6,34 +6,81 @@ import android.net.ConnectivityManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import io.reactivex.Single
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
+import jp.mamori_i.app.data.api.profile.ProfileApiService
 import jp.mamori_i.app.data.exception.MIJException
 import jp.mamori_i.app.data.exception.MIJException.Reason.*
+import jp.mamori_i.app.data.model.PrefectureType
 import jp.mamori_i.app.data.model.Profile
+import jp.mamori_i.app.data.model.UpdateProfileRequestBody
+import jp.mamori_i.app.data.model.UploadDeepContactsRequestBody
 
 class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
+                            private val api: ProfileApiService,
                             private val auth: FirebaseAuth): ProfileRepository {
 
-    override fun updateProfile(profile: Profile, activity: Activity): Single<Boolean> {
+    override fun updatePrefecture(prefecture: PrefectureType): Single<Boolean> {
         return Single.create { result ->
-            val cm = activity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val activeNetwork = cm.activeNetworkInfo
-            if (activeNetwork?.isConnectedOrConnecting == true) {
-                fireStore.collection("users")
-                    .document(auth.uid ?: "")
-                    .collection("profile")
-                    .document(auth.uid ?: "")
-                    .set(profile)
-                    .addOnSuccessListener { _ ->
-                        result.onSuccess(true)
-                    }
-                    .addOnFailureListener { e ->
-                        result.onError(e)
-                    }
-            } else {
-                result.onError(MIJException(Network))
+            auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    task.result?.token?.let { token ->
+                        val requestBody = UpdateProfileRequestBody(prefecture.rawValue, null)
+                        api.updateProfile("Bearer $token", requestBody)
+                            .subscribeOn(Schedulers.io())
+                            .subscribeBy (
+                                onSuccess = {
+                                    result.onSuccess(true)
+                                },
+                                onError = { e ->
+                                    result.onError(e)
+                                }
+                            )
+                    }?: result.onError(MIJException(Auth))
+                } else {
+                    result.onError(MIJException(Auth))
+                }
             }
         }
     }
+
+    override fun updateOrganizationCode(organizationCode: String): Single<Boolean> {
+        return Single.create { result ->
+            auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    task.result?.token?.let { token ->
+                        val requestBody = UpdateProfileRequestBody(null, organizationCode)
+                        api.updateProfile("Bearer $token", requestBody)
+                            .subscribeOn(Schedulers.io())
+                            .subscribeBy (
+                                onSuccess = {
+                                    result.onSuccess(true)
+                                },
+                                onError = { e ->
+                                    result.onError(e)
+                                }
+                            )
+                    }?: result.onError(MIJException(Auth))
+                } else {
+                    result.onError(MIJException(Auth))
+                }
+            }
+        }
+    }
+
+    override fun clearOrganizationCode(): Single<Boolean> {
+        return Single.create { result ->
+            auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    task.result?.token?.let { token ->
+                        // TODO API呼び出し
+                        result.onSuccess(true)
+                    }?: result.onError(MIJException(Auth))
+                } else {
+                    result.onError(MIJException(Auth))
+                }
+            }
+        }    }
 
     override fun fetchProfile(activity: Activity): Single<Profile> {
         return Single.create { result ->

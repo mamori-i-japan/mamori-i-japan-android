@@ -37,7 +37,7 @@
         <activity android:name=".screen.menu.MenuActivity" />
         <activity android:name=".screen.menu.SettingActivity" />
         <activity android:name=".screen.profile.InputPrefectureActivity" />
-        <activity android:name=".screen.profile.InputJobActivity"
+        <activity android:name=".screen.profile.InputOrganizationCodeActivity"
             android:windowSoftInputMode="stateAlwaysVisible"/>
         <activity android:name=".screen.permission.PermissionSettingActivity" />
         <activity android:name=".screen.start.AgreementActivity" />

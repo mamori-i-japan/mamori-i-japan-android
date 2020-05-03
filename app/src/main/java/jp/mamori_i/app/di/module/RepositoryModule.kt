@@ -26,7 +26,7 @@ val repositoryModule = module {
     }
 
     factory <ProfileRepository> {
-        ProfileRepositoryImpl(FirebaseFirestore.getInstance(), FirebaseAuth.getInstance())
+        ProfileRepositoryImpl(FirebaseFirestore.getInstance(), get(), FirebaseAuth.getInstance())
     }
 
     factory <TraceRepository> {

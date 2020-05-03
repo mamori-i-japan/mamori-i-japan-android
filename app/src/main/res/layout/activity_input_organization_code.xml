@@ -24,22 +24,24 @@
             android:textColor="@color/colorTextBlack"
             android:textStyle="bold"
             android:textSize="17sp"
-            android:text="あなたの職業を入力してください\n入力は任意です。"/>
+            android:text="組織コードを入力していください\n特定の組織向け"/>
 
         <EditText
-            android:id="@+id/workInputText"
+            android:id="@+id/codeInputText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="64dp"
             android:inputType="text"
             android:lines="1"
-            android:hint="職業名を入力"/>
+            android:hint="組織コードを入力"/>
 
         <Button style="@style/ExecuteButton"
-            android:id="@+id/executeButton"
+            android:id="@+id/updateButton"
             android:layout_width="match_parent"
             android:layout_marginTop="32dp"
-            android:text="次へ"/>
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="設定する"/>
 
     </LinearLayout>
 

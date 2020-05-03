@@ -13,8 +13,8 @@ import jp.mamori_i.app.extension.setUpToolBar
 import jp.mamori_i.app.extension.showErrorDialog
 import jp.mamori_i.app.screen.profile.InputPrefectureActivity
 import jp.mamori_i.app.screen.profile.InputPrefectureTransitionEntity
-import jp.mamori_i.app.screen.profile.InputJobActivity
-import jp.mamori_i.app.screen.profile.InputJobTransitionEntity
+import jp.mamori_i.app.screen.profile.InputOrganizationCodeActivity
+import jp.mamori_i.app.screen.profile.InputOrganizationCodeTransitionEntity
 import jp.mamori_i.app.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_menu.toolBar
 import kotlinx.android.synthetic.main.activity_setting.*
@@ -109,9 +109,9 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
         this.startActivity(intent)
     }
 
-    override fun goToInputJob(transitionEntity: InputJobTransitionEntity) {
-        val intent = Intent(this, InputJobActivity::class.java)
-        intent.putExtra(InputJobActivity.KEY, transitionEntity)
+    override fun goToInputOrganizationCode(transitionEntity: InputOrganizationCodeTransitionEntity) {
+        val intent = Intent(this, InputOrganizationCodeActivity::class.java)
+        intent.putExtra(InputOrganizationCodeActivity.KEY, transitionEntity)
         this.startActivity(intent)
     }
 

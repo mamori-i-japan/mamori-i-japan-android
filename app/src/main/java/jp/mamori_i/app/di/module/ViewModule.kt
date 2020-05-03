@@ -11,7 +11,7 @@ import jp.mamori_i.app.screen.menu.MenuViewModel
 import jp.mamori_i.app.screen.menu.SettingViewModel
 import jp.mamori_i.app.screen.start.SplashViewModel
 import jp.mamori_i.app.screen.profile.InputPrefectureViewModel
-import jp.mamori_i.app.screen.profile.InputJobViewModel
+import jp.mamori_i.app.screen.profile.InputOrganizationCodeViewModel
 import jp.mamori_i.app.screen.start.AgreementViewModel
 import jp.mamori_i.app.screen.start.TutorialViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -42,7 +42,7 @@ val viewModule = module {
         InputPrefectureViewModel(get(), get(), get())
     }
     viewModel {
-        InputJobViewModel(get(), get(), get())
+        InputOrganizationCodeViewModel(get(), get(), get())
     }
     viewModel {
         AgreementViewModel(get(), get(), get())

@@ -12,6 +12,7 @@ import jp.mamori_i.app.extension.setUpToolBar
 import jp.mamori_i.app.extension.showErrorDialog
 import jp.mamori_i.app.screen.start.SplashActivity
 import jp.mamori_i.app.screen.trace.TraceDataUploadActivity
+import jp.mamori_i.app.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_menu.*
 import kotlinx.android.synthetic.main.activity_menu.toolBar
 import kotlinx.android.synthetic.main.activity_setting.*
@@ -74,6 +75,14 @@ class MenuActivity: AppCompatActivity(), MenuNavigator {
             .subscribe { error ->
                 showErrorDialog(error)
             }.addTo(disposable)
+    }
+
+    override fun showProgress() {
+        ProgressHUD.show(this)
+    }
+
+    override fun hideProgress() {
+        ProgressHUD.hide()
     }
 
     override fun goToSetting() {

@@ -31,13 +31,16 @@ class MenuViewModel(private val profileRepository: ProfileRepository,
     }
 
     fun fetchProfile(activity: Activity) {
+        navigator.showProgress()
         profileRepository.fetchProfile(activity)
             .subscribeOn(Schedulers.io())
             .subscribeBy(
                 onSuccess = {
+                    navigator.hideProgress()
                     menuItems.onNext(createMenuItems(it))
                 },
                 onError = { e ->
+                    navigator.hideProgress()
                     val reason = MIJError.mappingReason(e)
                     if (reason == MIJError.Reason.Auth) {
                         // 認証エラーの場合はログアウト処理をする

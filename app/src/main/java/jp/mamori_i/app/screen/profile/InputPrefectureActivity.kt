@@ -2,7 +2,6 @@ package jp.mamori_i.app.screen.profile
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.jakewharton.rxbinding3.widget.textChanges
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,7 +16,6 @@ import jp.mamori_i.app.screen.start.AgreementActivity
 import jp.mamori_i.app.screen.start.AgreementTransitionEntity
 import jp.mamori_i.app.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_input_prefecture.*
-import kotlinx.android.synthetic.main.activity_input_prefecture.toolBar
 import kotlinx.android.synthetic.main.ui_select_text.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -66,7 +64,7 @@ class InputPrefectureActivity: AppCompatActivity(),
         executeButton.setOnClickListener {
             val input = prefecturesSelectText.selectItem() as PrefectureType
             transitionEntity?.let {
-                viewModel.onClickUpdateButton(input, this)
+                viewModel.onClickUpdateButton(input)
             }?: viewModel.onClickNextButton(input)
         }
 
