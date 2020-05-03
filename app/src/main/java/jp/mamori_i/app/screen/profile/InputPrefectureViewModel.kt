@@ -10,8 +10,7 @@ import jp.mamori_i.app.data.model.PrefectureType
 import jp.mamori_i.app.data.repository.profile.ProfileRepository
 import jp.mamori_i.app.screen.common.LogoutHelper
 import jp.mamori_i.app.screen.common.MIJError
-import jp.mamori_i.app.screen.common.MIJError.Action.DialogBack
-import jp.mamori_i.app.screen.common.MIJError.Action.DialogLogout
+import jp.mamori_i.app.screen.common.MIJError.Action.*
 import jp.mamori_i.app.screen.common.MIJError.Reason.*
 import jp.mamori_i.app.screen.start.AgreementTransitionEntity
 import kotlinx.coroutines.Dispatchers
@@ -53,10 +52,10 @@ class InputPrefectureViewModel(private val profileRepository: ProfileRepository,
                     }
                     updateError.onNext(
                         when (reason) {
-                            NetWork -> MIJError(reason, "文言検討20", DialogBack)
+                            NetWork -> MIJError(reason, "文言検討20", DialogCloseOnly)
                             Auth -> MIJError(reason, "文言検討22", DialogLogout)
-                            Parse -> MIJError(reason, "文言検討21", DialogBack)
-                            else -> MIJError(reason, "文言検討21", DialogBack)
+                            Parse -> MIJError(reason, "文言検討21", DialogCloseOnly)
+                            else -> MIJError(reason, "文言検討21", DialogCloseOnly)
                         })
                 }
             ).addTo(disposable)

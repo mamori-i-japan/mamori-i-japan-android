@@ -1,6 +1,8 @@
 package jp.mamori_i.app.screen.profile
 
 import android.os.Bundle
+import android.text.Editable
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.jakewharton.rxbinding3.widget.textChanges
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -59,6 +61,17 @@ class InputOrganizationCodeActivity: AppCompatActivity(),
         setUpToolBar(toolBar, "組織コード")
 
         codeInputText.requestFocus()
+        if (transitionEntity.inputted.isNotEmpty()) {
+            codeInputText.setText(transitionEntity.inputted, TextView.BufferType.NORMAL)
+            codeInputText.setSelection(transitionEntity.inputted.length);
+        }
+
+        updateButton.setOnClickListener {
+            viewModel.onClickUpdateButton(codeInputText.text.toString())
+        }
+    }
+
+    private fun bind() {
         codeInputText.textChanges()
             .map { code ->
                 code.isNotBlank()
@@ -69,12 +82,6 @@ class InputOrganizationCodeActivity: AppCompatActivity(),
                 updateButton.isEnabled = enabled
             }.addTo(disposable)
 
-        updateButton.setOnClickListener {
-            viewModel.onClickUpdateButton(codeInputText.text.toString())
-        }
-    }
-
-    private fun bind() {
         viewModel.updateError
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

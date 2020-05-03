@@ -47,15 +47,15 @@ class InputOrganizationCodeViewModel(private val profileRepository: ProfileRepos
                     updateError.onNext(
                         when (reason) {
                             MIJError.Reason.NetWork -> MIJError(reason, "文言検討20",
-                                MIJError.Action.DialogBack
+                                MIJError.Action.DialogCloseOnly
                             )
                             MIJError.Reason.Auth -> MIJError(reason, "文言検討22",
                                 MIJError.Action.DialogLogout
                             )
                             MIJError.Reason.Parse -> MIJError(reason, "文言検討21",
-                                MIJError.Action.DialogBack
+                                MIJError.Action.DialogCloseOnly
                             )
-                            else -> MIJError(reason, "文言検討21", MIJError.Action.DialogBack)
+                            else -> MIJError(reason, "文言検討21", MIJError.Action.DialogCloseOnly)
                         })
                 }
             ).addTo(disposable)
