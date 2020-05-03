@@ -1,12 +1,14 @@
 package jp.mamori_i.app.ui
 
+import android.app.Dialog
 import android.content.Context
-import com.kaopiz.kprogresshud.KProgressHUD
+import android.view.Window
+import jp.mamori_i.app.R
 
 
 class ProgressHUD {
     companion object {
-        private var hud: KProgressHUD? = null
+        private var hud: Dialog? = null
         private var owner: Context? = null
 
         fun show(context: Context) {
@@ -19,9 +21,11 @@ class ProgressHUD {
                     it.dismiss()
                 }
             }
-            hud = KProgressHUD.create(context, KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setCancellable(false)
-                .show()
+            hud = Dialog(context).apply {
+                requestWindowFeature(Window.FEATURE_NO_TITLE)
+                setContentView(R.layout.dialog_progress_hud)
+                show()
+            }
             owner = context
         }
 

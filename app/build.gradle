@@ -165,9 +165,6 @@ dependencies {
     testImplementation "org.koin:koin-test:$koin_version"
     androidTestImplementation "org.koin:koin-test:$koin_version"
 
-    // Progress // TODO 仮
-    implementation 'com.kaopiz:kprogresshud:1.2.0'
-
     // RecycleView
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
