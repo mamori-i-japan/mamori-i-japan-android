@@ -7,9 +7,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import jp.mamori_i.app.R
-import jp.mamori_i.app.screen.home.BLEActivity
-import jp.mamori_i.app.screen.home.HomeActivity
-import jp.mamori_i.app.screen.home.TestBLEActivity
+import jp.mamori_i.app.screen.start.SplashActivity
 import jp.mamori_i.app.service.BluetoothMonitoringService.Companion.PENDING_ACTIVITY
 import jp.mamori_i.app.service.BluetoothMonitoringService.Companion.PENDING_WIZARD_REQ_CODE
 
@@ -18,7 +16,7 @@ class NotificationTemplates {
     companion object {
         fun getRunningNotification(context: Context, channel: String): Notification {
 
-            var intent = Intent(context, TestBLEActivity::class.java)
+            val intent = Intent(context, SplashActivity::class.java)
 
             val activityPendingIntent = PendingIntent.getActivity(
                 context, PENDING_ACTIVITY,
@@ -43,7 +41,7 @@ class NotificationTemplates {
         }
 
         fun lackingThingsNotification(context: Context, channel: String): Notification {
-            val intent = Intent(context, HomeActivity::class.java)
+            val intent = Intent(context, SplashActivity::class.java)
 
             val activityPendingIntent = PendingIntent.getActivity(
                 context, PENDING_WIZARD_REQ_CODE,
