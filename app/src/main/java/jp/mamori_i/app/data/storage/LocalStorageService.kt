@@ -3,6 +3,10 @@ package jp.mamori_i.app.data.storage
 
 interface LocalStorageService {
 
+    enum class ListKey(val rawValue: String) {
+        UploadRandomKeys("l_urk")
+    }
+
     enum class BooleanKey(val rawValue: String) {
         SampleBooleanKey("b_sbk")
     }
@@ -14,6 +18,11 @@ interface LocalStorageService {
     enum class IntKey(val rawValue: String) {
         SampleIntKey("i_sik")
     }
+
+    /* List */
+    fun loadList(key: ListKey, default: List<String>): List<String>
+    fun addList(key: ListKey, value: String)
+    fun clearList(key: ListKey)
 
     /* Boolean */
     fun loadBoolean(key: BooleanKey, default: Boolean): Boolean
@@ -29,5 +38,4 @@ interface LocalStorageService {
     fun loadInt(key: IntKey, default: Int): Int
     fun saveInt(key: IntKey, value: Int)
     fun clearInt(key: IntKey)
-
 }

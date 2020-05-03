@@ -93,6 +93,13 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
             .subscribe { error ->
                 showErrorDialog(error)
             }.addTo(disposable)
+
+        viewModel.clearError
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { error ->
+                showErrorDialog(error)
+            }.addTo(disposable)
     }
 
     override fun showProgress() {

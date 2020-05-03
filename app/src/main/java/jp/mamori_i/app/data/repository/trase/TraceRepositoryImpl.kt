@@ -20,6 +20,7 @@ import jp.mamori_i.app.data.model.*
 import jp.mamori_i.app.data.storage.FirebaseStorageService
 import jp.mamori_i.app.data.storage.FirebaseStorageService.FileNameKey.PositivePersonList
 import jp.mamori_i.app.data.storage.LocalCacheService
+import jp.mamori_i.app.data.storage.LocalStorageService
 import jp.mamori_i.app.extension.convertSHA256HashString
 import jp.mamori_i.app.extension.convertToDateTimeString
 import jp.mamori_i.app.extension.convertToUnixTime
@@ -32,6 +33,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
                            private val api: TraceApiService,
                            private val auth: FirebaseAuth,
                            private val localCacheService: LocalCacheService,
+                           private val localStorageService: LocalStorageService,
                            private val firebaseStorageService: FirebaseStorageService,
                            private val db: MIJDatabase): TraceRepository {
 
@@ -104,6 +106,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
     }
 
     override suspend fun loadTempIds(): List<TempUserId> = db.tempUserIdDao().selectAll().map { TempUserId.create(it) }
+    override suspend fun loadTempIdsFrom2WeeksAgo(currentTime: Long): List<TempUserId> = db.tempUserIdDao().selectAll().map { TempUserId.create(it) } // TODO 2週間分とる
 
     override suspend fun getTempUserId(currentTime: Long): TempUserIdEntity {
         val results = db.tempUserIdDao().getTempUserId(currentTime)
@@ -113,6 +116,33 @@ class TraceRepositoryImpl (private val moshi: Moshi,
             val entity = createTempId(currentTime)
             db.tempUserIdDao().insert(entity)
             entity
+        }
+    }
+
+    override fun uploadTempUserId(tempUserIds: List<TempUserId>, currentTime: Long): Single<Boolean> {
+        return Single.create { result ->
+            auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    task.result?.token?.let { token ->
+                        val randomId = (UUID.randomUUID().toString() + currentTime.toString()).convertSHA256HashString()
+                        val requestBody = UploadTempIdsRequestBody(randomId, tempUserIds)
+                        api.uploadTempIds("Bearer $token", requestBody)
+                            .subscribeOn(Schedulers.io())
+                            .subscribeBy (
+                                onSuccess = {
+                                    // UploadKeyの追加
+                                    localStorageService.addList(LocalStorageService.ListKey.UploadRandomKeys, randomId)
+                                    result.onSuccess(true)
+                                },
+                                onError = { e ->
+                                    result.onError(e)
+                                }
+                            )
+                    }?: result.onError(MIJException(Auth))
+                } else {
+                    result.onError(MIJException(Auth))
+                }
+            }
         }
     }
 
@@ -139,29 +169,6 @@ class TraceRepositoryImpl (private val moshi: Moshi,
         }
     }
 
-    override fun uploadDeepContacts(contacts: List<DeepContact>): Single<Boolean> {
-        return Single.create { result ->
-            auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    task.result?.token?.let { token ->
-                        api.uploadDeepContacts("Bearer $token", UploadDeepContactsRequestBody(contacts))
-                            .subscribeOn(Schedulers.io())
-                            .subscribeBy (
-                                onSuccess = {
-                                    result.onSuccess(true)
-                                },
-                                onError = { e ->
-                                    result.onError(e)
-                                }
-                            )
-                    }?: result.onError(MIJException(Auth))
-                } else {
-                    result.onError(MIJException(Auth))
-                }
-            }
-        }
-    }
-
     private suspend fun saveTempIds(ids: List<TempUserId>): Boolean {
         db.tempUserIdDao().insert(ids.map { TempUserIdEntity(it.tempId, it.startTime, it.expiryTime) })
         return true
@@ -169,8 +176,8 @@ class TraceRepositoryImpl (private val moshi: Moshi,
 
     override suspend fun deleteAllData() {
         // TODO 全部のデータを消す
-        localCacheService.positivePersonListGeneration = null
-        localCacheService.positivePersonList = listOf()
+        localCacheService.clearPositivePersonList()
+        localStorageService.clearList(LocalStorageService.ListKey.UploadRandomKeys)
 
         db.tempUserIdDao().deleteAll()
         db.deepContactUserDao().deleteAll()

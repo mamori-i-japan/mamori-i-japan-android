@@ -11,14 +11,16 @@ import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.data.api.profile.ProfileApiService
 import jp.mamori_i.app.data.exception.MIJException
 import jp.mamori_i.app.data.exception.MIJException.Reason.*
+import jp.mamori_i.app.data.model.ClearOrganizationCodeRequestBody
 import jp.mamori_i.app.data.model.PrefectureType
 import jp.mamori_i.app.data.model.Profile
 import jp.mamori_i.app.data.model.UpdateProfileRequestBody
-import jp.mamori_i.app.data.model.UploadDeepContactsRequestBody
+import jp.mamori_i.app.data.storage.LocalStorageService
 
 class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
                             private val api: ProfileApiService,
-                            private val auth: FirebaseAuth): ProfileRepository {
+                            private val auth: FirebaseAuth,
+                            private val localStorageService: LocalStorageService): ProfileRepository {
 
     override fun updatePrefecture(prefecture: PrefectureType): Single<Boolean> {
         return Single.create { result ->
@@ -73,8 +75,18 @@ class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
             auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     task.result?.token?.let { token ->
-                        // TODO API呼び出し
-                        result.onSuccess(true)
+                        val uploadRandomKeys = localStorageService.loadList(LocalStorageService.ListKey.UploadRandomKeys, listOf())
+                        val requestBody = ClearOrganizationCodeRequestBody(uploadRandomKeys)
+                        api.clearOrganizationCode("Bearer $token", requestBody)
+                            .subscribeOn(Schedulers.io())
+                            .subscribeBy (
+                                onSuccess = {
+                                    result.onSuccess(true)
+                                },
+                                onError = { e ->
+                                    result.onError(e)
+                                }
+                            )
                     }?: result.onError(MIJException(Auth))
                 } else {
                     result.onError(MIJException(Auth))

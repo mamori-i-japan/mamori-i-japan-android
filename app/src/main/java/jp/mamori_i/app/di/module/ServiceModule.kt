@@ -23,7 +23,7 @@ val serviceModule = module {
     }
 
     factory <LocalStorageService> {
-        LocalStorageServiceImpl(get())
+        LocalStorageServiceImpl(get(), get())
     }
 
     factory <LocalCacheService> {

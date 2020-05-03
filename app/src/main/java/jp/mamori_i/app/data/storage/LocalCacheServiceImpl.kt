@@ -28,4 +28,11 @@ class LocalCacheServiceImpl(override var positivePersonListGeneration: String? =
     override fun positivePersonList(organizationCode: String): List<PositivePerson> {
         return positivePersonListMap[organizationCode]?: listOf()
     }
+
+    override fun clearPositivePersonList() {
+        positivePersonList = listOf()
+        positivePersonListGeneration = null
+        positivePersonListMap.clear()
+        positivePersonListGenerationMap.clear()
+    }
 }

@@ -24,7 +24,7 @@
             android:textColor="@color/colorTextBlack"
             android:textStyle="bold"
             android:textSize="17sp"
-            android:text="組織コードを入力していください\n特定の組織向け"/>
+            android:text="組織コードを入力してください\n特定の組織向け"/>
 
         <EditText
             android:id="@+id/codeInputText"

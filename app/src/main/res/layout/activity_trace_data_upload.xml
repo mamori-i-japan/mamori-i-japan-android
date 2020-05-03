@@ -7,11 +7,34 @@
 
     <androidx.appcompat.widget.Toolbar style="@style/ToolBar" android:id="@+id/toolBar"/>
 
+    <TextView
+        android:id="@+id/mainDescriptionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        android:layout_marginBottom="32dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:textColor="@color/colorTextBlack"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="接触デバイスIDの\nアップロード要請がありました。"/>
+
+    <TextView
+        android:id="@+id/subDescriptionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:textColor="@color/colorTextBlack"
+        android:textSize="17sp"
+        android:visibility="gone"
+        android:text="医師や保健所の指示にしたがって\n安静にお過ごしください。"/>
 
     <Button style="@style/ExecuteButton"
         android:id="@+id/uploadButton"
         android:layout_width="match_parent"
-        android:layout_margin="8dp"
+        android:layout_margin="32dp"
         android:text="データをアップロードする"/>
 
 

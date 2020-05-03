@@ -2,6 +2,7 @@ package jp.mamori_i.app.data.storage
 
 import android.content.Context
 import androidx.core.content.edit
+import org.json.JSONArray
 
 
 class MIJSharedPreferenceImpl(context: Context): MIJSharedPreference {
@@ -13,6 +14,14 @@ class MIJSharedPreferenceImpl(context: Context): MIJSharedPreference {
             return when(default) {
                 is String -> { prefs.getString(key, default) as T}
                 is Boolean -> { prefs.getBoolean(key, default) as T }
+                is List<*> -> {
+                    val jsonArray = JSONArray(prefs.getString(key, "[]"))
+                    val mutableList = mutableListOf<String>()
+                    for (i in 0 until jsonArray.length()) {
+                        mutableList.add(jsonArray.get(i) as String)
+                    }
+                    return mutableList as T
+                }
                 else -> default
             }
         } catch (e: Exception) {
@@ -26,6 +35,10 @@ class MIJSharedPreferenceImpl(context: Context): MIJSharedPreference {
                 when(value) {
                     is String -> { putString(key, value) }
                     is Boolean -> { putBoolean(key, value) }
+                    is List<*> -> {
+                        val jsonArray = JSONArray(value)
+                        putString(key, jsonArray.toString())
+                    }
                     else -> {}
                 }
             }

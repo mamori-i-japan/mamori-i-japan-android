@@ -1,6 +1,7 @@
 package jp.mamori_i.app.screen.trace
 
 import androidx.lifecycle.ViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -11,6 +12,7 @@ import jp.mamori_i.app.data.repository.trase.TraceRepository
 import jp.mamori_i.app.screen.common.LogoutHelper
 import jp.mamori_i.app.screen.common.MIJError
 import kotlinx.coroutines.*
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 
@@ -20,14 +22,7 @@ class TraceDataUploadViewModel(private val traceRepository: TraceRepository,
 
     lateinit var navigator: TraceDataUploadNavigator
 
-    val uploadState = PublishSubject.create<UploadState>()
     val uploadError = PublishSubject.create<MIJError>()
-
-    enum class UploadState {
-        Ready,
-        InProgress,
-        Complete
-    }
 
     private var job: Job = Job()
     override val coroutineContext: CoroutineContext
@@ -40,21 +35,22 @@ class TraceDataUploadViewModel(private val traceRepository: TraceRepository,
     }
 
     fun onClickUpload() {
+        navigator.showProgress()
         launch(Dispatchers.IO) {
-            // まず全件を取得
-            val deepContacts = traceRepository.selectAllDeepContactUsers().map { DeepContact.create(it) }
-            // TODO バリデーション
-            if (deepContacts.count() == 0) { return@launch }
+            val currentTime = Date().time
+            // まずTempIdリストを取得
+            val tempIdsFrom2WeeksAgo = traceRepository.loadTempIdsFrom2WeeksAgo(currentTime)
             // アップロード開始
-            uploadState.onNext(UploadState.InProgress)
-            traceRepository.uploadDeepContacts(deepContacts)
+            traceRepository.uploadTempUserId(tempIdsFrom2WeeksAgo, currentTime)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                     onSuccess = {
-                        uploadState.onNext(UploadState.Complete)
+                        navigator.hideProgress()
+                        navigator.finishWithCompleteMessage("アップロードが完了しました。\nご協力ありがとうございました。")
                     },
                     onError = { e ->
-                        uploadState.onNext(UploadState.Ready)
+                        navigator.hideProgress()
                         val reason = MIJError.mappingReason(e)
                         if (reason == MIJError.Reason.Auth) {
                             // 認証エラーの場合はログアウト処理をする
@@ -77,9 +73,5 @@ class TraceDataUploadViewModel(private val traceRepository: TraceRepository,
                     }
                 ).addTo(disposable)
         }
-    }
-
-    fun onClickHome() {
-        navigator.goToHome()
     }
 }
