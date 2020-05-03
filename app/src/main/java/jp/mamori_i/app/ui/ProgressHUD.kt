@@ -3,6 +3,7 @@ package jp.mamori_i.app.ui
 import android.app.Dialog
 import android.content.Context
 import android.view.Window
+import android.view.WindowManager
 import jp.mamori_i.app.R
 
 
@@ -24,6 +25,7 @@ class ProgressHUD {
             hud = Dialog(context).apply {
                 requestWindowFeature(Window.FEATURE_NO_TITLE)
                 setContentView(R.layout.dialog_progress_hud)
+                window?.setFlags( 0 , WindowManager.LayoutParams.FLAG_DIM_BEHIND);
                 setCancelable(false)
                 show()
             }
