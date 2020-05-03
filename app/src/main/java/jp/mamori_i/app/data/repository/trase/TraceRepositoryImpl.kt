@@ -107,7 +107,10 @@ class TraceRepositoryImpl (private val moshi: Moshi,
     }
 
     override suspend fun loadTempIds(): List<TempUserId> = db.tempUserIdDao().selectAll().map { TempUserId.create(it) }
-    override suspend fun loadTempIdsFrom2WeeksAgo(currentTime: Long): List<TempUserId> = db.tempUserIdDao().selectAll().map { TempUserId.create(it) } // TODO 2週間分とる
+    override suspend fun loadTempIdsFrom2WeeksAgo(currentTime: Long): List<TempUserId> {
+        val twoWeeks = currentTime.twoWeeks()
+        return db.tempUserIdDao().getTempUserIdInPeriod(twoWeeks).map { TempUserId.create(it) }
+    }
 
     override suspend fun getTempUserId(currentTime: Long): TempUserIdEntity {
         val results = db.tempUserIdDao().getTempUserId(currentTime)
@@ -147,14 +150,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
         }
     }
 
-    override suspend fun getTempUserIdInTwoWeeks(): List<TempUserIdEntity> {
-        val currentTime = System.currentTimeMillis()
-        val twoWeeks = currentTime.twoWeeks()
-        return db.tempUserIdDao().getTempUserIdInPeriod(twoWeeks)
-    }
-
-    override suspend fun deleteTempIdInTwoWeeks() {
-        val currentTime = System.currentTimeMillis()
+    override suspend fun deleteTempIdInTwoWeeks(currentTime: Long) {
         val twoWeeks = currentTime.twoWeeks()
         db.tempUserIdDao().deleteOldTempId(twoWeeks)
     }
@@ -167,7 +163,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
     override fun selectAllLiveDataDeepContactUsers(): LiveData<List<DeepContactUserEntity>> = db.deepContactUserDao().selectAllLiveData()
     override suspend fun selectAllDeepContactUsers(): List<DeepContactUserEntity> = db.deepContactUserDao().selectAll()
     override suspend fun countDeepContactUsersAtYesterday(): Int {
-        val currentTime = System.currentTimeMillis()
+        val currentTime = Date().time
         val yesterday = currentTime.yesterdayPeriod()
         return db.deepContactUserDao().countDeepContactUsers(yesterday.first, yesterday.second)
     }

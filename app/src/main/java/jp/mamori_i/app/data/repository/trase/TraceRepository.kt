@@ -19,15 +19,13 @@ interface TraceRepository {
     // TempIdのロード
     suspend fun loadTempIds(): List<TempUserId>
     // TempIdのロード(直近2週間)
+    // 例) 2020/05/04 12:01:53だとした場合、2020/04/20 00:00:00となり
+    // 2週間前の日付の00:00:00からの対象を返却する
     suspend fun loadTempIdsFrom2WeeksAgo(currentTime: Long): List<TempUserId>
     // TempUserIdの取得
     suspend fun getTempUserId(currentTime: Long): TempUserIdEntity
-    // 直近2週間のtempIdの情報を取得
-    // 例) 2020/05/04 12:01:53だとした場合、2020/04/20 00:00:00となり
-    // 2週間前の日付の00:00:00からの対象を返却する
-    suspend fun getTempUserIdInTwoWeeks(): List<TempUserIdEntity>
     // 2週間前よりも古いTempIdを削除
-    suspend fun deleteTempIdInTwoWeeks()
+    suspend fun deleteTempIdInTwoWeeks(currentTime: Long)
 
     // TempUserIdのアップロード
     fun uploadTempUserId(tempUserIds: List<TempUserId>, currentTime: Long): Single<Boolean>
