@@ -21,7 +21,7 @@ class TestBLEViewModel(private val tempIdManager: TempIdManager) : ViewModel(), 
         super.onCleared()
     }
 
-    val _tempId: MutableLiveData<String> = MutableLiveData<String>("")
+    private val _tempId: MutableLiveData<String> = MutableLiveData<String>("")
     val tempId: LiveData<String> = _tempId
 
     fun subscribe() {

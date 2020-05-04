@@ -205,7 +205,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
 
         val start = (date + TEMP_ID_SPLIT_TIME).convertToUnixTime("yyyyMMddHHmmss")
         val end = start + 24 * 60 * 60 * 1000
-        val tempId = UUID.randomUUID().toString() + "$start + $end"
+        val tempId = UUID.randomUUID().toString() + UUID.randomUUID().toString() + "$start + $end"
         return TempUserIdEntity(tempId.convertSHA256HashString(), start , end)
     }
 }
