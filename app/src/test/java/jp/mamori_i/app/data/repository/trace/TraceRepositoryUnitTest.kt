@@ -10,6 +10,7 @@ import jp.mamori_i.app.data.repository.trase.TraceRepository
 import jp.mamori_i.app.data.repository.trase.TraceRepositoryImpl
 import jp.mamori_i.app.data.storage.FirebaseStorageService
 import jp.mamori_i.app.data.storage.LocalCacheService
+import jp.mamori_i.app.data.storage.LocalStorageService
 import jp.mamori_i.app.extension.convertToUnixTime
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -29,6 +30,7 @@ class TraceRepositoryUnitTest {
             mockk<TraceApiService> {},
             mockk<FirebaseAuth> {},
             mockk<LocalCacheService> {},
+            mockk<LocalStorageService> {},
             mockk<FirebaseStorageService> {},
             mockk<MIJDatabase> {}
         )
