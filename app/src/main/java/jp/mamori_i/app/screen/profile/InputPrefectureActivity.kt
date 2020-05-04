@@ -12,8 +12,7 @@ import jp.mamori_i.app.R
 import jp.mamori_i.app.data.model.PrefectureType
 import jp.mamori_i.app.extension.setUpToolBar
 import jp.mamori_i.app.extension.showErrorDialog
-import jp.mamori_i.app.screen.start.AgreementActivity
-import jp.mamori_i.app.screen.start.AgreementTransitionEntity
+import jp.mamori_i.app.screen.permission.PermissionSettingActivity
 import jp.mamori_i.app.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_input_prefecture.*
 import kotlinx.android.synthetic.main.ui_select_text.view.*
@@ -90,6 +89,13 @@ class InputPrefectureActivity: AppCompatActivity(),
                 executeButton.isEnabled = enabled
             }.addTo(disposable)
 
+        viewModel.loginError
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { error ->
+                showErrorDialog(error)
+            }.addTo(disposable)
+
         viewModel.updateError
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -106,9 +112,8 @@ class InputPrefectureActivity: AppCompatActivity(),
         ProgressHUD.hide()
     }
 
-    override fun goToAgreement(transitionEntity: AgreementTransitionEntity) {
-        val intent = Intent(this, AgreementActivity::class.java)
-        intent.putExtra(AgreementActivity.KEY, transitionEntity)
+    override fun goToPermissionSetting() {
+        val intent = Intent(this, PermissionSettingActivity::class.java)
         this.startActivity(intent)
     }
 

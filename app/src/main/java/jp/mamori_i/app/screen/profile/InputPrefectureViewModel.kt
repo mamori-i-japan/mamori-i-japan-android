@@ -8,19 +8,21 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import jp.mamori_i.app.data.model.PrefectureType
 import jp.mamori_i.app.data.repository.profile.ProfileRepository
+import jp.mamori_i.app.data.repository.session.SessionRepository
 import jp.mamori_i.app.screen.common.LogoutHelper
 import jp.mamori_i.app.screen.common.MIJError
 import jp.mamori_i.app.screen.common.MIJError.Action.*
 import jp.mamori_i.app.screen.common.MIJError.Reason.*
-import jp.mamori_i.app.screen.start.AgreementTransitionEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
 class InputPrefectureViewModel(private val profileRepository: ProfileRepository,
+                               private val sessionRepository: SessionRepository,
                                private val logoutHelper: LogoutHelper,
                                private val disposable: CompositeDisposable): ViewModel() {
 
     lateinit var navigator: InputPrefectureNavigator
+    val loginError = PublishSubject.create<MIJError>()
     val updateError = PublishSubject.create<MIJError>()
 
     override fun onCleared() {
@@ -29,7 +31,24 @@ class InputPrefectureViewModel(private val profileRepository: ProfileRepository,
     }
 
     fun onClickNextButton(inputPrefecture: PrefectureType) {
-        navigator.goToAgreement(AgreementTransitionEntity(inputPrefecture))
+        navigator.showProgress()
+        sessionRepository.login(inputPrefecture)
+            .subscribeOn(Schedulers.io())
+            .subscribeBy(
+                onSuccess = {
+                    navigator.hideProgress()
+                    navigator.goToPermissionSetting()
+                },
+                onError = { e ->
+                    navigator.hideProgress()
+                    val reason = MIJError.mappingReason(e)
+                    loginError.onNext(
+                        when (reason) {
+                            NetWork -> MIJError(reason, "文言検討12", DialogCloseOnly)
+                            else -> MIJError(reason, "文言検討13", DialogCloseOnly)
+                        })
+                }
+            ).addTo(disposable)
     }
 
     fun onClickUpdateButton(inputPrefecture: PrefectureType) {

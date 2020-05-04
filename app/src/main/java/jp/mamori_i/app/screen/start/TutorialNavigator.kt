@@ -4,6 +4,6 @@ import android.net.Uri
 
 
 interface TutorialNavigator {
-    fun goToInputPrefecture()
+    fun goToAgreement()
     fun openWebBrowser(uri: Uri)
 }

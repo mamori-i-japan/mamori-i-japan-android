@@ -14,7 +14,7 @@ class TutorialViewModel(private val disposable: CompositeDisposable): ViewModel(
     }
 
     fun onClickStart() {
-        navigator.goToInputPrefecture()
+        navigator.goToAgreement()
     }
 
     fun onClickWebLink() {

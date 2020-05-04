@@ -39,13 +39,13 @@ val viewModule = module {
         SettingViewModel(get(), get(), get())
     }
     viewModel {
-        InputPrefectureViewModel(get(), get(), get())
+        InputPrefectureViewModel(get(), get(), get(), get())
     }
     viewModel {
         InputOrganizationCodeViewModel(get(), get(), get())
     }
     viewModel {
-        AgreementViewModel(get(), get(), get())
+        AgreementViewModel(get())
     }
     viewModel {
         SplashViewModel(get(), get(), get(), get())

@@ -11,7 +11,7 @@ import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
 import jp.mamori_i.app.extension.setUpToolBar
 import jp.mamori_i.app.extension.showErrorDialog
-import jp.mamori_i.app.screen.permission.PermissionSettingActivity
+import jp.mamori_i.app.screen.profile.InputPrefectureActivity
 import jp.mamori_i.app.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_agreement.*
 import org.koin.android.ext.android.inject
@@ -25,7 +25,6 @@ class AgreementActivity: AppCompatActivity(), AgreementNavigator {
 
     private val viewModel: AgreementViewModel by viewModel()
     private val disposable: CompositeDisposable by inject()
-    private lateinit var transitionEntity: AgreementTransitionEntity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,19 +44,13 @@ class AgreementActivity: AppCompatActivity(), AgreementNavigator {
     private fun initialize() {
         setContentView(R.layout.activity_agreement)
         viewModel.navigator = this
-        intent?.let { intent ->
-            (intent.getSerializableExtra(KEY) as? AgreementTransitionEntity)?.let { entity ->
-                // 引き継ぎデータあり
-                transitionEntity = entity
-            }
-        }
     }
 
     private fun setupViews() {
         setUpToolBar(toolBar, "利用規約への同意")
 
         agreeButton.setOnClickListener {
-            viewModel.onClickAgree(transitionEntity.prefectureType)
+            viewModel.onClickAgree()
         }
 
         linkButton.setOnClickListener {
@@ -66,24 +59,10 @@ class AgreementActivity: AppCompatActivity(), AgreementNavigator {
     }
 
     private fun bind() {
-        viewModel.loginError
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { error ->
-                showErrorDialog(error)
-            }.addTo(disposable)
     }
 
-    override fun showProgress() {
-        ProgressHUD.show(this)
-    }
-
-    override fun hideProgress() {
-        ProgressHUD.hide()
-    }
-
-    override fun goToPermissionSetting() {
-        val intent = Intent(this, PermissionSettingActivity::class.java)
+    override fun goToInputPrefecture() {
+        val intent = Intent(this, InputPrefectureActivity::class.java)
         this.startActivity(intent)
     }
 

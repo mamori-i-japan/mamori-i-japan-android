@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import jp.mamori_i.app.R
 import jp.mamori_i.app.extension.setUpToolBar
-import jp.mamori_i.app.screen.profile.InputPrefectureActivity
 import kotlinx.android.synthetic.main.activity_tutorial.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -54,8 +53,8 @@ class TutorialActivity: AppCompatActivity(), TutorialNavigator {
     private fun bind() {
     }
 
-    override fun goToInputPrefecture() {
-        val intent = Intent(this, InputPrefectureActivity::class.java)
+    override fun goToAgreement() {
+        val intent = Intent(this, AgreementActivity::class.java)
         this.startActivity(intent)
     }
 
