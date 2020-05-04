@@ -12,7 +12,7 @@ import kotlin.coroutines.CoroutineContext
 
 class TraceHistoryViewModel(private val traceRepository: TraceRepository): ViewModel(), CoroutineScope {
 
-    val deepContacts = PublishSubject.create<List<DeepContact>>()
+    val listItems = PublishSubject.create<List<TraceHistoryListItem>>()
 
     private var job: Job = Job()
     override val coroutineContext: CoroutineContext
@@ -23,9 +23,24 @@ class TraceHistoryViewModel(private val traceRepository: TraceRepository): ViewM
         super.onCleared()
     }
 
-    fun loadDeepContacts() {
+    fun loadListItems() {
         launch(Dispatchers.IO) {
-            deepContacts.onNext(traceRepository.selectAllDeepContactUsers().map { DeepContact.create(it) })
+            // まず濃厚接触履歴を全件取得 (DeepContactに変換・降順ソート)
+            val deepContacts = traceRepository.selectAllDeepContactUsers()
+                .map { DeepContact.create(it) }
+                .sortedBy { it.startTime }
+            // 年月日ごとにセパレートする
+            val separatedDeepContacts = deepContacts.groupBy{ it.startDateString }
+            // 年月日を１セクションとし、ListItemを生成する
+            val items = mutableListOf<TraceHistoryListItem>()
+            separatedDeepContacts.forEach { (date, contacts) ->
+                items.add(TraceHistoryListItem(TraceHistoryAdapter.ViewType.Section, date, null))
+                contacts.forEach {
+                    items.add(TraceHistoryListItem(TraceHistoryAdapter.ViewType.Body, null, it))
+                }
+            }
+
+            listItems.onNext(items)
         }
     }
 }

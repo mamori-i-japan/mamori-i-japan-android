@@ -38,7 +38,7 @@ class TraceHistoryActivity: AppCompatActivity() {
         // viewModelとのbind
         bind()
         // ロード
-        viewModel.loadDeepContacts()
+        viewModel.loadListItems()
     }
 
     override fun onDestroy() {
@@ -61,7 +61,7 @@ class TraceHistoryActivity: AppCompatActivity() {
     }
 
     private fun bind() {
-        viewModel.deepContacts
+        viewModel.listItems
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy {

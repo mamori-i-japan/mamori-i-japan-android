@@ -12,6 +12,10 @@ data class DeepContact(val uniqueInsertKey: String,
     val startTime = contactStartTime.convertToTimeInMillis()
     val endTime = contactEndTime.convertToTimeInMillis()
 
+    val startDateString = startTime.convertToDateTimeString("yyyy年MM月dd日")
+    val startTimeString = startTime.convertToDateTimeString("HH : mm")
+    val endTimeString = endTime.convertToDateTimeString("HH : mm")
+
     companion object {
         fun create(entity: DeepContactUserEntity): DeepContact {
             // BE側はUnixTimeなのでTimeInMillisとの相互変換が必要
