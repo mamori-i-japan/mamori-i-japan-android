@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "598864012119",
+    "firebase_url": "https://contact-tracing-37126.firebaseio.com",
+    "project_id": "contact-tracing-37126",
+    "storage_bucket": "contact-tracing-37126.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:598864012119:android:63d768832ef705cd875412",
+        "android_client_info": {
+          "package_name": "jp.mamori_i.app.stg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "598864012119-nkd0uq764682d2vsgr4ep46h9u5g3tk6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "jp.mamori_i.app.stg",
+            "certificate_hash": "272b1b20be2b21ae65b7ea655947524c87e0fb92"
+          }
+        },
+        {
+          "client_id": "598864012119-vh9hu0t3d32nofgrbrbsisd5ftdl8qtg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACspUwg--LuaMpHAPnPsJTg1rsLG9dq6s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "598864012119-vh9hu0t3d32nofgrbrbsisd5ftdl8qtg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "598864012119-keflrgle163ujj5oktlu8c3ab6gvisuq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "jp.mamori-i.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -44,10 +44,10 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file('../keystore/MIJDev.keystore')
-            storePassword 'MIJDev'
-            keyAlias = 'MIJDev'
-            keyPassword 'MIJDev'
+            storeFile file('../keystore/MIJDebug.keystore')
+            storePassword 'MIJDebug'
+            keyAlias = 'MIJDebug'
+            keyPassword 'MIJDebug'
         }
     }
 
@@ -78,16 +78,13 @@ android {
     productFlavors {
         dev {
             applicationIdSuffix ".dev"
-            buildConfigField("Boolean", "IS_IGONORE_SSL_ERROR", "false")
             buildConfigField("String", "BASE_URL", '"https://api-dev.mamori-i.jp/"')
         }
         stg {
             applicationIdSuffix ".stg"
-            buildConfigField("Boolean", "IS_IGONORE_SSL_ERROR", "false")
             buildConfigField("String", "BASE_URL", '"https://api-stg.mamori-i.jp/"')
         }
         prod {
-            buildConfigField("Boolean", "IS_IGONORE_SSL_ERROR", "false")
             buildConfigField("String", "BASE_URL", '"https://api.mamori-i.jp/"')
         }
     }
@@ -175,5 +172,4 @@ dependencies {
 
     // Test Mock
     testImplementation 'io.mockk:mockk:1.10.0'
-    androidTestImplementation 'io.mockk:mockk:1.10.0'
 }

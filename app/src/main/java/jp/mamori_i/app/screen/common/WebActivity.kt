@@ -77,14 +77,6 @@ class WebActivity: AppCompatActivity() {
                 webView.visibility = View.VISIBLE
             }
 
-            override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
-                if (BuildConfig.IS_IGONORE_SSL_ERROR) {
-                    handler?.proceed()
-                } else {
-                    super.onReceivedSslError(view, handler, error)
-                }
-            }
-
             override fun onReceivedHttpError(view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?) {
             }
 
