@@ -17,6 +17,8 @@ import jp.mamori_i.app.data.repository.profile.ProfileRepository
 import jp.mamori_i.app.data.repository.trase.TraceRepository
 import jp.mamori_i.app.screen.common.LogoutHelper
 import jp.mamori_i.app.screen.common.MIJError
+import jp.mamori_i.app.screen.common.MIJError.Reason.*
+import jp.mamori_i.app.screen.common.MIJError.Action.*
 import jp.mamori_i.app.screen.home.HomeStatus.HomeStatusType.*
 import jp.mamori_i.app.util.AnalysisUtil
 import kotlinx.coroutines.*
@@ -107,13 +109,22 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                     when {
                         appStatus.status() == AndroidAppStatus.Status.Maintenance -> {
                             // メンテナンス
-                            navigator.showMaintenanceDialog("メンテナンス中です") // TODO メッセージ
-                            return@subscribeBy
+                            error.onNext(MIJError(
+                                Maintenance,
+                                "ただいまメンテナンス中です",
+                                "時間を置いてから再度お試しください。",
+                                DialogAppKill)
+                            )
                         }
                         appStatus.status() == AndroidAppStatus.Status.ForceUpdate -> {
                             // 強制アップデート
-                            navigator.showForceUpdateDialog("最新のバージョンがあります。", appStatus.storeUrl.toUri()) // TODO メッセージ
-                            return@subscribeBy
+                            error.onNext(MIJError(
+                                Version,
+                                "最新のバージョンがあります",
+                                "ストアより最新のアプリをダウンロードしてください。",
+                                DialogAppKill) {
+                                    navigator.openWebBrowser(appStatus.storeUrl.toUri())
+                            })
                         }
                     }
                 },
@@ -197,7 +208,7 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                                             reason,
                                             "認証エラーが発生しました",
                                             "時間を置いてから再度お試しください。",
-                                            MIJError.Action.DialogLogout) {
+                                            DialogLogout) {
                                                 runBlocking(Dispatchers.IO) {
                                                     logoutHelper.logout()
                                                 }
@@ -222,7 +233,7 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                             reason,
                             "認証エラーが発生しました",
                             "時間を置いてから再度お試しください。",
-                            MIJError.Action.DialogLogout) {
+                            DialogLogout) {
                             runBlocking(Dispatchers.IO) {
                                 logoutHelper.logout()
                             }

@@ -4,9 +4,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
-import jp.mamori_i.app.extension.showAlert
+import jp.mamori_i.app.extension.handleError
 import jp.mamori_i.app.screen.home.HomeActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -51,6 +55,12 @@ class SplashActivity: AppCompatActivity(),
     }
 
     private fun bind() {
+        viewModel.error
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy { error ->
+                handleError(error)
+            }.addTo(disposable)
     }
 
     override fun goToHome() {
@@ -63,17 +73,8 @@ class SplashActivity: AppCompatActivity(),
         this.startActivity(intent)
     }
 
-    override fun showForceUpdateDialog(message: String, uri: Uri) {
-        showAlert(message) {
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            this.startActivity(intent)
-            finish()
-        }
-    }
-
-    override fun showMaintenanceDialog(message: String) {
-        showAlert(message) {
-            finish()
-        }
+    override fun openWebBrowser(uri: Uri) {
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        this.startActivity(intent)
     }
 }

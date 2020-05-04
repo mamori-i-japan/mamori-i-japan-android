@@ -13,7 +13,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
 import jp.mamori_i.app.extension.handleError
-import jp.mamori_i.app.extension.showAlert
 import jp.mamori_i.app.screen.home.HomeStatus.HomeStatusType.*
 import jp.mamori_i.app.screen.menu.MenuActivity
 import jp.mamori_i.app.screen.trace.TraceHistoryActivity
@@ -225,25 +224,5 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
                 title
             )
         )
-    }
-
-    override fun showForceUpdateDialog(message: String, uri: Uri) {
-        // この時点でDisposableをクリアしておく
-        disposable.clear()
-        showAlert(message) {
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            this.startActivity(intent)
-            finish()
-            moveTaskToBack(true)
-        }
-    }
-
-    override fun showMaintenanceDialog(message: String) {
-        // この時点でDisposableをクリアしておく
-        disposable.clear()
-        showAlert(message) {
-            finish()
-            moveTaskToBack(true)
-        }
     }
 }

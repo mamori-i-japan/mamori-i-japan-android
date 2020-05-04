@@ -10,6 +10,4 @@ interface HomeNavigator {
     fun goToTraceHistory()
     fun openWebBrowser(uri: Uri)
     fun openShareComponent(title: String, content: String)
-    fun showForceUpdateDialog(message: String, uri: Uri)
-    fun showMaintenanceDialog(message: String)
 }

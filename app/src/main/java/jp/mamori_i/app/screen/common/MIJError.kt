@@ -2,9 +2,7 @@ package jp.mamori_i.app.screen.common
 
 import android.accounts.NetworkErrorException
 import com.google.firebase.FirebaseNetworkException
-import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthException
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.gson.JsonParseException
 import com.jakewharton.retrofit2.adapter.rxjava2.HttpException
 import com.squareup.moshi.JsonDataException
@@ -20,10 +18,11 @@ data class MIJError (val reason: Reason,
                      val message: String,
                      val description: String,
                      val action: Action,
-                     val logoutAction: (() -> Unit)? = null,
-                     val retryAction: (() -> Unit)? = null) {
+                     val closeAction: (() -> Unit)? = null) {
 
     enum class Reason {
+        Maintenance,
+        Version,
         NetWork,
         Parse,
         DB,
@@ -38,6 +37,7 @@ data class MIJError (val reason: Reason,
         DialogRetry,
         DialogLogout,
         DialogBack,
+        DialogAppKill,
         Inline,
         InView,
         ForceLogout,
