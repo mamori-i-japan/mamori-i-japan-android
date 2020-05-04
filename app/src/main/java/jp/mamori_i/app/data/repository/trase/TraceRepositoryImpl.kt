@@ -42,7 +42,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
         private const val TEMP_ID_SPLIT_TIME = "040000"
     }
 
-    override fun fetchPositivePersons(activity: Activity): Single<List<PositivePerson>> {
+    override fun fetchPositivePersons(activity: Activity): Single<List<String>> {
         return Single.create { result ->
             // データを取得
             firebaseStorageService.loadDataIfNeeded(PositivePersonList, null, localCacheService.positivePersonListGeneration?:"0", activity)
@@ -74,7 +74,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
         }
     }
 
-    override fun fetchPositivePersons(organizationCode: String, activity: Activity): Single<List<PositivePerson>> {
+    override fun fetchPositivePersons(organizationCode: String, activity: Activity): Single<List<String>> {
         return Single.create { result ->
             // データを取得
             firebaseStorageService.loadDataIfNeeded(PositivePersonList, organizationCode, localCacheService.positivePersonListGeneration(organizationCode)?:"0", activity)

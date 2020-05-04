@@ -12,6 +12,7 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
+import jp.mamori_i.app.data.repository.profile.ProfileRepository
 import jp.mamori_i.app.screen.common.MIJError
 import jp.mamori_i.app.data.repository.trase.TraceRepository
 import jp.mamori_i.app.extension.convertToDateTimeString
@@ -31,6 +32,7 @@ class TestPositiveCheckActivity: AppCompatActivity(), CoroutineScope {
     }
 
     private val repository: TraceRepository by inject()
+    private val profileRepository: ProfileRepository by inject()
     private val disposable: CompositeDisposable by inject()
 
     private val job = Job()
@@ -82,30 +84,49 @@ class TestPositiveCheckActivity: AppCompatActivity(), CoroutineScope {
     }
 
     private fun check() {
-        repository.fetchPositivePersons(this)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy(
-                onSuccess = { list ->
+        profileRepository.fetchProfile(this).subscribeOn(Schedulers.io())
+            .subscribeBy (
+                onSuccess = { profile ->
                     launch (Dispatchers.IO) {
-                        val ids = list.map { it.tempId }
                         val tempIds = repository.loadTempIds()
-                        val isPositive = AnalysisUtil.analysisPositive(list, tempIds)
-
                         withContext(Dispatchers.Main) {
                             myTempIdListText.text = tempIds.map { it.tempId + "\n      " + it.startTime.convertToDateTimeString("MM/dd HH:mm") + "~" + it.expiryTime.convertToDateTimeString("MM/dd HH:mm") }.joinToString("\n")
-                            positiveListText.text = ids.joinToString("\n")
-                            if (isPositive) {
-                                checkResultText.text = "陽性です"
-                            } else {
-                                checkResultText.text = "陽性ではありません"
-                            }
                         }
+                    }
+                    if (profile.organizationCode.isNotEmpty()) {
+                        repository.fetchPositivePersons(profile.organizationCode, this)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeBy(
+                                onSuccess = { list ->
+                                    launch (Dispatchers.IO) {
+                                        val tempIds = repository.loadTempIds()
+                                        val isPositive = AnalysisUtil.analysisPositive(list, tempIds)
+
+                                        withContext(Dispatchers.Main) {
+                                            positiveListText.text = "組織コード: " + profile.organizationCode + "\n" + list.joinToString("\n")
+                                            if (isPositive) {
+                                                checkResultText.text = "陽性です"
+                                            } else {
+                                                checkResultText.text = "陽性ではありません"
+                                            }
+                                        }
+                                    }
+                                },
+                                onError = { error ->
+                                    showErrorDialog(MIJError(MIJError.mappingReason(error), "陽性者リスト取得エラー", MIJError.Action.DialogCloseOnly))
+                                }
+                            ).addTo(disposable)
+                    } else {
+                        checkResultText.text = "組織コードなし"
+                        positiveListText.text = "組織コードが登録されてなさそうなのでリスト取得していません"
                     }
                 },
                 onError = { error ->
-                    showErrorDialog(MIJError(MIJError.mappingReason(error), "陽性者リスト取得エラー", MIJError.Action.DialogCloseOnly))
+                    showErrorDialog(MIJError(MIJError.mappingReason(error), "プロフィール取得エラー", MIJError.Action.DialogCloseOnly))
                 }
-            ).addTo(disposable)
+
+        ).addTo(disposable)
+
     }
 }

@@ -2,9 +2,7 @@ package jp.mamori_i.app.util
 
 import jp.mamori_i.app.data.database.deepcontactuser.DeepContactUserEntity
 import jp.mamori_i.app.data.database.tracedata.TraceDataEntity
-import jp.mamori_i.app.data.model.PositivePerson
 import jp.mamori_i.app.data.model.TempUserId
-import jp.mamori_i.app.extension.convertToUnixTime
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -182,7 +180,7 @@ class AnalysisUtilTest {
     @Test
     fun analysis_positive() {
 
-        var testDataP: List<PositivePerson> = listOf()
+        var testDataP: List<String> = listOf()
         var testDataT: List<TempUserId> = listOf()
 
         /**
@@ -195,10 +193,10 @@ class AnalysisUtilTest {
          *  false
          */
         testDataP = listOf(
-            createTestData("a"),
-            createTestData("b"),
-            createTestData("c"),
-            createTestData("d"))
+            "a",
+            "b",
+            "c",
+            "d")
         testDataT = listOf(
             createTestDate("A"),
             createTestDate("B"),
@@ -217,10 +215,10 @@ class AnalysisUtilTest {
          *  false
          */
         testDataP = listOf(
-            createTestData("a"),
-            createTestData("b"),
-            createTestData("c"),
-            createTestData("d"))
+            "a",
+            "b",
+            "c",
+            "d")
         testDataT = listOf(
             createTestDate("A"),
             createTestDate("b"),
@@ -239,10 +237,10 @@ class AnalysisUtilTest {
          *  false
          */
         testDataP = listOf(
-            createTestData("a"),
-            createTestData("b"),
-            createTestData("c"),
-            createTestData("d"))
+            "a",
+            "b",
+            "c",
+            "d")
         testDataT = listOf(
             createTestDate("A"),
             createTestDate("b"),
@@ -255,7 +253,7 @@ class AnalysisUtilTest {
     @Test
     fun analysis_deep_contact_with_positive_person() {
 
-        var testDataP: List<PositivePerson> = listOf()
+        var testDataP: List<String> = listOf()
         var testDataD: List<DeepContactUserEntity> = listOf()
 
         /**
@@ -268,10 +266,10 @@ class AnalysisUtilTest {
          *  null (濃厚接触なし)
          */
         testDataP = listOf(
-            createTestData("a"),
-            createTestData("b"),
-            createTestData("c"),
-            createTestData("d"))
+            "a",
+            "b",
+            "c",
+            "d")
         testDataD = listOf(
             createTestDate("A", 0, 3),
             createTestDate("B", 4, 7),
@@ -291,10 +289,10 @@ class AnalysisUtilTest {
          *  b/4-7
          */
         testDataP = listOf(
-            createTestData("a"),
-            createTestData("b"),
-            createTestData("c"),
-            createTestData("d"))
+            "a",
+            "b",
+            "c",
+            "d")
         testDataD = listOf(
             createTestDate("A", 0, 3),
             createTestDate("b", 4, 7),
@@ -316,10 +314,10 @@ class AnalysisUtilTest {
          *  c/8-10
          */
         testDataP = listOf(
-            createTestData("a"),
-            createTestData("b"),
-            createTestData("c"),
-            createTestData("d"))
+            "a",
+            "b",
+            "c",
+            "d")
         testDataD = listOf(
             createTestDate("A", 0, 3),
             createTestDate("b", 4, 7),
@@ -341,10 +339,10 @@ class AnalysisUtilTest {
          *  c/5-10
          */
         testDataP = listOf(
-            createTestData("a"),
-            createTestData("b"),
-            createTestData("c"),
-            createTestData("d"))
+            "a",
+            "b",
+            "c",
+            "d")
         testDataD = listOf(
             createTestDate("A", 0, 3),
             createTestDate("b", 4, 7),
@@ -366,10 +364,10 @@ class AnalysisUtilTest {
          *  b/4-10
          */
         testDataP = listOf(
-            createTestData("a"),
-            createTestData("b"),
-            createTestData("c"),
-            createTestData("d"))
+            "a",
+            "b",
+            "c",
+            "d")
         testDataD = listOf(
             createTestDate("A", 0, 3),
             createTestDate("b", 4, 10),
@@ -384,10 +382,6 @@ class AnalysisUtilTest {
 
     private fun createTestData(timestamp: Long): TraceDataEntity {
         return TraceDataEntity("testId", timestamp, 2, null)
-    }
-
-    private fun createTestData(id: String): PositivePerson {
-        return PositivePerson(id)
     }
 
     private fun createTestDate(id: String): TempUserId {

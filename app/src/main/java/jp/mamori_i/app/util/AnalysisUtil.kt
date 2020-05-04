@@ -2,7 +2,6 @@ package jp.mamori_i.app.util
 
 import jp.mamori_i.app.data.database.deepcontactuser.DeepContactUserEntity
 import jp.mamori_i.app.data.database.tracedata.TraceDataEntity
-import jp.mamori_i.app.data.model.PositivePerson
 import jp.mamori_i.app.data.model.TempUserId
 
 class AnalysisUtil {
@@ -15,11 +14,10 @@ class AnalysisUtil {
          * tempIdList : TempIdのリスト
          * @return Boolean : 陽性かどうか
          */
-        fun analysisPositive(positivePersonList: List<PositivePerson>,
+        fun analysisPositive(positivePersonList: List<String>,
                              tempIdList: List<TempUserId>): Boolean {
-            val targetIds = positivePersonList.map { it.tempId }
             return tempIdList.map { it.tempId }
-                .firstOrNull { targetIds.contains(it)}
+                .firstOrNull { positivePersonList.contains(it)}
                 ?.let {
                     true
                 }?: false
@@ -31,12 +29,11 @@ class AnalysisUtil {
          * deepContactUserList : 濃厚接触テーブルEntityリスト
          * @return DeepContactUserEntity? : 最後に陽性者と濃厚接触したデータ / null = 陽性者との濃厚接触なし
          */
-        fun analysisDeepContactWithPositivePerson(positivePersonList: List<PositivePerson>,
+        fun analysisDeepContactWithPositivePerson(positivePersonList: List<String>,
                                                   deepContactUserList: List<DeepContactUserEntity>): DeepContactUserEntity? {
-            val targetIds = positivePersonList.map { it.tempId }
             return deepContactUserList.sortedBy { it.endTime }
                 .reversed()
-                .firstOrNull { targetIds.contains(it.tempId) }
+                .firstOrNull { positivePersonList.contains(it.tempId) }
         }
 
         /**

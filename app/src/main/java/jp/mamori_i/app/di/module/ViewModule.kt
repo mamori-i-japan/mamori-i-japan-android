@@ -60,6 +60,6 @@ val viewModule = module {
         TraceHistoryViewModel(get())
     }
     viewModel {
-        TestContactListViewModel(get(), get())
+        TestContactListViewModel(get(), get(), get())
     }
 }

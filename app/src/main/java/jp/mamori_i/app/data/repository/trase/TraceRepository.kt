@@ -6,15 +6,13 @@ import io.reactivex.Single
 import jp.mamori_i.app.data.database.deepcontactuser.DeepContactUserEntity
 import jp.mamori_i.app.data.database.tempuserid.TempUserIdEntity
 import jp.mamori_i.app.data.database.tracedata.TraceDataEntity
-import jp.mamori_i.app.data.model.DeepContact
-import jp.mamori_i.app.data.model.PositivePerson
 import jp.mamori_i.app.data.model.TempUserId
 
 interface TraceRepository {
     // 陽性者リストの取得
-    fun fetchPositivePersons(activity: Activity): Single<List<PositivePerson>>
+    fun fetchPositivePersons(activity: Activity): Single<List<String>>
     // 組織コード別陽性者リストの取得
-    fun fetchPositivePersons(organizationCode: String, activity: Activity): Single<List<PositivePerson>>
+    fun fetchPositivePersons(organizationCode: String, activity: Activity): Single<List<String>>
 
     // TempIdのロード
     suspend fun loadTempIds(): List<TempUserId>

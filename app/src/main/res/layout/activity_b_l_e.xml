@@ -89,6 +89,7 @@
             android:id="@+id/logButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:layout_margin="8dp"
             android:text="詳細ログ" />
@@ -97,17 +98,19 @@
             android:id="@+id/positiveCheckButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:layout_margin="8dp"
-            android:text="陽性チェック" />
+            android:text="陽性者\n判定" />
 
         <Button style="@style/GeneralButton"
             android:id="@+id/contactButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="0.9"
             android:layout_margin="8dp"
-            android:text="濃厚接触リスト" />
+            android:text="濃厚接触\nリスト" />
 
     </LinearLayout>
 
