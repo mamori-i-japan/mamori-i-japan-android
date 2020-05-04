@@ -20,6 +20,7 @@ import jp.mamori_i.app.screen.common.MIJError
 import jp.mamori_i.app.screen.home.HomeStatus.HomeStatusType.*
 import jp.mamori_i.app.util.AnalysisUtil
 import kotlinx.coroutines.*
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class HomeViewModel(private val traceRepository: TraceRepository,
@@ -156,10 +157,10 @@ class HomeViewModel(private val traceRepository: TraceRepository,
             // まず昨日の濃厚接触数を取得
             when (val count = traceRepository.countDeepContactUsersAtYesterday()) {
                 in 0 until 25 -> {
-                    homeStatus.onNext(HomeStatus(Usual, count))
+                    homeStatus.onNext(HomeStatus(Usual, count, Date().time))
                 }
                 else -> {
-                    homeStatus.onNext(HomeStatus(SemiUsual, count))
+                    homeStatus.onNext(HomeStatus(SemiUsual, count, Date().time))
                 }
             }
         }

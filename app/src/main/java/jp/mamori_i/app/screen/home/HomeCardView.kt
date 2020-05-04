@@ -26,22 +26,20 @@ class HomeCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
     fun updateContent(status: HomeStatus) {
         // TODO メッセージ
-        // TODO 種別増えたらさらにサブビューにして切り替える
         when (status.statusType) {
-            HomeStatus.HomeStatusType.Usual -> {
+            Usual -> {
                 mainMessageTextView.text = "一緒に日本を守ってくれて\nありがとうございます"
                 subMessageTextView.text = "引き続き接触を控えましょう"
                 subMessageTextView.visibility = View.VISIBLE
-                contactCountTextView.text = (status.deepContactCount?:0).toString()
-                lastUpdateTextView.text = "最終更新 : XX月XX日XX時"
             }
             SemiUsual -> {
                 mainMessageTextView.text = "接触を減らすために\n周りに協力してもらえることは\nありませんか"
                 subMessageTextView.text = ""
                 subMessageTextView.visibility = View.GONE
-                contactCountTextView.text = (status.deepContactCount?:0).toString()
-                lastUpdateTextView.text = "最終更新 : XX月XX日XX時"
             }
         }
+        // 共通
+        lastUpdateTextView.text = "最終更新 : ${status.updateDatetimeString}"
+        contactCountTextView.text = (status.deepContactCount).toString()
     }
 }

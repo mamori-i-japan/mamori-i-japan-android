@@ -22,6 +22,7 @@ import jp.mamori_i.app.util.BLEUtil
 import kotlinx.android.synthetic.main.activity_home.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 
 
 class HomeActivity: AppCompatActivity(), HomeNavigator {
@@ -79,10 +80,10 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
 
         // TODO 画面切り替え実験用
         usualButton.setOnClickListener {
-            viewModel.homeStatus.onNext(HomeStatus(Usual, 10))
+            viewModel.homeStatus.onNext(HomeStatus(Usual, 10, Date().time))
         }
         semiUsualButton.setOnClickListener {
-            viewModel.homeStatus.onNext(HomeStatus(SemiUsual, 25))
+            viewModel.homeStatus.onNext(HomeStatus(SemiUsual, 25, Date().time))
         }
         notifyButton.setOnClickListener {
             if (it.tag == true) {
