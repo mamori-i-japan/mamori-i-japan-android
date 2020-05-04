@@ -16,8 +16,8 @@ import jp.mamori_i.app.data.repository.profile.ProfileRepository
 import jp.mamori_i.app.screen.common.MIJError
 import jp.mamori_i.app.data.repository.trase.TraceRepository
 import jp.mamori_i.app.extension.convertToDateTimeString
+import jp.mamori_i.app.extension.handleError
 import jp.mamori_i.app.extension.setUpToolBar
-import jp.mamori_i.app.extension.showErrorDialog
 import jp.mamori_i.app.util.AnalysisUtil
 import kotlinx.android.synthetic.main.activity_test_positive_check.*
 import kotlinx.coroutines.*
@@ -114,7 +114,7 @@ class TestPositiveCheckActivity: AppCompatActivity(), CoroutineScope {
                                     }
                                 },
                                 onError = { error ->
-                                    showErrorDialog(MIJError(MIJError.mappingReason(error), "陽性者リスト取得エラー", MIJError.Action.DialogCloseOnly))
+                                    handleError(MIJError(MIJError.mappingReason(error), "エラー", "陽性者リスト取得エラー", MIJError.Action.DialogCloseOnly))
                                 }
                             ).addTo(disposable)
                     } else {
@@ -123,7 +123,7 @@ class TestPositiveCheckActivity: AppCompatActivity(), CoroutineScope {
                     }
                 },
                 onError = { error ->
-                    showErrorDialog(MIJError(MIJError.mappingReason(error), "プロフィール取得エラー", MIJError.Action.DialogCloseOnly))
+                    handleError(MIJError(MIJError.mappingReason(error), "エラー", "プロフィール取得エラー", MIJError.Action.DialogCloseOnly))
                 }
 
         ).addTo(disposable)

@@ -142,9 +142,9 @@ class TraceRepositoryImpl (private val moshi: Moshi,
                                     result.onError(e)
                                 }
                             )
-                    }?: result.onError(MIJException(Auth))
+                    }?: result.onError(task.exception?: MIJException(Auth))
                 } else {
-                    result.onError(MIJException(Auth))
+                    result.onError(task.exception?: MIJException(Auth))
                 }
             }
         }

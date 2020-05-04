@@ -23,7 +23,7 @@ class MenuViewModel(private val profileRepository: ProfileRepository,
 
     lateinit var navigator: MenuNavigator
     val menuItems = PublishSubject.create<List<MenuListItem>>()
-    val fetchError = PublishSubject.create<MIJError>()
+    val error = PublishSubject.create<MIJError>()
 
     override fun onCleared() {
         disposable.clear()
@@ -43,13 +43,16 @@ class MenuViewModel(private val profileRepository: ProfileRepository,
                     navigator.hideProgress()
                     val reason = MIJError.mappingReason(e)
                     if (reason == MIJError.Reason.Auth) {
-                        // 認証エラーの場合はログアウト処理をする
-                        runBlocking (Dispatchers.IO) {
-                            logoutHelper.logout()
-                            fetchError.onNext(MIJError(reason, "TODO",
-                                MIJError.Action.DialogLogout
-                            ))
-                        }
+                        // 認証エラーの場合のみエラー通知
+                        error.onNext(MIJError(
+                            reason,
+                            "認証エラーが発生しました",
+                            "時間を置いてから再度お試しください。",
+                            MIJError.Action.DialogLogout) {
+                            runBlocking(Dispatchers.IO) {
+                                logoutHelper.logout()
+                            }
+                        })
                     } else {
                         // 認証エラー以外はProfileがないものとしてそのまま進める
                         menuItems.onNext(createMenuItems(null))

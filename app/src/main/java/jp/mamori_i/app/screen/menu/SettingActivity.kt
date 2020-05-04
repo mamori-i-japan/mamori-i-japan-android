@@ -9,8 +9,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
+import jp.mamori_i.app.extension.handleError
 import jp.mamori_i.app.extension.setUpToolBar
-import jp.mamori_i.app.extension.showErrorDialog
 import jp.mamori_i.app.screen.profile.InputPrefectureActivity
 import jp.mamori_i.app.screen.profile.InputPrefectureTransitionEntity
 import jp.mamori_i.app.screen.profile.InputOrganizationCodeActivity
@@ -87,18 +87,11 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
                 }
             }.addTo(disposable)
 
-        viewModel.fetchError
+        viewModel.error
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { error ->
-                showErrorDialog(error)
-            }.addTo(disposable)
-
-        viewModel.clearError
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { error ->
-                showErrorDialog(error)
+                handleError(error)
             }.addTo(disposable)
     }
 

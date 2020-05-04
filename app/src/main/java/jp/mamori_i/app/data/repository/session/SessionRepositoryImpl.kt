@@ -34,11 +34,9 @@ class SessionRepositoryImpl(private val auth: FirebaseAuth,
                                     result.onError(e)
                                 }
                             )
-                    }?: result.onError(MIJException(Auth))
+                    }?: result.onError(task.exception?: MIJException(Auth))
                 } else {
-                    // TODO エラー確認
-                    result.onError(MIJException(Auth))
-                }
+                    result.onError(task.exception?: MIJException(Auth))                }
             }
         }
     }

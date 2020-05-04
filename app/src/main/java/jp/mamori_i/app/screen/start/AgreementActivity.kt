@@ -4,15 +4,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
 import jp.mamori_i.app.extension.setUpToolBar
-import jp.mamori_i.app.extension.showErrorDialog
 import jp.mamori_i.app.screen.profile.InputPrefectureActivity
-import jp.mamori_i.app.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_agreement.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel

@@ -1,7 +1,6 @@
 package jp.mamori_i.app.screen.profile
 
 import android.os.Bundle
-import android.text.Editable
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.jakewharton.rxbinding3.widget.textChanges
@@ -10,12 +9,12 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
+import jp.mamori_i.app.extension.handleError
 import jp.mamori_i.app.extension.setUpToolBar
-import jp.mamori_i.app.extension.showErrorDialog
+import jp.mamori_i.app.screen.common.MIJError
 import jp.mamori_i.app.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_input_organization_code.*
 import kotlinx.android.synthetic.main.activity_input_organization_code.toolBar
-import kotlinx.android.synthetic.main.ui_select_text.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -82,11 +81,15 @@ class InputOrganizationCodeActivity: AppCompatActivity(),
                 updateButton.isEnabled = enabled
             }.addTo(disposable)
 
-        viewModel.updateError
+        viewModel.error
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { error ->
-                showErrorDialog(error)
+                if (error.action == MIJError.Action.Inline) {
+                    // TODO インラインエラー
+                } else {
+                    handleError(error)
+                }
             }.addTo(disposable)
     }
 

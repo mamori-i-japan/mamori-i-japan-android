@@ -25,8 +25,7 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
 
     lateinit var navigator: SettingNavigator
     val profile = PublishSubject.create<Profile>()
-    val fetchError = PublishSubject.create<MIJError>()
-    val clearError = PublishSubject.create<MIJError>()
+    val error = PublishSubject.create<MIJError>()
 
     private var _profile: Profile? = null
 
@@ -48,19 +47,36 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
                 onError = { e ->
                     navigator.hideProgress()
                     val reason = MIJError.mappingReason(e)
-                    if (reason == Auth) {
-                        // 認証エラーの場合はログアウト処理をする
-                        runBlocking (Dispatchers.IO) {
-                            logoutHelper.logout()
-                        }
-                    }
-                    fetchError.onNext(
+                    error.onNext(
                         when (reason) {
-                            NetWork -> MIJError(reason, "文言検討20", DialogBack)
-                            Auth -> MIJError(reason, "文言検討22", DialogLogout)
-                            Parse -> MIJError(reason, "文言検討21", DialogBack)
-                            else -> MIJError(reason, "文言検討21", DialogBack)
-                        })
+                            NetWork ->
+                                MIJError(
+                                    reason,
+                                    "組織コードの取得に失敗しました",
+                                    "インターネットに接続されていません。\n通信状況の良い環境で再度お試しください。",
+                                    DialogBack
+                                )
+                            Auth ->
+                                MIJError(
+                                    reason,
+                                    "認証エラーが発生しました",
+                                    "時間を置いてから再度お試しください。",
+                                    DialogLogout
+                                ) {
+                                    // 認証エラーの場合はログアウト処理をする
+                                    runBlocking(Dispatchers.IO) {
+                                        logoutHelper.logout()
+                                    }
+                                }
+                            else ->
+                                MIJError(
+                                    reason,
+                                    "不明なエラーが発生しました",
+                                    "",
+                                    DialogBack
+                                )
+                        }
+                    )
                 }
             ).addTo(disposable)
     }
@@ -89,19 +105,36 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
                 onError = { e ->
                     navigator.hideProgress()
                     val reason = MIJError.mappingReason(e)
-                    if (reason == Auth) {
-                        // 認証エラーの場合はログアウト処理をする
-                        runBlocking (Dispatchers.IO) {
-                            logoutHelper.logout()
-                        }
-                    }
-                    clearError.onNext(
+                    error.onNext(
                         when (reason) {
-                            NetWork -> MIJError(reason, "文言検討20", DialogCloseOnly)
-                            Auth -> MIJError(reason, "文言検討22", DialogLogout)
-                            Parse -> MIJError(reason, "文言検討21", DialogCloseOnly)
-                            else -> MIJError(reason, "文言検討21", DialogCloseOnly)
-                        })
+                            NetWork ->
+                                MIJError(
+                                    reason,
+                                    "組織コードのクリアに失敗しました",
+                                    "インターネットに接続されていません。\n通信状況の良い環境で再度お試しください。",
+                                    DialogCloseOnly
+                                )
+                            Auth ->
+                                MIJError(
+                                    reason,
+                                    "認証エラーが発生しました",
+                                    "時間を置いてから再度お試しください。",
+                                    DialogLogout
+                                ) {
+                                    // 認証エラーの場合はログアウト処理をする
+                                    runBlocking(Dispatchers.IO) {
+                                        logoutHelper.logout()
+                                    }
+                                }
+                            else ->
+                                MIJError(
+                                    reason,
+                                    "不明なエラーが発生しました",
+                                    "",
+                                    DialogCloseOnly
+                                )
+                        }
+                    )
                 }
             ).addTo(disposable)
     }

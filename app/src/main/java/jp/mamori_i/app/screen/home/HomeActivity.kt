@@ -12,8 +12,8 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
-import jp.mamori_i.app.extension.showErrorDialog
-import jp.mamori_i.app.extension.showSimpleMessageAlert
+import jp.mamori_i.app.extension.handleError
+import jp.mamori_i.app.extension.showAlert
 import jp.mamori_i.app.screen.home.HomeStatus.HomeStatusType.*
 import jp.mamori_i.app.screen.menu.MenuActivity
 import jp.mamori_i.app.screen.trace.TraceHistoryActivity
@@ -144,27 +144,8 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy { error ->
-                showErrorDialog(error)
+                handleError(error)
             }.addTo(disposable)
-
-        /*
-        viewModel.statusCheckError
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy { error ->
-                when(error.action) {
-                    InView -> {
-                        // TODO エラー画面を貼り、リトライする
-                        viewModel.doStatusCheck(this)
-                    }
-                    else -> {
-                        showErrorDialog(error) {
-                            viewModel.doStatusCheck(this)
-                        }
-                    }
-                }
-            }
-            .addTo(disposable)*/
     }
 
     private fun updateBackgroundImage(homeStatus: HomeStatus) {
@@ -249,7 +230,7 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
     override fun showForceUpdateDialog(message: String, uri: Uri) {
         // この時点でDisposableをクリアしておく
         disposable.clear()
-        showSimpleMessageAlert(message) {
+        showAlert(message) {
             val intent = Intent(Intent.ACTION_VIEW, uri)
             this.startActivity(intent)
             finish()
@@ -260,7 +241,7 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
     override fun showMaintenanceDialog(message: String) {
         // この時点でDisposableをクリアしておく
         disposable.clear()
-        showSimpleMessageAlert(message) {
+        showAlert(message) {
             finish()
             moveTaskToBack(true)
         }

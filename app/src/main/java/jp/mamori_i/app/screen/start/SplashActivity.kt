@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 import jp.mamori_i.app.R
-import jp.mamori_i.app.extension.showSimpleMessageAlert
+import jp.mamori_i.app.extension.showAlert
 import jp.mamori_i.app.screen.home.HomeActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -64,7 +64,7 @@ class SplashActivity: AppCompatActivity(),
     }
 
     override fun showForceUpdateDialog(message: String, uri: Uri) {
-        showSimpleMessageAlert(message) {
+        showAlert(message) {
             val intent = Intent(Intent.ACTION_VIEW, uri)
             this.startActivity(intent)
             finish()
@@ -72,7 +72,7 @@ class SplashActivity: AppCompatActivity(),
     }
 
     override fun showMaintenanceDialog(message: String) {
-        showSimpleMessageAlert(message) {
+        showAlert(message) {
             finish()
         }
     }

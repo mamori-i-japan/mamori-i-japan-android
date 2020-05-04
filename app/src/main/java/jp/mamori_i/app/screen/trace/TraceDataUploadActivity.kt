@@ -2,7 +2,6 @@ package jp.mamori_i.app.screen.trace
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -10,8 +9,8 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
+import jp.mamori_i.app.extension.handleError
 import jp.mamori_i.app.extension.setUpToolBar
-import jp.mamori_i.app.extension.showErrorDialog
 import jp.mamori_i.app.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_trace_data_upload.*
 import org.koin.android.ext.android.inject
@@ -56,11 +55,11 @@ class TraceDataUploadActivity: AppCompatActivity(), TraceDataUploadNavigator {
     }
 
     private fun bind() {
-        viewModel.uploadError
+        viewModel.error
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy { error ->
-                showErrorDialog(error)
+                handleError(error)
             }
             .addTo(disposable)
     }

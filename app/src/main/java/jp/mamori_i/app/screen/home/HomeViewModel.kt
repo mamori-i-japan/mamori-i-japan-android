@@ -190,17 +190,22 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                                     }
                                 },
                                 onError = { e ->
-                                    notification.onNext("") // エラー発生時はお知らせクリア
                                     val reason = MIJError.mappingReason(e)
                                     if (reason == MIJError.Reason.Auth) {
-                                        // 認証エラーの場合はログアウト処理をする
-                                        runBlocking (Dispatchers.IO) {
-                                            logoutHelper.logout()
-                                        }
                                         // 認証エラーの場合のみ通知し、それ以外は無視する
-                                        error.onNext(MIJError(reason, "文言検討22",
-                                            MIJError.Action.DialogLogout
-                                        ))
+                                        error.onNext(MIJError(
+                                            reason,
+                                            "認証エラーが発生しました",
+                                            "時間を置いてから再度お試しください。",
+                                            MIJError.Action.DialogLogout) {
+                                                runBlocking(Dispatchers.IO) {
+                                                    logoutHelper.logout()
+                                                }
+                                            }
+                                        )
+                                    } else {
+                                        // 認証エラー以外はお知らせをクリアする
+                                        notification.onNext("")
                                     }
                                 }
                             ).addTo(disposable)
@@ -210,17 +215,21 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                     }
                 },
                 onError = { e ->
-                    notification.onNext("") // エラー発生時はお知らせクリア
                     val reason = MIJError.mappingReason(e)
                     if (reason == MIJError.Reason.Auth) {
-                        // 認証エラーの場合はログアウト処理をする
-                        runBlocking (Dispatchers.IO) {
-                            logoutHelper.logout()
-                        }
                         // 認証エラーの場合のみ通知し、それ以外は無視する
-                        error.onNext(MIJError(reason, "文言検討22",
-                            MIJError.Action.DialogLogout
-                        ))
+                        error.onNext(MIJError(
+                            reason,
+                            "認証エラーが発生しました",
+                            "時間を置いてから再度お試しください。",
+                            MIJError.Action.DialogLogout) {
+                            runBlocking(Dispatchers.IO) {
+                                logoutHelper.logout()
+                            }
+                        })
+                    } else {
+                        // 認証エラー以外はお知らせをクリアする
+                        notification.onNext("")
                     }
                 }
             ).addTo(disposable)

@@ -22,8 +22,7 @@ class InputPrefectureViewModel(private val profileRepository: ProfileRepository,
                                private val disposable: CompositeDisposable): ViewModel() {
 
     lateinit var navigator: InputPrefectureNavigator
-    val loginError = PublishSubject.create<MIJError>()
-    val updateError = PublishSubject.create<MIJError>()
+    val error = PublishSubject.create<MIJError>()
 
     override fun onCleared() {
         disposable.clear()
@@ -42,11 +41,22 @@ class InputPrefectureViewModel(private val profileRepository: ProfileRepository,
                 onError = { e ->
                     navigator.hideProgress()
                     val reason = MIJError.mappingReason(e)
-                    loginError.onNext(
+                    error.onNext(
                         when (reason) {
-                            NetWork -> MIJError(reason, "文言検討12", DialogCloseOnly)
-                            else -> MIJError(reason, "文言検討13", DialogCloseOnly)
-                        })
+                            NetWork ->
+                                MIJError(
+                                    reason,
+                                    "インターネットに接続できません",
+                                    "通信状況の良い環境で再度お試しください。",
+                                    DialogCloseOnly)
+                            else ->
+                                MIJError(
+                                    reason,
+                                    "不明なエラーが発生しました",
+                                    "時間を置いてから再度お試しください。",
+                                    DialogCloseOnly)
+                        }
+                    )
                 }
             ).addTo(disposable)
     }
@@ -63,19 +73,33 @@ class InputPrefectureViewModel(private val profileRepository: ProfileRepository,
                 onError = { e ->
                     navigator.hideProgress()
                     val reason = MIJError.mappingReason(e)
-                    if (reason == Auth) {
-                        // 認証エラーの場合はログアウト処理をする
-                        runBlocking (Dispatchers.IO) {
-                            logoutHelper.logout()
-                        }
-                    }
-                    updateError.onNext(
+                    error.onNext(
                         when (reason) {
-                            NetWork -> MIJError(reason, "文言検討20", DialogCloseOnly)
-                            Auth -> MIJError(reason, "文言検討22", DialogLogout)
-                            Parse -> MIJError(reason, "文言検討21", DialogCloseOnly)
-                            else -> MIJError(reason, "文言検討21", DialogCloseOnly)
-                        })
+                            NetWork ->
+                                MIJError(
+                                    reason,
+                                    "都道府県の設定に失敗しました",
+                                    "インターネットに接続されていません。\n通信状況の良い環境で再度お試しください。",
+                                    DialogCloseOnly)
+                            Auth ->
+                                MIJError(
+                                    reason,
+                                    "認証エラーが発生しました",
+                                    "時間を置いてから再度お試しください。",
+                                    DialogLogout) {
+                                    // 認証エラーの場合はログアウト処理をする
+                                    runBlocking (Dispatchers.IO) {
+                                        logoutHelper.logout()
+                                    }
+                                }
+                            else ->
+                                MIJError(
+                                    reason,
+                                    "不明なエラーが発生しました",
+                                    "",
+                                    DialogCloseOnly)
+                        }
+                    )
                 }
             ).addTo(disposable)
     }

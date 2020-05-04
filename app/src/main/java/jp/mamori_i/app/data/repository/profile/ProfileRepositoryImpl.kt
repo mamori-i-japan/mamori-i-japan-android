@@ -38,9 +38,9 @@ class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
                                     result.onError(e)
                                 }
                             )
-                    }?: result.onError(MIJException(Auth))
+                    }?: result.onError(task.exception?: MIJException(Auth))
                 } else {
-                    result.onError(MIJException(Auth))
+                    result.onError(task.exception?: MIJException(Auth))
                 }
             }
         }
@@ -64,7 +64,7 @@ class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
                             )
                     }?: result.onError(MIJException(Auth))
                 } else {
-                    result.onError(MIJException(Auth))
+                    result.onError(task.exception?: MIJException(Auth))
                 }
             }
         }
@@ -87,9 +87,9 @@ class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
                                     result.onError(e)
                                 }
                             )
-                    }?: result.onError(MIJException(Auth))
+                    }?: result.onError(task.exception?: MIJException(Auth))
                 } else {
-                    result.onError(MIJException(Auth))
+                    result.onError(task.exception?: MIJException(Auth))
                 }
             }
         }    }

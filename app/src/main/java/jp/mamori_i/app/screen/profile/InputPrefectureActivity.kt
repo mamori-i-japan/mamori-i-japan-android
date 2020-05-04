@@ -10,8 +10,8 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
 import jp.mamori_i.app.data.model.PrefectureType
+import jp.mamori_i.app.extension.handleError
 import jp.mamori_i.app.extension.setUpToolBar
-import jp.mamori_i.app.extension.showErrorDialog
 import jp.mamori_i.app.screen.permission.PermissionSettingActivity
 import jp.mamori_i.app.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_input_prefecture.*
@@ -89,18 +89,11 @@ class InputPrefectureActivity: AppCompatActivity(),
                 executeButton.isEnabled = enabled
             }.addTo(disposable)
 
-        viewModel.loginError
+        viewModel.error
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { error ->
-                showErrorDialog(error)
-            }.addTo(disposable)
-
-        viewModel.updateError
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { error ->
-                showErrorDialog(error)
+                handleError(error)
             }.addTo(disposable)
     }
 

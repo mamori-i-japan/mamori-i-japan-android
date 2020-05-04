@@ -16,16 +16,19 @@ import java.net.UnknownHostException
 /**
  * Created by knakahir on 2019/01/10.
  */
-data class MIJError (val reason: Reason, val message: String, val action: Action) {
+data class MIJError (val reason: Reason,
+                     val message: String,
+                     val description: String,
+                     val action: Action,
+                     val logoutAction: (() -> Unit)? = null,
+                     val retryAction: (() -> Unit)? = null) {
 
     enum class Reason {
         NetWork,
         Parse,
         DB,
         Auth,
-        SMSSendLimit,
-        SMSCodeExpired,
-        SMSCodeUnmatched,
+        Business,
         Other
     }
 
@@ -43,8 +46,6 @@ data class MIJError (val reason: Reason, val message: String, val action: Action
 
     companion object {
         // throwableに対してReasonのマッピング
-        // TODO FirebaseからのSMSコード周りのエラーのマッピング
-        // TODO DBエラーのマッピング
         fun mappingReason(e: Throwable): Reason {
             return when(e) {
                 is MIJException -> {
@@ -62,25 +63,21 @@ data class MIJError (val reason: Reason, val message: String, val action: Action
                 is SocketTimeoutException -> Reason.NetWork
 
                 is HttpException -> {
-                    if (e.code() == 401) {
-                        Reason.Auth
-                    } else {
-                        Reason.Other
+                    when (e.code()) {
+                        400 -> {
+                            Reason.Business
+                        }
+                        401 -> {
+                            Reason.Auth
+                        }
+                        else -> {
+                            Reason.Other
+                        }
                     }
                 }
 
                 is JsonDataException ,
                 is JsonParseException -> Reason.Parse
-
-                is FirebaseTooManyRequestsException -> Reason.SMSSendLimit
-
-                is FirebaseAuthInvalidCredentialsException -> {
-                    when(e.errorCode) {
-                        "ERROR_SESSION_EXPIRED" -> Reason.SMSCodeExpired
-                        "ERROR_INVALID_VERIFICATION_CODE" -> Reason.SMSCodeUnmatched
-                        else -> Reason.Other
-                    }
-                }
 
                 is FirebaseAuthException -> Reason.Auth
 
