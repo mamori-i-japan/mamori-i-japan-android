@@ -77,10 +77,6 @@ class HomeViewModel(private val traceRepository: TraceRepository,
         navigator.goToTraceHistory()
     }
 
-    fun onClickNotification() {
-        navigator.goToNotification()
-    }
-
     fun onClickStayHomeButton() {
         // TODO URL
         navigator.openWebBrowser("https://yahoo.co.jp".toUri())

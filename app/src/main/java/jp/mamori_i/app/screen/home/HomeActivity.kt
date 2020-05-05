@@ -73,9 +73,9 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
             }
         }
 
-        notificationView.listener = object: HomeNotificationView.HomeNotificationViewEventListener {
-            override fun onClickNotificationButton() {
-                viewModel.onClickNotification()
+        notificationView.listener = object: HomeOrganizationNoticeView.HomeOrganizationNoticeViewEventListener {
+            override fun onClickNoticeButton(organizationNotice: OrganizationNotice) {
+                Toast.makeText(this@HomeActivity, organizationNotice.message, Toast.LENGTH_LONG).show()
             }
         }
 
@@ -199,10 +199,6 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
     override fun goToMenu() {
         val intent = Intent(this, MenuActivity::class.java)
         this.startActivity(intent)
-    }
-
-    override fun goToNotification() {
-        Toast.makeText(this, "TODO 遷移先", Toast.LENGTH_LONG).show()
     }
 
     override fun goToTraceHistory() {

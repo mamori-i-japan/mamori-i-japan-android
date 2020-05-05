@@ -92,7 +92,7 @@
                     android:layout_height="wrap_content"
                     android:animateLayoutChanges="true"/>
 
-                <jp.mamori_i.app.screen.home.HomeNotificationView
+                <jp.mamori_i.app.screen.home.HomeOrganizationNoticeView
                     android:id="@+id/notificationView"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
