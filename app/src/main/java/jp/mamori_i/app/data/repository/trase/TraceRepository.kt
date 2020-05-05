@@ -6,6 +6,7 @@ import io.reactivex.Single
 import jp.mamori_i.app.data.database.deepcontactuser.DeepContactUserEntity
 import jp.mamori_i.app.data.database.tempuserid.TempUserIdEntity
 import jp.mamori_i.app.data.database.tracedata.TraceDataEntity
+import jp.mamori_i.app.data.model.OrganizationNotice
 import jp.mamori_i.app.data.model.TempUserId
 
 interface TraceRepository {
@@ -49,6 +50,9 @@ interface TraceRepository {
 
     // 濃厚接触者情報を追加し、該当になった濃厚接触者のデータを接触情報から削除
     suspend fun insertDeepContactUsers(entities: List<DeepContactUserEntity>, tempId: String)
+
+    // 組織別のメッセージ取得
+    fun fetchOrganizationNotice(organizationCode: String, activity: Activity): Single<OrganizationNotice>
 
     // 全テータ削除
     suspend fun deleteAllData()

@@ -107,7 +107,7 @@ class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
                     .addOnSuccessListener { document ->
                         document.toObject(Profile::class.java)?.let {
                             result.onSuccess(it)
-                        } ?: result.onError(MIJException(Network)) // データなしはパースエラーとする
+                        } ?: result.onError(MIJException(Parse)) // データなしはパースエラーとする
                     }
                     .addOnFailureListener { e ->
                         result.onError(e)

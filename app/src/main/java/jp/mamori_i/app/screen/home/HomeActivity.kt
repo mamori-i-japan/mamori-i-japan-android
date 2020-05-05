@@ -6,12 +6,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.Timestamp
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
+import jp.mamori_i.app.data.model.OrganizationNotice
 import jp.mamori_i.app.extension.handleError
 import jp.mamori_i.app.screen.home.HomeStatus.HomeStatusType.*
 import jp.mamori_i.app.screen.menu.MenuActivity
@@ -86,10 +88,10 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
         }
         notifyButton.setOnClickListener {
             if (it.tag == true) {
-                viewModel.notification.onNext("")
+                viewModel.organizationNotice.onNext(OrganizationNotice.createEmptyNotice())
                 it.tag = false
             } else {
-                viewModel.notification.onNext("ON")
+                viewModel.organizationNotice.onNext(OrganizationNotice("hoge", Timestamp.now()))
                 it.tag = true
             }
         }
@@ -127,14 +129,15 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
             .addTo(disposable)
 
         // お知らせ部分
-        viewModel.notification
+        viewModel.organizationNotice
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy { notification ->
-                if (!notification.isNullOrEmpty()) {
-                    notificationView.visibility = View.VISIBLE
-                } else {
+            .subscribeBy { organizationNotice ->
+                if (organizationNotice.isEmpty()) {
                     notificationView.visibility = View.GONE
+                } else {
+                    notificationView.updateContent(organizationNotice)
+                    notificationView.visibility = View.VISIBLE
                 }
             }
             .addTo(disposable)

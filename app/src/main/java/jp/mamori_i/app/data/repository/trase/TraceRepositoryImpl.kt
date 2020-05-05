@@ -1,9 +1,12 @@
 package jp.mamori_i.app.data.repository.trase
 
 import android.app.Activity
+import android.content.Context
+import android.net.ConnectivityManager
 import androidx.lifecycle.LiveData
 import androidx.room.withTransaction
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.moshi.Moshi
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
@@ -14,8 +17,7 @@ import jp.mamori_i.app.data.database.deepcontactuser.DeepContactUserEntity
 import jp.mamori_i.app.data.database.tempuserid.TempUserIdEntity
 import jp.mamori_i.app.data.database.tracedata.TraceDataEntity
 import jp.mamori_i.app.data.exception.MIJException
-import jp.mamori_i.app.data.exception.MIJException.Reason.Auth
-import jp.mamori_i.app.data.exception.MIJException.Reason.Parse
+import jp.mamori_i.app.data.exception.MIJException.Reason.*
 import jp.mamori_i.app.data.model.*
 import jp.mamori_i.app.data.storage.FirebaseStorageService
 import jp.mamori_i.app.data.storage.FirebaseStorageService.FileNameKey.PositivePersonList
@@ -36,6 +38,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
                            private val localCacheService: LocalCacheService,
                            private val localStorageService: LocalStorageService,
                            private val firebaseStorageService: FirebaseStorageService,
+                           private val fireStore: FirebaseFirestore,
                            private val db: MIJDatabase): TraceRepository {
 
     companion object {
@@ -176,6 +179,30 @@ class TraceRepositoryImpl (private val moshi: Moshi,
                 db.deepContactUserDao().insert(entity)
             }
             db.traceDataDao().delete(tempId)
+        }
+    }
+
+    override fun fetchOrganizationNotice(organizationCode: String, activity: Activity): Single<OrganizationNotice> {
+        return Single.create { result ->
+            val cm = activity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val activeNetwork = cm.activeNetworkInfo
+            if (activeNetwork?.isConnectedOrConnecting == true) {
+                fireStore.collection("organizations")
+                    .document(organizationCode)
+                    .collection("message")
+                    .document(organizationCode)
+                    .get()
+                    .addOnSuccessListener { document ->
+                        document.toObject(OrganizationNotice::class.java)?.let {
+                            result.onSuccess(it)
+                        } ?: result.onError(MIJException(Parse)) // データなしはパースエラーとする
+                    }
+                    .addOnFailureListener { e ->
+                        result.onError(e)
+                    }
+            } else {
+                result.onError(MIJException(Network))
+            }
         }
     }
 

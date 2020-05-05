@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import jp.mamori_i.app.R
-import jp.mamori_i.app.screen.home.HomeStatus.HomeStatusType.*
+import jp.mamori_i.app.data.model.OrganizationNotice
 import kotlinx.android.synthetic.main.view_home_notification.view.*
 
 class HomeNotificationView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : LinearLayout(context, attrs, defStyle) {
@@ -23,7 +23,7 @@ class HomeNotificationView @JvmOverloads constructor(context: Context, attrs: At
         }
     }
 
-    fun updateContent(date: String) {
-
+    fun updateContent(organizationNotice: OrganizationNotice) {
+        updateAtTextView.text = organizationNotice.updatedAtString()
     }
 }

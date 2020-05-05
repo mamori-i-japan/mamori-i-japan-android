@@ -12,6 +12,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import jp.mamori_i.app.data.model.AndroidAppStatus
+import jp.mamori_i.app.data.model.OrganizationNotice
 import jp.mamori_i.app.data.repository.config.ConfigRepository
 import jp.mamori_i.app.data.repository.profile.ProfileRepository
 import jp.mamori_i.app.data.repository.trase.TraceRepository
@@ -40,7 +41,7 @@ class HomeViewModel(private val traceRepository: TraceRepository,
 
     lateinit var navigator: HomeNavigator
     val homeStatus = PublishSubject.create<HomeStatus>()
-    val notification = PublishSubject.create<String>()
+    val organizationNotice = PublishSubject.create<OrganizationNotice>()
     val error = PublishSubject.create<MIJError>()
 
     private var job: Job = Job()
@@ -63,7 +64,7 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                 // ステータスチェック
                 doHomeStatusCheck()
                 // 組織コード別のお知らせを取得する
-                fetchOrganizationNotification(activity)
+                doFetchOrganizationNotice(activity)
             }
             .addTo(disposable)
     }
@@ -177,7 +178,7 @@ class HomeViewModel(private val traceRepository: TraceRepository,
         }
     }
 
-    private fun fetchOrganizationNotification(activity: Activity) {
+    private fun doFetchOrganizationNotice(activity: Activity) {
         // まずプロフィールを取得
         profileRepository.fetchProfile(activity)
             .subscribeOn(Schedulers.io())
@@ -194,56 +195,52 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                                     launch(Dispatchers.IO) {
                                         val deepContacts = traceRepository.selectAllDeepContactUsers()
                                         AnalysisUtil.analysisDeepContactWithPositivePerson(positivePersons, deepContacts)?.let { _ ->
-                                            // 該当者がいればお知らせを表示する
-                                            // TODO お知らせの内容
-                                            notification.onNext("(TODO)お知らせの内容")
-                                        }?: notification.onNext("") // 該当者がいない場合はお知らせクリア
+                                            // 該当者がいればお知らせを取得する
+                                            traceRepository.fetchOrganizationNotice(profile.organizationCode, activity)
+                                                .subscribeOn(Schedulers.io())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribeBy(
+                                                    onSuccess = {
+                                                        organizationNotice.onNext(it)
+                                                    },
+                                                    onError = { e ->
+                                                        handleFetchOrganizationError(e)
+                                                    }
+                                                ).addTo(disposable)
+                                        }?: organizationNotice.onNext(OrganizationNotice.createEmptyNotice()) // 該当者がいない場合はお知らせクリア
                                     }
                                 },
                                 onError = { e ->
-                                    val reason = MIJError.mappingReason(e)
-                                    if (reason == MIJError.Reason.Auth) {
-                                        // 認証エラーの場合のみ通知し、それ以外は無視する
-                                        error.onNext(MIJError(
-                                            reason,
-                                            "認証エラーが発生しました",
-                                            "時間を置いてから再度お試しください。",
-                                            DialogLogout) {
-                                                runBlocking(Dispatchers.IO) {
-                                                    logoutHelper.logout()
-                                                }
-                                            }
-                                        )
-                                    } else {
-                                        // 認証エラー以外はお知らせをクリアする
-                                        notification.onNext("")
-                                    }
+                                    handleFetchOrganizationError(e)
                                 }
                             ).addTo(disposable)
                     } else {
                         // 職業コードなしの場合はお知らせクリア
-                        notification.onNext("")
+                        organizationNotice.onNext(OrganizationNotice.createEmptyNotice())
                     }
                 },
                 onError = { e ->
-                    val reason = MIJError.mappingReason(e)
-                    if (reason == MIJError.Reason.Auth) {
-                        // 認証エラーの場合のみ通知し、それ以外は無視する
-                        error.onNext(MIJError(
-                            reason,
-                            "認証エラーが発生しました",
-                            "時間を置いてから再度お試しください。",
-                            DialogLogout) {
-                            runBlocking(Dispatchers.IO) {
-                                logoutHelper.logout()
-                            }
-                        })
-                    } else {
-                        // 認証エラー以外はお知らせをクリアする
-                        notification.onNext("")
-                    }
+                    handleFetchOrganizationError(e)
                 }
             ).addTo(disposable)
+    }
 
+    private fun handleFetchOrganizationError(e: Throwable) {
+        val reason = MIJError.mappingReason(e)
+        if (reason == Auth) {
+            // 認証エラーの場合のみ通知し、それ以外は無視する
+            error.onNext(MIJError(
+                reason,
+                "認証エラーが発生しました",
+                "時間を置いてから再度お試しください。",
+                DialogLogout) {
+                runBlocking(Dispatchers.IO) {
+                    logoutHelper.logout()
+                }
+            })
+        } else {
+            // 認証エラー以外はお知らせをクリアする
+            organizationNotice.onNext(OrganizationNotice.createEmptyNotice())
+        }
     }
 }
