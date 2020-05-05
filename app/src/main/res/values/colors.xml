@@ -17,7 +17,7 @@
     <color name="colorTextRed">#D3323A</color>
     <color name="colorTextBlue">#00A0C3</color>
     <color name="colorTextDarkGray">#303030</color>
-    <color name="colorTextLightGray">#7C7C7C</color>
+    <color name="colorTextLightGray">#9EA5A8</color>
 
     <!-- EditText -->
     <color name="colorEditTextHint">#C8C8C8</color>

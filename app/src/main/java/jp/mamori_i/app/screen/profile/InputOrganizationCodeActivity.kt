@@ -1,6 +1,7 @@
 package jp.mamori_i.app.screen.profile
 
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.jakewharton.rxbinding3.widget.textChanges
@@ -79,6 +80,8 @@ class InputOrganizationCodeActivity: AppCompatActivity(),
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { enabled ->
                 updateButton.isEnabled = enabled
+                errorMessageTextView.text = ""
+                errorMessageTextView.visibility = View.INVISIBLE
             }.addTo(disposable)
 
         viewModel.error
@@ -86,7 +89,8 @@ class InputOrganizationCodeActivity: AppCompatActivity(),
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { error ->
                 if (error.action == MIJError.Action.Inline) {
-                    // TODO インラインエラー
+                    errorMessageTextView.text = error.message
+                    errorMessageTextView.visibility = View.VISIBLE
                 } else {
                     handleError(error)
                 }

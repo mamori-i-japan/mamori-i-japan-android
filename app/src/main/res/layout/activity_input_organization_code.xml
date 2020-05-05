@@ -35,10 +35,21 @@
             android:lines="1"
             android:hint="組織コードを入力"/>
 
+        <TextView
+            android:id="@+id/errorMessageTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="start"
+            android:textColor="@color/colorTextError"
+            android:textSize="12sp"
+            android:visibility="invisible"/>
+
+
         <Button style="@style/ExecuteButton"
             android:id="@+id/updateButton"
             android:layout_width="match_parent"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:text="設定する"/>

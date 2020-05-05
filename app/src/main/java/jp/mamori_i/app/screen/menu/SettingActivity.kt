@@ -79,7 +79,13 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { profile ->
                 prefectureValueTextView.text = profile.prefectureType().description()
-                organizationCodeValueTextView.text = if (profile.organizationCode.isEmpty()) "未入力" else profile.organizationCode
+                if (profile.organizationCode.isEmpty()) {
+                    organizationCodeValueTextView.text = "未入力"
+                    organizationCodeValueTextView.setTextColor(resources.getColor(R.color.colorTextLightGray, null))
+                } else {
+                    organizationCodeValueTextView.text = profile.organizationCode
+                    organizationCodeValueTextView.setTextColor(resources.getColor(R.color.colorTextBlack, null))
+                }
                 if (profile.organizationCode.isNotEmpty()) {
                     organizationClearButton.visibility = View.VISIBLE
                 } else {
