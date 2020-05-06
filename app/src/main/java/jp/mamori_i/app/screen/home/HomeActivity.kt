@@ -75,7 +75,7 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
 
         notificationView.listener = object: HomeOrganizationNoticeView.HomeOrganizationNoticeViewEventListener {
             override fun onClickNoticeButton(organizationNotice: OrganizationNotice) {
-                Toast.makeText(this@HomeActivity, organizationNotice.message, Toast.LENGTH_LONG).show()
+                Toast.makeText(this@HomeActivity, organizationNotice.messageForAppAccess, Toast.LENGTH_LONG).show()
             }
         }
 

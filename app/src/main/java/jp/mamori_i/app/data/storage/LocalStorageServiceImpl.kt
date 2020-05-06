@@ -9,7 +9,6 @@ class LocalStorageServiceImpl(private val sharedPreference: MIJSharedPreference,
     /* == List ==*/
     override fun loadList(key: ListKey, default: List<String>): List<String> {
         try {
-            val hoge = sharedPreference.read(key.rawValue, listOf<String>())
             return sharedPreference.read(key.rawValue, listOf<String>()).map {
                 SecurityUtil.decrypt(keyStore.privateKey(), it)?: ""
             }

@@ -189,7 +189,7 @@ class TraceRepositoryImpl (private val moshi: Moshi,
             if (activeNetwork?.isConnectedOrConnecting == true) {
                 fireStore.collection("organizations")
                     .document(organizationCode)
-                    .collection("message")
+                    .collection("denormalizedForAppAccess")
                     .document(organizationCode)
                     .get()
                     .addOnSuccessListener { document ->

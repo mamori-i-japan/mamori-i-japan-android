@@ -203,6 +203,7 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                                                         handleFetchOrganizationError(e)
                                                     }
                                                 ).addTo(disposable)
+                                            return@launch
                                         }?: organizationNotice.onNext(OrganizationNotice.createEmptyNotice()) // 該当者がいない場合はお知らせクリア
                                     }
                                 },
