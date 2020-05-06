@@ -5,10 +5,10 @@ import jp.mamori_i.app.extension.convertToDateTimeString
 import jp.mamori_i.app.extension.convertToTimeInMillis
 import java.io.Serializable
 
-data class OrganizationNotice(val messageForAppAccess: String = "",
-                              val updatedAt: Timestamp): Serializable {
+data class OrganizationNotice(val messageForAppAccess: String = ""): Serializable {
     fun updatedAtString(): String {
-        return updatedAt.seconds.convertToTimeInMillis().convertToDateTimeString("yyyy/MM/dd")
+        // TODO
+        return Timestamp.now().seconds.convertToTimeInMillis().convertToDateTimeString("yyyy/MM/dd")
     }
 
     fun isEmpty(): Boolean {
@@ -17,7 +17,7 @@ data class OrganizationNotice(val messageForAppAccess: String = "",
 
     companion object {
         fun createEmptyNotice(): OrganizationNotice {
-            return OrganizationNotice("", Timestamp.now())
+            return OrganizationNotice("")
         }
     }
 }

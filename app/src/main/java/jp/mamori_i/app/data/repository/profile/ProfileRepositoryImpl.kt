@@ -11,10 +11,7 @@ import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.data.api.profile.ProfileApiService
 import jp.mamori_i.app.data.exception.MIJException
 import jp.mamori_i.app.data.exception.MIJException.Reason.*
-import jp.mamori_i.app.data.model.ClearOrganizationCodeRequestBody
-import jp.mamori_i.app.data.model.PrefectureType
-import jp.mamori_i.app.data.model.Profile
-import jp.mamori_i.app.data.model.UpdateProfileRequestBody
+import jp.mamori_i.app.data.model.*
 import jp.mamori_i.app.data.storage.LocalStorageService
 
 class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
@@ -76,11 +73,13 @@ class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
                 if (task.isSuccessful) {
                     task.result?.token?.let { token ->
                         val uploadRandomKeys = localStorageService.loadList(LocalStorageService.ListKey.UploadRandomKeys, listOf())
-                        val requestBody = ClearOrganizationCodeRequestBody(uploadRandomKeys)
+                        val requestBody = ClearOrganizationCodeRequestBody(uploadRandomKeys.map { ClearOrganizationCodeRequestBody.RandomId(it) })
                         api.clearOrganizationCode("Bearer $token", requestBody)
                             .subscribeOn(Schedulers.io())
                             .subscribeBy (
                                 onSuccess = {
+                                    // 成功したらuploadRandomKeysを削除する
+                                    localStorageService.clearList(LocalStorageService.ListKey.UploadRandomKeys)
                                     result.onSuccess(true)
                                 },
                                 onError = { e ->
@@ -105,9 +104,13 @@ class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
                     .document(auth.uid ?: "")
                     .get()
                     .addOnSuccessListener { document ->
-                        document.toObject(Profile::class.java)?.let {
-                            result.onSuccess(it)
-                        } ?: result.onError(MIJException(Parse)) // データなしはパースエラーとする
+                        try {
+                            document.toObject(Profile::class.java)?.let {
+                                result.onSuccess(it)
+                            } ?: result.onError(MIJException(Parse)) // データなしはパースエラーとする
+                        } catch (e: Throwable) {
+                            result.onError(e)
+                        }
                     }
                     .addOnFailureListener { e ->
                         result.onError(e)

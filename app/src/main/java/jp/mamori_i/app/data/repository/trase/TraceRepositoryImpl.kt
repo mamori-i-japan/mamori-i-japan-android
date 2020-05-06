@@ -193,9 +193,13 @@ class TraceRepositoryImpl (private val moshi: Moshi,
                     .document(organizationCode)
                     .get()
                     .addOnSuccessListener { document ->
-                        document.toObject(OrganizationNotice::class.java)?.let {
-                            result.onSuccess(it)
-                        } ?: result.onError(MIJException(Parse)) // データなしはパースエラーとする
+                        try {
+                            document.toObject(OrganizationNotice::class.java)?.let {
+                                result.onSuccess(it)
+                            } ?: result.onError(MIJException(Parse)) // データなしはパースエラーとする
+                        } catch (e: Throwable) {
+                            result.onError(e)
+                        }
                     }
                     .addOnFailureListener { e ->
                         result.onError(e)

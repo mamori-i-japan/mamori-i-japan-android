@@ -2,4 +2,9 @@ package jp.mamori_i.app.data.model
 
 import com.squareup.moshi.Json
 
-data class ClearOrganizationCodeRequestBody(@Json(name = "randomIDs") val randomIds: List<String>?)
+data class ClearOrganizationCodeRequestBody(@Json(name = "randomIDs") val randomIds: List<RandomId>?) {
+
+    // リクエスト時にしか使わないので、内部クラスにしている
+    data class RandomId(@Json(name = "randomID") val randomId: String)
+
+}

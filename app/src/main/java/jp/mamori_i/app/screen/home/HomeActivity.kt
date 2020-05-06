@@ -91,7 +91,7 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
                 viewModel.organizationNotice.onNext(OrganizationNotice.createEmptyNotice())
                 it.tag = false
             } else {
-                viewModel.organizationNotice.onNext(OrganizationNotice("hoge", Timestamp.now()))
+                viewModel.organizationNotice.onNext(OrganizationNotice("hoge"))
                 it.tag = true
             }
         }
