@@ -1,6 +1,7 @@
 package jp.mamori_i.app.data.repository.trace
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.moshi.Moshi
 import io.mockk.mockk
 import jp.mamori_i.app.data.api.trace.TraceApiService
@@ -32,6 +33,7 @@ class TraceRepositoryUnitTest {
             mockk<LocalCacheService> {},
             mockk<LocalStorageService> {},
             mockk<FirebaseStorageService> {},
+            mockk< FirebaseFirestore> {},
             mockk<MIJDatabase> {}
         )
     }
