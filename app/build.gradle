@@ -21,8 +21,6 @@ android {
                                      "$projectDir/schemas".toString()]
             }
         }
-        buildConfigField "String", "BLE_SSID", '"0000C019-0000-1000-8000-00805F9B34FB"'
-        buildConfigField "String", "V2_CHARACTERISTIC_ID", '"D61F4F27-3D6B-4B04-9E46-C9D2EA617F62"'
 
         buildConfigField "int", "SERVICE_FOREGROUND_NOTIFICATION_ID", '771579'
         buildConfigField "String", "SERVICE_FOREGROUND_CHANNEL_ID", '"Trace Log Channel ID"'
@@ -79,13 +77,19 @@ android {
         dev {
             applicationIdSuffix ".dev"
             buildConfigField("String", "BASE_URL", '"https://api-dev.mamori-i.jp/"')
+            buildConfigField "String", "BLE_SSID", '"416DFC7B-D6E2-4373-9299-D81ACD3CC728"'
+            buildConfigField "String", "CHARACTERISTIC_ID", '"416DFC7B-D6E2-4373-9299-D81ACD3CC729"'
         }
         stg {
             applicationIdSuffix ".stg"
             buildConfigField("String", "BASE_URL", '"https://api-stg.mamori-i.jp/"')
+            buildConfigField "String", "BLE_SSID", '"0E2FD244-2114-466C-9F18-2D493CD70407"'
+            buildConfigField "String", "CHARACTERISTIC_ID", '"0E2FD244-2114-466C-9F18-2D493CD70408"'
         }
         prod {
             buildConfigField("String", "BASE_URL", '"https://api.mamori-i.jp/"')
+            buildConfigField "String", "BLE_SSID", '"90FA7ABE-FAB6-485E-B700-1A17804CAA13"'
+            buildConfigField "String", "CHARACTERISTIC_ID", '"90FA7ABE-FAB6-485E-B700-1A17804CAA14"'
         }
     }
 }

@@ -8,6 +8,6 @@ object BLE {
         if (charUUID == null) {
             return false
         }
-        return (UUID.fromString(BuildConfig.V2_CHARACTERISTIC_ID) == charUUID)
+        return (UUID.fromString(BuildConfig.CHARACTERISTIC_ID) == charUUID)
     }
 }
