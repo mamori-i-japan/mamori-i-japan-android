@@ -6,13 +6,6 @@
 
     <androidx.appcompat.widget.Toolbar style="@style/ToolBar" android:id="@+id/toolBar"/>
 
-    <TextView
-        android:id="@+id/tokenText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">

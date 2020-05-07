@@ -2,6 +2,8 @@ package jp.mamori_i.app.screen.home
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -10,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -22,6 +25,8 @@ import jp.mamori_i.app.extension.setUpToolBar
 import jp.mamori_i.app.idmanager.TempIdManager
 import jp.mamori_i.app.util.BLEUtil
 import kotlinx.android.synthetic.main.activity_b_l_e.*
+import kotlinx.android.synthetic.main.activity_b_l_e.toolBar
+import kotlinx.android.synthetic.main.activity_test_positive_check.*
 import kotlinx.android.synthetic.main.ble_contact_row_item.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -99,9 +104,13 @@ class BLEActivity : AppCompatActivity(), CoroutineScope {
             }
         }
 
-        currentIdText.setOnClickListener {
-
+        val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+        currentIdText.setOnLongClickListener {
+            clipboardManager?.setPrimaryClip(ClipData.newPlainText("", currentIdText.text))
+            Toast.makeText(this, "コピーしました", Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true
         }
+
 
         logButton.setOnClickListener {
             val intent = Intent(this, TestBLEActivity::class.java)

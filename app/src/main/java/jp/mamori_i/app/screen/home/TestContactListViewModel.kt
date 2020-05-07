@@ -38,9 +38,9 @@ class TestContactListViewModel(
     fun checkDeepContactWithPositivePerson(activity: Activity) {
         // 陽性者と濃厚接触しているかどうか
         profileRepository.fetchProfile(activity).subscribeOn(Schedulers.io())
-            .subscribeBy {
-                if (it.organizationCode.isNotEmpty()) {
-                    traceRepository.fetchPositivePersons(it.organizationCode, activity)
+            .subscribeBy { profile ->
+                if (profile.organizationCode.isNotEmpty()) {
+                    traceRepository.fetchPositivePersons(profile.organizationCode, activity)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeBy(

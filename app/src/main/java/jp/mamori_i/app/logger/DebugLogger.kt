@@ -1,12 +1,14 @@
 package jp.mamori_i.app.logger
 import android.util.Log
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.ReplaySubject
 import java.text.SimpleDateFormat
 import java.util.*
 
 class DebugLogger {
     companion object {
-        val logString = PublishSubject.create<String>()
+        val logString = ReplaySubject.create<String>()
 
         fun log(tag: String, message: String) {
             Log.d(tag, message)

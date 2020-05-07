@@ -1,6 +1,10 @@
 package jp.mamori_i.app.screen.home
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -12,6 +16,8 @@ import jp.mamori_i.app.R
 import jp.mamori_i.app.extension.setUpToolBar
 import jp.mamori_i.app.logger.DebugLogger
 import kotlinx.android.synthetic.main.activity_test_ble.*
+import kotlinx.android.synthetic.main.activity_test_ble.toolBar
+import kotlinx.android.synthetic.main.activity_test_positive_check.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -51,12 +57,16 @@ class TestBLEActivity: AppCompatActivity() {
 
     private fun setupViews() {
         setUpToolBar(toolBar, "BLEテスト")
+
+        val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+        logText.setOnLongClickListener {
+            clipboardManager?.setPrimaryClip(ClipData.newPlainText("", logText.text))
+            Toast.makeText(this, "コピーしました", Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true
+        }
     }
 
     private fun bind() {
-        viewModel.tempId.observe(this, Observer {
-            tokenText.text = it
-        })
 
         DebugLogger.logString
             .subscribeOn(Schedulers.io())
