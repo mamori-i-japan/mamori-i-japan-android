@@ -38,7 +38,7 @@ class StreetPassWorker(val context: Context, val tempIdManager: TempIdManager) {
     private val scannedDeviceReceiver = ScannedDeviceReceiver()
     private val blacklistReceiver = BlacklistReceiver()
     private val serviceUUID: UUID = UUID.fromString(BuildConfig.BLE_SSID)
-    private val characteristicV2: UUID = UUID.fromString(BuildConfig.V2_CHARACTERISTIC_ID)
+    private val characteristic: UUID = UUID.fromString(BuildConfig.CHARACTERISTIC_ID)
 
     private val bluetoothManager =
         context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -481,7 +481,7 @@ class StreetPassWorker(val context: Context, val tempIdManager: TempIdManager) {
                     service?.let {
 
                         //select characteristicUUID to read from
-                        val characteristic = service.getCharacteristic(characteristicV2)
+                        val characteristic = service.getCharacteristic(characteristic)
 
                         if (characteristic != null) {
                             val readSuccess = gatt.readCharacteristic(characteristic)

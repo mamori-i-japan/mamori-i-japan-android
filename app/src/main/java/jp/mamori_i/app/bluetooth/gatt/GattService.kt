@@ -12,13 +12,13 @@ class GattService(context: Context, serviceUUIDString: String) {
 
     var gattService = BluetoothGattService(serviceUUID, BluetoothGattService.SERVICE_TYPE_PRIMARY)
 
-    private var characteristicV2: BluetoothGattCharacteristic = BluetoothGattCharacteristic(
-        UUID.fromString(BuildConfig.V2_CHARACTERISTIC_ID),
+    private var characteristic: BluetoothGattCharacteristic = BluetoothGattCharacteristic(
+        UUID.fromString(BuildConfig.CHARACTERISTIC_ID),
         BluetoothGattCharacteristic.PROPERTY_READ or BluetoothGattCharacteristic.PROPERTY_WRITE or BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE,
         BluetoothGattCharacteristic.PERMISSION_READ or BluetoothGattCharacteristic.PERMISSION_WRITE
     )
 
     init {
-        gattService.addCharacteristic(characteristicV2)
+        gattService.addCharacteristic(characteristic)
     }
 }
