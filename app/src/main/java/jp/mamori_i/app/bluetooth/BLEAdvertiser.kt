@@ -120,8 +120,10 @@ class BLEAdvertiser(serviceUUID: String) {
     }
 
     fun startAdvertising(timeoutInMillis: Long) {
-        startAdvertisingLegacy(timeoutInMillis)
-        shouldBeAdvertising = true
+        if (!isAdvertising) {
+            startAdvertisingLegacy(timeoutInMillis)
+            shouldBeAdvertising = true
+        }
     }
 
     fun stopAdvertising() {
