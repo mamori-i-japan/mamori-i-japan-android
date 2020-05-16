@@ -48,6 +48,8 @@ class AnalysisUtil {
                                  continuationInterval: Long,
                                  densityInterval: Long): List<DeepContactUserEntity>? {
             // 1. まずtimestampをASKでソート // TODO これSQLでやるなら不要
+            // NOTE: 接触情報として使用するかどうかの判定(filter)はここで行う
+            // 例: RSSIの値が-XX以上だったら
             val sortedTargetList = target.sortedBy { it.timestamp }
 
             // 2. 最後のデータの日時が基準時間を超えていた場合、nullを返却する
@@ -79,7 +81,7 @@ class AnalysisUtil {
             // densityInterval以上のリストは濃厚接触配列となる。
             return separatedTargetList.filter { target ->
                 (target.last().timestamp - target.first().timestamp) >= densityInterval
-                // NOTE: もし今後rssiを計算に盛り込む場合はここで平均をとって判定することになりそう
+                // NOTE: もし今後期間内のrssiを計算に盛り込む場合はここで平均をとって判定することになりそう
             }.map { contact ->
                 val first = contact.first()
                 val last = contact.last()

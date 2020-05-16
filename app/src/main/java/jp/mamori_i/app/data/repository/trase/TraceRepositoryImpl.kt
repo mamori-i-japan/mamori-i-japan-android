@@ -216,7 +216,6 @@ class TraceRepositoryImpl (private val moshi: Moshi,
     }
 
     override suspend fun deleteAllData() {
-        // TODO 全部のデータを消す
         localCacheService.clearPositivePersonList()
         localStorageService.clearList(LocalStorageService.ListKey.UploadRandomKeys)
 
