@@ -33,10 +33,13 @@ class HomeViewModel(private val traceRepository: TraceRepository,
                     private val disposable: CompositeDisposable): ViewModel(), CoroutineScope {
 
     companion object {
-        // TODO: BuildConfigには出す？
+        // 境界時間(現在時刻から境界時間分を引いた時刻からデータを取得する)
+        // この時間内の場合はまだ接触状態が続いている可能性があるので、まだ判定しない
         private const val BORDER_TIME = (3 * 60 * 1000).toLong()
+        // 近接状態が継続されていると判定される間隔
         private const val CONTINUATION_INTERVAL =  (3 * 60 * 1000).toLong()
-        private const val DENSITY_INTERVAL =  (5 * 60 * 1000).toLong()
+        // 濃厚接触と判定される継続時間(秒)
+        private const val DENSITY_INTERVAL =  (15 * 60 * 1000).toLong()
     }
 
     lateinit var navigator: HomeNavigator
