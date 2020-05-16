@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -19,14 +19,12 @@
 
         <TextView
             android:id="@+id/noDataMessageTextView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_alignParentTop="true"
-            android:gravity="center_horizontal"
-            android:textSize="15sp"
-            android:textColor="@color/colorTextBlack"
-            android:text="(TODO)0件メッセージ"
+            android:layout_centerInParent="true"
+            android:textSize="17sp"
+            android:textColor="@color/colorTextGray"
+            android:text="接触履歴はありません"
             android:visibility="gone"/>
 
     </RelativeLayout>

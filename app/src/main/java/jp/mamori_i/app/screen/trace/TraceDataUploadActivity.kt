@@ -55,6 +55,10 @@ class TraceDataUploadActivity: AppCompatActivity(), TraceDataUploadNavigator {
         uploadButton.setOnClickListener {
             viewModel.onClickUpload(codeInputText.text.toString())
         }
+
+        backButton.setOnClickListener {
+            finish()
+        }
     }
 
     private fun bind() {
@@ -88,6 +92,7 @@ class TraceDataUploadActivity: AppCompatActivity(), TraceDataUploadNavigator {
     override fun finishWithCompleteMessage(message: String) {
         mainDescriptionTextView.text = message
         subDescriptionTextView.visibility = View.VISIBLE
+        backButton.visibility = View.VISIBLE
         codeInputText.visibility = View.GONE
         uploadButton.visibility = View.GONE
     }

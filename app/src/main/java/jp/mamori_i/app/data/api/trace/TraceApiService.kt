@@ -7,6 +7,6 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface TraceApiService {
-    @POST("users/me/diagnosis_keys_for_org")
+    @POST("users/me/health_center_tokens")
     fun uploadTempIds(@Header("Authorization") authorization: String, @Body requestBody: UploadTempIdsRequestBody): Single<Any>
 }
