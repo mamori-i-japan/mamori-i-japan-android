@@ -54,10 +54,6 @@
             android:name=".screen.profile.InputPrefectureActivity"
             android:exported="false" />
         <activity
-            android:name=".screen.profile.InputOrganizationCodeActivity"
-            android:windowSoftInputMode="stateAlwaysVisible"
-            android:exported="false" />
-        <activity
             android:name=".screen.permission.PermissionSettingActivity"
             android:exported="false" />
         <activity

@@ -11,20 +11,20 @@ import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.data.api.profile.ProfileApiService
 import jp.mamori_i.app.data.exception.MIJException
 import jp.mamori_i.app.data.exception.MIJException.Reason.*
-import jp.mamori_i.app.data.model.*
-import jp.mamori_i.app.data.storage.LocalStorageService
+import jp.mamori_i.app.data.model.PrefectureType
+import jp.mamori_i.app.data.model.Profile
+import jp.mamori_i.app.data.model.UpdateProfileRequestBody
 
 class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
                             private val api: ProfileApiService,
-                            private val auth: FirebaseAuth,
-                            private val localStorageService: LocalStorageService): ProfileRepository {
+                            private val auth: FirebaseAuth): ProfileRepository {
 
     override fun updatePrefecture(prefecture: PrefectureType): Single<Boolean> {
         return Single.create { result ->
             auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     task.result?.token?.let { token ->
-                        val requestBody = UpdateProfileRequestBody(prefecture.rawValue, null)
+                        val requestBody = UpdateProfileRequestBody(prefecture.rawValue)
                         api.updateProfile("Bearer $token", requestBody)
                             .subscribeOn(Schedulers.io())
                             .subscribeBy (
@@ -42,56 +42,6 @@ class ProfileRepositoryImpl(private val fireStore: FirebaseFirestore,
             }
         }
     }
-
-    override fun updateOrganizationCode(organizationCode: String): Single<Boolean> {
-        return Single.create { result ->
-            auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    task.result?.token?.let { token ->
-                        val requestBody = UpdateProfileRequestBody(null, organizationCode)
-                        api.updateProfile("Bearer $token", requestBody)
-                            .subscribeOn(Schedulers.io())
-                            .subscribeBy (
-                                onSuccess = {
-                                    result.onSuccess(true)
-                                },
-                                onError = { e ->
-                                    result.onError(e)
-                                }
-                            )
-                    }?: result.onError(MIJException(Auth))
-                } else {
-                    result.onError(task.exception?: MIJException(Auth))
-                }
-            }
-        }
-    }
-
-    override fun clearOrganizationCode(): Single<Boolean> {
-        return Single.create { result ->
-            auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    task.result?.token?.let { token ->
-                        val uploadRandomKeys = localStorageService.loadList(LocalStorageService.ListKey.UploadRandomKeys, listOf())
-                        val requestBody = ClearOrganizationCodeRequestBody(uploadRandomKeys.map { ClearOrganizationCodeRequestBody.RandomId(it) })
-                        api.clearOrganizationCode("Bearer $token", requestBody)
-                            .subscribeOn(Schedulers.io())
-                            .subscribeBy (
-                                onSuccess = {
-                                    // 成功したらuploadRandomKeysを削除する
-                                    localStorageService.clearList(LocalStorageService.ListKey.UploadRandomKeys)
-                                    result.onSuccess(true)
-                                },
-                                onError = { e ->
-                                    result.onError(e)
-                                }
-                            )
-                    }?: result.onError(task.exception?: MIJException(Auth))
-                } else {
-                    result.onError(task.exception?: MIJException(Auth))
-                }
-            }
-        }    }
 
     override fun fetchProfile(activity: Activity): Single<Profile> {
         return Single.create { result ->

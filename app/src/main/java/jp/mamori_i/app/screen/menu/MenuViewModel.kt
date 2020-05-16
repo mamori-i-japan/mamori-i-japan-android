@@ -1,24 +1,17 @@
 package jp.mamori_i.app.screen.menu
 
-import android.app.Activity
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import jp.mamori_i.app.data.model.Profile
-import jp.mamori_i.app.data.repository.profile.ProfileRepository
 import jp.mamori_i.app.screen.common.LogoutHelper
 import jp.mamori_i.app.screen.common.MIJError
-import jp.mamori_i.app.screen.menu.MenuListItemView.*
+import jp.mamori_i.app.screen.menu.MenuListItemView.MenuListItem
 import jp.mamori_i.app.screen.menu.MenuListItemView.MenuListItemType.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
 
-class MenuViewModel(private val profileRepository: ProfileRepository,
-                    private val logoutHelper: LogoutHelper,
+class MenuViewModel(private val logoutHelper: LogoutHelper,
                     private val disposable: CompositeDisposable): ViewModel() {
 
     lateinit var navigator: MenuNavigator
@@ -30,49 +23,16 @@ class MenuViewModel(private val profileRepository: ProfileRepository,
         super.onCleared()
     }
 
-    fun fetchProfile(activity: Activity) {
-        navigator.showProgress()
-        profileRepository.fetchProfile(activity)
-            .subscribeOn(Schedulers.io())
-            .subscribeBy(
-                onSuccess = {
-                    navigator.hideProgress()
-                    menuItems.onNext(createMenuItems(it))
-                },
-                onError = { e ->
-                    navigator.hideProgress()
-                    val reason = MIJError.mappingReason(e)
-                    if (reason == MIJError.Reason.Auth) {
-                        // 認証エラーの場合のみエラー通知
-                        error.onNext(MIJError(
-                            reason,
-                            "認証エラーが発生しました",
-                            "時間を置いてから再度お試しください。",
-                            MIJError.Action.DialogLogout) {
-                            runBlocking(Dispatchers.IO) {
-                                logoutHelper.logout()
-                            }
-                        })
-                    } else {
-                        // 認証エラー以外はProfileがないものとしてそのまま進める
-                        menuItems.onNext(createMenuItems(null))
-                    }
-                }
-            ).addTo(disposable)
+    fun fetchMenuItems() {
+        menuItems.onNext(createMenuItems())
     }
 
-    private fun createMenuItems(profile: Profile?): List<MenuListItem> {
+    private fun createMenuItems(): List<MenuListItem> {
         val items = mutableListOf<MenuListItem>()
 
         items.add(MenuListItem(Setting, "設定") {
             navigator.goToSetting()
         })
-
-        if (!profile?.organizationCode.isNullOrEmpty()) {
-            items.add(MenuListItem(DataUpload, "データのアップロード") {
-                navigator.goToTraceDataUpload()
-            })
-        }
 
         items.add(MenuListItem(About, "このアプリについて") {
             navigator.goToAbout()

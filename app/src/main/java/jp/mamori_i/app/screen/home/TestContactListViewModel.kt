@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 
 class TestContactListViewModel(
     private val traceRepository: TraceRepository,
-    private val profileRepository: ProfileRepository,
     private val disposable: CompositeDisposable) : ViewModel() {
 
     companion object {
@@ -29,7 +28,6 @@ class TestContactListViewModel(
 
     val checkResult = PublishSubject.create<TestContactModel>()
     val checkResultNone = PublishSubject.create<Any>()
-    val checkResultNoOrganization = PublishSubject.create<Any>()
 
     val deepContactUserModels = Transformations.map(traceRepository.selectAllLiveDataDeepContactUsers()) {
         it.map { entity -> TestContactModel(entity.tempId, entity.startTime, entity.endTime) }
@@ -37,26 +35,19 @@ class TestContactListViewModel(
 
     fun checkDeepContactWithPositivePerson(activity: Activity) {
         // 陽性者と濃厚接触しているかどうか
-        profileRepository.fetchProfile(activity).subscribeOn(Schedulers.io())
-            .subscribeBy { profile ->
-                if (profile.organizationCode.isNotEmpty()) {
-                    traceRepository.fetchPositivePersons(profile.organizationCode, activity)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeBy(
-                            onSuccess = { list ->
-                                deepContactUserModels.value?.firstOrNull { list.contains(it.tempId) }?.let { matched ->
-                                    checkResult.onNext(matched)
-                                }?: checkResultNone.onNext("None")
-                            },
-                            onError = { error ->
-                                // TODO エラー
-                            }
-                        ).addTo(disposable)
-                } else {
-                    checkResultNoOrganization.onNext("NoOrganization")
+        traceRepository.fetchPositivePersons(activity)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(
+                onSuccess = { list ->
+                    deepContactUserModels.value?.firstOrNull { list.contains(it.tempId) }?.let { matched ->
+                        checkResult.onNext(matched)
+                    }?: checkResultNone.onNext("None")
+                },
+                onError = { error ->
+                    // TODO エラー
                 }
-            }.addTo(disposable)
+            ).addTo(disposable)
     }
 
     fun analyzeDeepContact() {

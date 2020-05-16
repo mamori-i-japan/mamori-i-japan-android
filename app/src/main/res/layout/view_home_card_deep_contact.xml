@@ -1,0 +1,48 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/mainMessageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_marginTop="24dp"
+        android:textColor="@color/colorTextBlack"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="1週間ほど前\n陽性判定者との濃厚接触が\nあったかもしれません"/>
+
+    <RelativeLayout
+        android:id="@+id/deepContactCountAreaView"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/ripple_view_selectable">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/colorTextBlue"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:text="詳しく見る"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_arrow_next_blue"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

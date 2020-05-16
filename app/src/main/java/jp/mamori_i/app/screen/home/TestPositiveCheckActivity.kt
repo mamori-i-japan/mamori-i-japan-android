@@ -13,11 +13,10 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
 import jp.mamori_i.app.data.repository.profile.ProfileRepository
-import jp.mamori_i.app.screen.common.MIJError
 import jp.mamori_i.app.data.repository.trase.TraceRepository
-import jp.mamori_i.app.extension.convertToDateTimeString
 import jp.mamori_i.app.extension.handleError
 import jp.mamori_i.app.extension.setUpToolBar
+import jp.mamori_i.app.screen.common.MIJError
 import jp.mamori_i.app.util.AnalysisUtil
 import kotlinx.android.synthetic.main.activity_test_positive_check.*
 import kotlinx.coroutines.*
@@ -32,7 +31,6 @@ class TestPositiveCheckActivity: AppCompatActivity(), CoroutineScope {
     }
 
     private val repository: TraceRepository by inject()
-    private val profileRepository: ProfileRepository by inject()
     private val disposable: CompositeDisposable by inject()
 
     private val job = Job()
@@ -84,49 +82,28 @@ class TestPositiveCheckActivity: AppCompatActivity(), CoroutineScope {
     }
 
     private fun check() {
-        profileRepository.fetchProfile(this).subscribeOn(Schedulers.io())
-            .subscribeBy (
-                onSuccess = { profile ->
+        repository.fetchPositivePersons(this)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(
+                onSuccess = { list ->
                     launch (Dispatchers.IO) {
                         val tempIds = repository.loadTempIds()
-                        withContext(Dispatchers.Main) {
-                            myTempIdListText.text = tempIds.map { it.tempId + "\n      " + it.startTime.convertToDateTimeString("MM/dd HH:mm") + "~" + it.expiryTime.convertToDateTimeString("MM/dd HH:mm") }.joinToString("\n")
-                        }
-                    }
-                    if (profile.organizationCode.isNotEmpty()) {
-                        repository.fetchPositivePersons(profile.organizationCode, this)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeBy(
-                                onSuccess = { list ->
-                                    launch (Dispatchers.IO) {
-                                        val tempIds = repository.loadTempIds()
-                                        val isPositive = AnalysisUtil.analysisPositive(list, tempIds)
+                        val isPositive = AnalysisUtil.analysisPositive(list, tempIds)
 
-                                        withContext(Dispatchers.Main) {
-                                            positiveListText.text = "組織コード: " + profile.organizationCode + "\n" + list.joinToString("\n")
-                                            if (isPositive) {
-                                                checkResultText.text = "陽性です"
-                                            } else {
-                                                checkResultText.text = "陽性ではありません"
-                                            }
-                                        }
-                                    }
-                                },
-                                onError = { error ->
-                                    handleError(MIJError(MIJError.mappingReason(error), "エラー", "陽性者リスト取得エラー", MIJError.Action.DialogCloseOnly))
-                                }
-                            ).addTo(disposable)
-                    } else {
-                        checkResultText.text = "組織コードなし"
-                        positiveListText.text = "組織コードが登録されてなさそうなのでリスト取得していません"
+                        withContext(Dispatchers.Main) {
+                            if (isPositive) {
+                                checkResultText.text = "陽性です"
+                            } else {
+                                checkResultText.text = "陽性ではありません"
+                            }
+                        }
                     }
                 },
                 onError = { error ->
-                    handleError(MIJError(MIJError.mappingReason(error), "エラー", "プロフィール取得エラー", MIJError.Action.DialogCloseOnly))
+                    handleError(MIJError(MIJError.mappingReason(error), "エラー", "陽性者リスト取得エラー", MIJError.Action.DialogCloseOnly))
                 }
-
-        ).addTo(disposable)
+            ).addTo(disposable)
 
     }
 }

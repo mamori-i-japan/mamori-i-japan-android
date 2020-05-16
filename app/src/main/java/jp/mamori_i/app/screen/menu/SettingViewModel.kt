@@ -14,7 +14,6 @@ import jp.mamori_i.app.screen.common.MIJError
 import jp.mamori_i.app.screen.common.MIJError.Reason.*
 import jp.mamori_i.app.screen.common.MIJError.Action.*
 import jp.mamori_i.app.screen.profile.InputPrefectureTransitionEntity
-import jp.mamori_i.app.screen.profile.InputOrganizationCodeTransitionEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -52,7 +51,7 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
                             NetWork ->
                                 MIJError(
                                     reason,
-                                    "組織コードの取得に失敗しました",
+                                    "設定の取得に失敗しました",
                                     "インターネットに接続されていません。\n通信状況の良い環境で再度お試しください。",
                                     DialogBack
                                 )
@@ -85,57 +84,5 @@ class SettingViewModel(private val profileRepository: ProfileRepository,
         _profile?.let {
             navigator.goToInputPrefecture(InputPrefectureTransitionEntity(it.prefectureType()))
         }
-    }
-
-    fun onClickOrganization() {
-        _profile?.let {
-            navigator.goToInputOrganizationCode(InputOrganizationCodeTransitionEntity(it.organizationCode))
-        }
-    }
-
-    fun clearOrganization() {
-        navigator.showProgress()
-        profileRepository.clearOrganizationCode()
-            .subscribeOn(Schedulers.io())
-            .subscribeBy(
-                onSuccess = {
-                    navigator.hideProgress()
-                    navigator.clearFinishWithCompleteMessage("完了") // TODO
-                },
-                onError = { e ->
-                    navigator.hideProgress()
-                    val reason = MIJError.mappingReason(e)
-                    error.onNext(
-                        when (reason) {
-                            NetWork ->
-                                MIJError(
-                                    reason,
-                                    "組織コードのクリアに失敗しました",
-                                    "インターネットに接続されていません。\n通信状況の良い環境で再度お試しください。",
-                                    DialogCloseOnly
-                                )
-                            Auth ->
-                                MIJError(
-                                    reason,
-                                    "認証エラーが発生しました",
-                                    "時間を置いてから再度お試しください。",
-                                    DialogLogout
-                                ) {
-                                    // 認証エラーの場合はログアウト処理をする
-                                    runBlocking(Dispatchers.IO) {
-                                        logoutHelper.logout()
-                                    }
-                                }
-                            else ->
-                                MIJError(
-                                    reason,
-                                    "不明なエラーが発生しました",
-                                    "",
-                                    DialogCloseOnly
-                                )
-                        }
-                    )
-                }
-            ).addTo(disposable)
     }
 }

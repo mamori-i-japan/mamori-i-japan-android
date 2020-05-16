@@ -8,6 +8,7 @@ interface HomeNavigator {
     fun hideProgress()
     fun goToMenu()
     fun goToTraceHistory()
+    fun goToPositiveReport()
     fun openWebBrowser(uri: Uri)
     fun openShareComponent(title: String, content: String)
 }

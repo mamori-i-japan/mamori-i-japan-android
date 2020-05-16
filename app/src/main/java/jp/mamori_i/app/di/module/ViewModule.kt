@@ -11,7 +11,6 @@ import jp.mamori_i.app.screen.menu.MenuViewModel
 import jp.mamori_i.app.screen.menu.SettingViewModel
 import jp.mamori_i.app.screen.start.SplashViewModel
 import jp.mamori_i.app.screen.profile.InputPrefectureViewModel
-import jp.mamori_i.app.screen.profile.InputOrganizationCodeViewModel
 import jp.mamori_i.app.screen.start.AgreementViewModel
 import jp.mamori_i.app.screen.start.TutorialViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -27,22 +26,19 @@ val viewModule = module {
 
     /* ViewModels */
     viewModel {
-        HomeViewModel(get(), get(), get(), get(), get())
+        HomeViewModel(get(), get(), get(), get())
     }
     viewModel {
         TestBLEViewModel(get())
     }
     viewModel {
-        MenuViewModel(get(), get(), get())
+        MenuViewModel(get(), get())
     }
     viewModel {
         SettingViewModel(get(), get(), get())
     }
     viewModel {
         InputPrefectureViewModel(get(), get(), get(), get())
-    }
-    viewModel {
-        InputOrganizationCodeViewModel(get(), get(), get())
     }
     viewModel {
         AgreementViewModel(get())
@@ -60,6 +56,6 @@ val viewModule = module {
         TraceHistoryViewModel(get())
     }
     viewModel {
-        TestContactListViewModel(get(), get(), get())
+        TestContactListViewModel(get(), get())
     }
 }

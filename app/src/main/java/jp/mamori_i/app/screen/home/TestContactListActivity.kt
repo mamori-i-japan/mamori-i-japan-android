@@ -109,14 +109,6 @@ class TestContactListActivity: AppCompatActivity(), CoroutineScope {
                 checkResultText.text = "陽性者と濃厚接触の疑いはありません。"
             }
             .addTo(disposable)
-
-        viewModel.checkResultNoOrganization
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy { _ ->
-                checkResultText.text = "組織コードの登録なし"
-            }
-            .addTo(disposable)
     }
 }
 

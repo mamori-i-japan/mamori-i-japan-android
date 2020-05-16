@@ -12,14 +12,12 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import jp.mamori_i.app.data.model.AndroidAppStatus
-import jp.mamori_i.app.data.model.OrganizationNotice
 import jp.mamori_i.app.data.repository.config.ConfigRepository
-import jp.mamori_i.app.data.repository.profile.ProfileRepository
 import jp.mamori_i.app.data.repository.trase.TraceRepository
 import jp.mamori_i.app.screen.common.LogoutHelper
 import jp.mamori_i.app.screen.common.MIJError
-import jp.mamori_i.app.screen.common.MIJError.Reason.*
 import jp.mamori_i.app.screen.common.MIJError.Action.*
+import jp.mamori_i.app.screen.common.MIJError.Reason.*
 import jp.mamori_i.app.screen.home.HomeStatus.HomeStatusType.*
 import jp.mamori_i.app.util.AnalysisUtil
 import kotlinx.coroutines.*
@@ -28,7 +26,6 @@ import kotlin.coroutines.CoroutineContext
 
 class HomeViewModel(private val traceRepository: TraceRepository,
                     private val configRepository: ConfigRepository,
-                    private val profileRepository: ProfileRepository,
                     private val logoutHelper: LogoutHelper,
                     private val disposable: CompositeDisposable): ViewModel(), CoroutineScope {
 
@@ -44,7 +41,6 @@ class HomeViewModel(private val traceRepository: TraceRepository,
 
     lateinit var navigator: HomeNavigator
     val homeStatus = PublishSubject.create<HomeStatus>()
-    val organizationNotice = PublishSubject.create<OrganizationNotice>()
     val error = PublishSubject.create<MIJError>()
 
     private var job: Job = Job()
@@ -64,10 +60,8 @@ class HomeViewModel(private val traceRepository: TraceRepository,
         doAnalyzeDeepContact()
             .subscribeOn(Schedulers.io())
             .subscribeBy {
-                // ステータスチェック
-                doHomeStatusCheck()
-                // 組織コード別のお知らせを取得する
-                doFetchOrganizationNotice(activity)
+                // 陽性者リスト取得
+                doFetchPositiveList(activity)
             }
             .addTo(disposable)
     }
@@ -93,6 +87,10 @@ class HomeViewModel(private val traceRepository: TraceRepository,
     fun onClickContactButton() {
         // TODO URL
         navigator.openWebBrowser("https://yahoo.co.jp".toUri())
+    }
+
+    fun onClickPositiveReportButton() {
+        navigator.goToPositiveReport()
     }
 
     fun onClickShareButton() {
@@ -163,83 +161,85 @@ class HomeViewModel(private val traceRepository: TraceRepository,
         }
     }
 
-    private fun doHomeStatusCheck() {
-        launch(Dispatchers.IO) {
-            // まず昨日の濃厚接触数を取得
-            when (val count = traceRepository.countDeepContactUsersAtYesterday()) {
-                in 0 until 25 -> {
-                    homeStatus.onNext(HomeStatus(Usual, count, Date().time))
-                }
-                else -> {
-                    homeStatus.onNext(HomeStatus(SemiUsual, count, Date().time))
-                }
-            }
-        }
-    }
-
-    private fun doFetchOrganizationNotice(activity: Activity) {
-        // まずプロフィールを取得
-        profileRepository.fetchProfile(activity)
+    private fun doFetchPositiveList(activity: Activity) {
+        // まず陽性者リストを取得
+        traceRepository.fetchPositivePersons(activity)
             .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
-                onSuccess = { profile ->
-                    if (profile.organizationCode.isNotEmpty()) {
-                        // 組織コード別陽性者リスト取得
-                        traceRepository.fetchPositivePersons(profile.organizationCode, activity)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeBy(
-                                onSuccess = { positivePersons ->
-                                    // DBの濃厚接触リストを取得し、突合させる
-                                    launch(Dispatchers.IO) {
-                                        val deepContacts = traceRepository.selectAllDeepContactUsers()
-                                        AnalysisUtil.analysisDeepContactWithPositivePerson(positivePersons, deepContacts)?.let { _ ->
-                                            // 該当者がいればお知らせを取得する
-                                            traceRepository.fetchOrganizationNotice(profile.organizationCode, activity)
-                                                .subscribeOn(Schedulers.io())
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .subscribeBy(
-                                                    onSuccess = {
-                                                        organizationNotice.onNext(it)
-                                                    },
-                                                    onError = { e ->
-                                                        handleFetchOrganizationError(e)
-                                                    }
-                                                ).addTo(disposable)
-                                        }?: organizationNotice.onNext(OrganizationNotice.createEmptyNotice()) // 該当者がいない場合はお知らせクリア
-                                    }
-                                },
-                                onError = { e ->
-                                    handleFetchOrganizationError(e)
-                                }
-                            ).addTo(disposable)
-                    } else {
-                        // 職業コードなしの場合はお知らせクリア
-                        organizationNotice.onNext(OrganizationNotice.createEmptyNotice())
-                    }
+                onSuccess = { positivePersons ->
+                    doHomeStatusCheck(positivePersons)
                 },
                 onError = { e ->
-                    handleFetchOrganizationError(e)
+                    val reason = MIJError.mappingReason(e)
+                    error.onNext(
+                        when (reason) {
+                            NetWork ->
+                                MIJError(
+                                    reason,
+                                    "陽性者リストの取得に失敗しました",
+                                    "インターネットに接続されていません。\n通信状況の良い環境で再度お試しください。",
+                                    DialogRetry
+                                ) {
+                                    // 再度Fetch
+                                    doFetchPositiveList(activity)
+                                }
+                            Auth ->
+                                MIJError(
+                                    reason,
+                                    "認証エラーが発生しました",
+                                    "時間を置いてから再度お試しください。",
+                                    DialogLogout
+                                ) {
+                                    // 認証エラーの場合はログアウト処理をする
+                                    runBlocking(Dispatchers.IO) {
+                                        logoutHelper.logout()
+                                    }
+                                }
+                            else ->
+                                MIJError(
+                                    reason,
+                                    "不明なエラーが発生しました",
+                                    "",
+                                    DialogRetry
+                                ) {
+                                    // 再度Fetch
+                                    doFetchPositiveList(activity)
+                                }
+                        }
+                    )
                 }
             ).addTo(disposable)
     }
 
-    private fun handleFetchOrganizationError(e: Throwable) {
-        val reason = MIJError.mappingReason(e)
-        if (reason == Auth) {
-            // 認証エラーの場合のみ通知し、それ以外は無視する
-            error.onNext(MIJError(
-                reason,
-                "認証エラーが発生しました",
-                "時間を置いてから再度お試しください。",
-                DialogLogout) {
-                runBlocking(Dispatchers.IO) {
-                    logoutHelper.logout()
+    private fun doHomeStatusCheck(positives: List<String>) {
+        launch(Dispatchers.IO) {
+            // 最初に昨日の濃厚接触数を取得
+            val deepContactCountYesterday = traceRepository.countDeepContactUsersAtYesterday()
+
+            // 陽性判定
+            val tempIds = traceRepository.loadTempIdsFrom2WeeksAgo(Date().time)
+            if (AnalysisUtil.analysisPositive(positives, tempIds)) {
+                homeStatus.onNext(HomeStatus(Positive, deepContactCountYesterday, Date().time))
+                return@launch
+            }
+
+            // 濃厚接触判定
+            val deepContacts = traceRepository.selectAllDeepContactUsers()
+            AnalysisUtil.analysisDeepContactWithPositivePerson(positives, deepContacts)?.let {
+                homeStatus.onNext(HomeStatus(DeepContact, deepContactCountYesterday, Date().time))
+                return@launch
+            }
+
+            // ここまでくれば正常、濃厚接触回数による場合わけ
+            when (deepContactCountYesterday) {
+                in 0 until 25 -> {
+                    homeStatus.onNext(HomeStatus(Usual, deepContactCountYesterday, Date().time))
                 }
-            })
-        } else {
-            // 認証エラー以外はお知らせをクリアする
-            organizationNotice.onNext(OrganizationNotice.createEmptyNotice())
+                else -> {
+                    homeStatus.onNext(HomeStatus(SemiUsual, deepContactCountYesterday, Date().time))
+                }
+            }
         }
     }
 }

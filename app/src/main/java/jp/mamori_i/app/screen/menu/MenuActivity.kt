@@ -14,7 +14,6 @@ import jp.mamori_i.app.screen.start.SplashActivity
 import jp.mamori_i.app.screen.trace.TraceDataUploadActivity
 import jp.mamori_i.app.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_menu.*
-import kotlinx.android.synthetic.main.activity_menu.toolBar
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -35,11 +34,8 @@ class MenuActivity: AppCompatActivity(), MenuNavigator {
         setupViews()
         // viewModelとのbind
         bind()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.fetchProfile(this)
+        // MenuItem取得
+        viewModel.fetchMenuItems()
     }
 
     override fun onDestroy() {

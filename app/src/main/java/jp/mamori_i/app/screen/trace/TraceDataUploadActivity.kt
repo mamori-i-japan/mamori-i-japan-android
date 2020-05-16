@@ -3,6 +3,7 @@ package jp.mamori_i.app.screen.trace
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.jakewharton.rxbinding3.widget.textChanges
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -47,14 +48,26 @@ class TraceDataUploadActivity: AppCompatActivity(), TraceDataUploadNavigator {
 
     private fun setupViews() {
         // ツールバー
-        setUpToolBar(toolBar, "データアップロード")
+        setUpToolBar(toolBar, "陽性報告")
+
+        codeInputText.requestFocus()
 
         uploadButton.setOnClickListener {
-            viewModel.onClickUpload()
+            viewModel.onClickUpload(codeInputText.text.toString())
         }
     }
 
     private fun bind() {
+        codeInputText.textChanges()
+            .map { code ->
+                code.isNotBlank()
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { enabled ->
+                uploadButton.isEnabled = enabled
+            }.addTo(disposable)
+
         viewModel.error
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -75,6 +88,7 @@ class TraceDataUploadActivity: AppCompatActivity(), TraceDataUploadNavigator {
     override fun finishWithCompleteMessage(message: String) {
         mainDescriptionTextView.text = message
         subDescriptionTextView.visibility = View.VISIBLE
+        codeInputText.visibility = View.GONE
         uploadButton.visibility = View.GONE
     }
 

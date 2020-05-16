@@ -10,6 +10,8 @@ class HomeStatus(val statusType: HomeStatusType,
 
     enum class HomeStatusType {
         Usual,
-        SemiUsual
+        SemiUsual,
+        DeepContact,
+        Positive
     }
 }

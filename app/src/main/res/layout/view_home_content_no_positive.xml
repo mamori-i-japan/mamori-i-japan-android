@@ -52,6 +52,23 @@
         android:layout_marginTop="8dp"
         android:text="不安、体調不良を相談したい" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_marginTop="24dp"
+        android:textColor="@color/colorTextGray"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:text="陽性判定があった場合"/>
+
+    <Button style="@style/ExecuteButton"
+        android:id="@+id/reportButton"
+        android:layout_width="match_parent"
+        android:layout_marginTop="8dp"
+        android:text="センターへ情報共有をする" />
+
     <Button style="@style/LinkButtonBlue"
         android:id="@+id/shareButton"
         android:layout_width="wrap_content"

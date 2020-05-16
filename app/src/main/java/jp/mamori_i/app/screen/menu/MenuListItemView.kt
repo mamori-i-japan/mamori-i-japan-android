@@ -14,7 +14,6 @@ class MenuListItemView @JvmOverloads constructor(context: Context,
 
     enum class MenuListItemType {
         Setting,
-        DataUpload,
         About,
         License,
         Logout, // TODO Debug

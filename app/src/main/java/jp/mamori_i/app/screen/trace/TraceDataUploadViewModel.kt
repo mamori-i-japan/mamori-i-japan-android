@@ -35,14 +35,14 @@ class TraceDataUploadViewModel(private val traceRepository: TraceRepository,
         super.onCleared()
     }
 
-    fun onClickUpload() {
+    fun onClickUpload(inputCode: String) {
         navigator.showProgress()
         launch(Dispatchers.IO) {
             val currentTime = Date().time
             // まずTempIdリストを取得
             val tempIdsFrom2WeeksAgo = traceRepository.loadTempIdsFrom2WeeksAgo(currentTime)
             // アップロード開始
-            traceRepository.uploadTempUserId(tempIdsFrom2WeeksAgo, currentTime)
+            traceRepository.uploadTempUserId(tempIdsFrom2WeeksAgo, currentTime, inputCode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(

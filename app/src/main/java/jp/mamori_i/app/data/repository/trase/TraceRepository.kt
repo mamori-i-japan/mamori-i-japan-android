@@ -12,8 +12,6 @@ import jp.mamori_i.app.data.model.TempUserId
 interface TraceRepository {
     // 陽性者リストの取得
     fun fetchPositivePersons(activity: Activity): Single<List<String>>
-    // 組織コード別陽性者リストの取得
-    fun fetchPositivePersons(organizationCode: String, activity: Activity): Single<List<String>>
 
     // TempIdのロード
     suspend fun loadTempIds(): List<TempUserId>
@@ -27,7 +25,7 @@ interface TraceRepository {
     suspend fun deleteTempIdInTwoWeeks(currentTime: Long)
 
     // TempUserIdのアップロード
-    fun uploadTempUserId(tempUserIds: List<TempUserId>, currentTime: Long): Single<Boolean>
+    fun uploadTempUserId(tempUserIds: List<TempUserId>, currentTime: Long, inputCode: String): Single<Boolean>
 
     // 接触者情報の登録
     suspend fun insertTraceData(entity: TraceDataEntity)
@@ -50,9 +48,6 @@ interface TraceRepository {
 
     // 濃厚接触者情報を追加し、該当になった濃厚接触者のデータを接触情報から削除
     suspend fun insertDeepContactUsers(entities: List<DeepContactUserEntity>, tempId: String)
-
-    // 組織別のメッセージ取得
-    fun fetchOrganizationNotice(organizationCode: String, activity: Activity): Single<OrganizationNotice>
 
     // 全テータ削除
     suspend fun deleteAllData()

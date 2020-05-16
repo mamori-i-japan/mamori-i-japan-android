@@ -20,6 +20,17 @@
         android:textSize="20sp"
         android:text="接触デバイスIDの\nアップロード要請がありました。"/>
 
+    <EditText
+        android:id="@+id/codeInputText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:inputType="text"
+        android:lines="1"
+        android:hint="コードを入力"/>
+
     <TextView
         android:id="@+id/subDescriptionTextView"
         android:layout_width="wrap_content"

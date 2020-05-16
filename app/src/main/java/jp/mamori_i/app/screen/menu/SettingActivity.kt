@@ -2,7 +2,6 @@ package jp.mamori_i.app.screen.menu
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -13,8 +12,6 @@ import jp.mamori_i.app.extension.handleError
 import jp.mamori_i.app.extension.setUpToolBar
 import jp.mamori_i.app.screen.profile.InputPrefectureActivity
 import jp.mamori_i.app.screen.profile.InputPrefectureTransitionEntity
-import jp.mamori_i.app.screen.profile.InputOrganizationCodeActivity
-import jp.mamori_i.app.screen.profile.InputOrganizationCodeTransitionEntity
 import jp.mamori_i.app.ui.ProgressHUD
 import kotlinx.android.synthetic.main.activity_menu.toolBar
 import kotlinx.android.synthetic.main.activity_setting.*
@@ -63,14 +60,6 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
         prefectureSelectButton.setOnClickListener {
             viewModel.onClickPrefecture()
         }
-
-        organizationCodeSelectButton.setOnClickListener {
-            viewModel.onClickOrganization()
-        }
-
-        organizationClearButton.setOnClickListener {
-            viewModel.clearOrganization()
-        }
     }
 
     private fun bind() {
@@ -79,18 +68,6 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { profile ->
                 prefectureValueTextView.text = profile.prefectureType().description()
-                if (profile.organizationCode.isEmpty()) {
-                    organizationCodeValueTextView.text = "未入力"
-                    organizationCodeValueTextView.setTextColor(resources.getColor(R.color.colorTextLightGray, null))
-                } else {
-                    organizationCodeValueTextView.text = profile.organizationCode
-                    organizationCodeValueTextView.setTextColor(resources.getColor(R.color.colorTextBlack, null))
-                }
-                if (profile.organizationCode.isNotEmpty()) {
-                    organizationClearButton.visibility = View.VISIBLE
-                } else {
-                    organizationClearButton.visibility = View.GONE
-                }
             }.addTo(disposable)
 
         viewModel.error
@@ -113,15 +90,5 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
         val intent = Intent(this, InputPrefectureActivity::class.java)
         intent.putExtra(InputPrefectureActivity.KEY, transitionEntity)
         this.startActivity(intent)
-    }
-
-    override fun goToInputOrganizationCode(transitionEntity: InputOrganizationCodeTransitionEntity) {
-        val intent = Intent(this, InputOrganizationCodeActivity::class.java)
-        intent.putExtra(InputOrganizationCodeActivity.KEY, transitionEntity)
-        this.startActivity(intent)
-    }
-
-    override fun clearFinishWithCompleteMessage(message: String) {
-        viewModel.fetchProfile(this)
     }
 }

@@ -38,7 +38,6 @@ class TraceRepositoryImpl (private val moshi: Moshi,
                            private val localCacheService: LocalCacheService,
                            private val localStorageService: LocalStorageService,
                            private val firebaseStorageService: FirebaseStorageService,
-                           private val fireStore: FirebaseFirestore,
                            private val db: MIJDatabase): TraceRepository {
 
     companion object {
@@ -77,38 +76,6 @@ class TraceRepositoryImpl (private val moshi: Moshi,
         }
     }
 
-    override fun fetchPositivePersons(organizationCode: String, activity: Activity): Single<List<String>> {
-        return Single.create { result ->
-            // データを取得
-            firebaseStorageService.loadDataIfNeeded(PositivePersonList, organizationCode, localCacheService.positivePersonListGeneration(organizationCode)?:"0", activity)
-                .subscribeOn(Schedulers.io())
-                .subscribeBy (
-                    onSuccess = { data ->
-                        // データの取得に成功
-                        data.data?.let { listData ->
-                            // 取得データあり = 更新する
-                            val dataStr = GZIPInputStream(listData.inputStream()).bufferedReader(UTF_8).use { it.readText() }
-                            try {
-                                // パースする
-                                moshi.adapter(PositivePersons::class.java).fromJson(dataStr)?.let { parseResult ->
-                                    // パース成功
-                                    localCacheService.setPositivePersonList(organizationCode, parseResult.data)
-                                    localCacheService.setPositivePersonListGeneration(organizationCode, data.generation)
-                                    result.onSuccess(parseResult.data)
-                                }?: result.onError( MIJException(Parse)) // データなしもパース失敗扱いとする
-                            } catch (e: Throwable) {
-                                // パース失敗
-                                result.onError(e)
-                            }
-                        }?: result.onSuccess(localCacheService.positivePersonList(organizationCode)) // 取得データなし = キャッシュのやつを使用する
-                    },
-                    onError = { e ->
-                        result.onError(e)
-                    }
-                )
-        }
-    }
-
     override suspend fun loadTempIds(): List<TempUserId> = db.tempUserIdDao().selectAll().map { TempUserId.create(it) }
     override suspend fun loadTempIdsFrom2WeeksAgo(currentTime: Long): List<TempUserId> {
         val twoWeeks = currentTime.twoWeeks()
@@ -126,13 +93,13 @@ class TraceRepositoryImpl (private val moshi: Moshi,
         }
     }
 
-    override fun uploadTempUserId(tempUserIds: List<TempUserId>, currentTime: Long): Single<Boolean> {
+    override fun uploadTempUserId(tempUserIds: List<TempUserId>, currentTime: Long, inputCode: String): Single<Boolean> {
         return Single.create { result ->
             auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     task.result?.token?.let { token ->
                         val randomId = (UUID.randomUUID().toString() + currentTime.toString()).convertSHA256HashString()
-                        val requestBody = UploadTempIdsRequestBody(randomId, tempUserIds)
+                        val requestBody = UploadTempIdsRequestBody(randomId, tempUserIds, inputCode)
                         api.uploadTempIds("Bearer $token", requestBody)
                             .subscribeOn(Schedulers.io())
                             .subscribeBy (
@@ -179,34 +146,6 @@ class TraceRepositoryImpl (private val moshi: Moshi,
                 db.deepContactUserDao().insert(entity)
             }
             db.traceDataDao().delete(tempId)
-        }
-    }
-
-    override fun fetchOrganizationNotice(organizationCode: String, activity: Activity): Single<OrganizationNotice> {
-        return Single.create { result ->
-            val cm = activity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val activeNetwork = cm.activeNetworkInfo
-            if (activeNetwork?.isConnectedOrConnecting == true) {
-                fireStore.collection("organizations")
-                    .document(organizationCode)
-                    .collection("denormalizedForAppAccess")
-                    .document(organizationCode)
-                    .get()
-                    .addOnSuccessListener { document ->
-                        try {
-                            document.toObject(OrganizationNotice::class.java)?.let {
-                                result.onSuccess(it)
-                            } ?: result.onError(MIJException(Parse)) // データなしはパースエラーとする
-                        } catch (e: Throwable) {
-                            result.onError(e)
-                        }
-                    }
-                    .addOnFailureListener { e ->
-                        result.onError(e)
-                    }
-            } else {
-                result.onError(MIJException(Network))
-            }
         }
     }
 

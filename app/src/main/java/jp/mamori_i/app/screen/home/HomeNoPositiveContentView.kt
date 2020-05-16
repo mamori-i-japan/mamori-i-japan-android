@@ -5,21 +5,22 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import jp.mamori_i.app.R
-import kotlinx.android.synthetic.main.view_home_content_usual.view.*
+import kotlinx.android.synthetic.main.view_home_content_no_positive.view.*
 
-class HomeUsualContentView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : LinearLayout(context, attrs, defStyle) {
+class HomeNoPositiveContentView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : LinearLayout(context, attrs, defStyle) {
 
-    interface HomeUsualContentViewEventListener {
+    interface HomeNoPositiveContentViewEventListener {
         fun onClickStayHomeButton()
         fun onClickHygieneButton()
         fun onClickContactButton()
+        fun onClickPositiveReport()
         fun onClickShareButton()
     }
 
-    var listener: HomeUsualContentViewEventListener? = null
+    var listener: HomeNoPositiveContentViewEventListener? = null
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.view_home_content_usual, this, true)
+        LayoutInflater.from(context).inflate(R.layout.view_home_content_no_positive, this, true)
         stayHomeButton.setOnClickListener {
             listener?.onClickStayHomeButton()
         }
@@ -28,6 +29,9 @@ class HomeUsualContentView @JvmOverloads constructor(context: Context, attrs: At
         }
         contactButton.setOnClickListener {
             listener?.onClickContactButton()
+        }
+        reportButton.setOnClickListener {
+            listener?.onClickPositiveReport()
         }
         shareButton.setOnClickListener {
             listener?.onClickShareButton()

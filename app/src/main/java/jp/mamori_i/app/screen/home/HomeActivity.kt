@@ -4,19 +4,17 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.Timestamp
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
-import jp.mamori_i.app.data.model.OrganizationNotice
 import jp.mamori_i.app.extension.handleError
 import jp.mamori_i.app.screen.home.HomeStatus.HomeStatusType.*
 import jp.mamori_i.app.screen.menu.MenuActivity
+import jp.mamori_i.app.screen.trace.TraceDataUploadActivity
 import jp.mamori_i.app.screen.trace.TraceHistoryActivity
 import jp.mamori_i.app.ui.ProgressHUD
 import jp.mamori_i.app.util.BLEUtil
@@ -42,7 +40,7 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
         setupViews()
         // viewModelとのbind
         bind()
-        // BLE開始 // TODO 場所の見直し
+        // BLE開始
         BLEUtil.startBluetoothMonitoringService(this)
     }
 
@@ -67,17 +65,11 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
     }
 
     private fun setupViews() {
-        cardView.listener = object : HomeCardView.HomeCardViewEventListener {
+        cardView.setCardViewEventListener(object : HomeCardView.HomeCardViewEventListener {
             override fun onClickDeepContactCountArea() {
                 viewModel.onClickDeepContactCount()
             }
-        }
-
-        notificationView.listener = object: HomeOrganizationNoticeView.HomeOrganizationNoticeViewEventListener {
-            override fun onClickNoticeButton(organizationNotice: OrganizationNotice) {
-                Toast.makeText(this@HomeActivity, organizationNotice.messageForAppAccess, Toast.LENGTH_LONG).show()
-            }
-        }
+        })
 
         // TODO 画面切り替え実験用
         usualButton.setOnClickListener {
@@ -86,14 +78,11 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
         semiUsualButton.setOnClickListener {
             viewModel.homeStatus.onNext(HomeStatus(SemiUsual, 25, Date().time))
         }
-        notifyButton.setOnClickListener {
-            if (it.tag == true) {
-                viewModel.organizationNotice.onNext(OrganizationNotice.createEmptyNotice())
-                it.tag = false
-            } else {
-                viewModel.organizationNotice.onNext(OrganizationNotice("hoge"))
-                it.tag = true
-            }
+        deepContactButton.setOnClickListener {
+            viewModel.homeStatus.onNext(HomeStatus(DeepContact, 11, Date().time))
+        }
+        positiveButton.setOnClickListener {
+            viewModel.homeStatus.onNext(HomeStatus(Positive, 11, Date().time))
         }
 
         // TODO 開発用ボタン等なので適当に繋いでいる
@@ -128,20 +117,6 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
             }
             .addTo(disposable)
 
-        // お知らせ部分
-        viewModel.organizationNotice
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy { organizationNotice ->
-                if (organizationNotice.isEmpty()) {
-                    notificationView.visibility = View.GONE
-                } else {
-                    notificationView.updateContent(organizationNotice)
-                    notificationView.visibility = View.VISIBLE
-                }
-            }
-            .addTo(disposable)
-
         viewModel.error
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -152,21 +127,20 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
 
     private fun updateBackgroundImage(homeStatus: HomeStatus) {
         backgroundImageView.setImageResource( when (homeStatus.statusType) {
-            Usual -> {
-                R.drawable.img_home_bg_usual
-            }
-            SemiUsual -> {
-                R.drawable.img_home_bg_semi_usual
-            }
+            Usual -> R.drawable.img_home_bg_usual
+            SemiUsual -> R.drawable.img_home_bg_semi_usual
+            DeepContact ->  R.drawable.img_home_bg_deep_contact
+            Positive ->  R.drawable.img_home_bg_positive
         })
     }
 
     private fun createContentView(homeStatus: HomeStatus): View {
         return when (homeStatus.statusType) {
             Usual,
-            SemiUsual -> {
-                HomeUsualContentView(this).apply {
-                    listener = object : HomeUsualContentView.HomeUsualContentViewEventListener {
+            SemiUsual,
+            DeepContact -> {
+                HomeNoPositiveContentView(this).apply {
+                    listener = object : HomeNoPositiveContentView.HomeNoPositiveContentViewEventListener {
                         override fun onClickStayHomeButton() {
                             viewModel.onClickStayHomeButton()
                         }
@@ -179,6 +153,19 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
                             viewModel.onClickContactButton()
                         }
 
+                        override fun onClickPositiveReport() {
+                            viewModel.onClickPositiveReportButton()
+                        }
+
+                        override fun onClickShareButton() {
+                            viewModel.onClickShareButton()
+                        }
+                    }
+                }
+            }
+            Positive -> {
+                HomePositiveContentView(this).apply {
+                    listener = object : HomePositiveContentView.HomePositiveContentViewEventListener {
                         override fun onClickShareButton() {
                             viewModel.onClickShareButton()
                         }
@@ -203,6 +190,11 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
 
     override fun goToTraceHistory() {
         val intent = Intent(this, TraceHistoryActivity::class.java)
+        this.startActivity(intent)
+    }
+
+    override fun goToPositiveReport() {
+        val intent = Intent(this, TraceDataUploadActivity::class.java)
         this.startActivity(intent)
     }
 
