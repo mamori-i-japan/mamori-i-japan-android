@@ -14,9 +14,6 @@ interface TempUserIdDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entities: List<TempUserIdEntity>)
 
-    @Query("SELECT count(*) FROM temp_user_id_table")
-    suspend fun tempUerIdCount(): Int
-
     @Query("SELECT * FROM temp_user_id_table")
     suspend fun selectAll(): List<TempUserIdEntity>
 

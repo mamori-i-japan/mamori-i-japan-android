@@ -2,7 +2,6 @@ package jp.mamori_i.app.data.database.tracedata
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
