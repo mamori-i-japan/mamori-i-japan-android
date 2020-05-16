@@ -27,15 +27,9 @@ class TraceHistoryViewModel(private val traceRepository: TraceRepository): ViewM
     fun loadListItems() {
         launch(Dispatchers.IO) {
             // まず濃厚接触履歴を全件取得 (DeepContactに変換・降順ソート)
-            val deepContacts = listOf(DeepContactUserEntity("hoge",1,2),
-                DeepContactUserEntity("hoge1",1,2),
-                DeepContactUserEntity("hoge2",200000000,2))
+            val deepContacts = traceRepository.selectAllDeepContactUsers()
                 .map { DeepContact.create(it) }
                 .sortedBy { it.startTime }
-
-                /*traceRepository.selectAllDeepContactUsers()
-                .map { DeepContact.create(it) }
-                .sortedBy { it.startTime }*/
             // 年月日ごとにセパレートする
             val separatedDeepContacts = deepContacts.groupBy{ it.startDateString }
             // 年月日を１セクションとし、ListItemを生成する
