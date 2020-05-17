@@ -9,4 +9,6 @@ interface MenuNavigator {
     fun goToAbout()
     fun goToLicense()
     fun goToSplash()
+    fun showWithdrawalReportConfirmDialog(message: String)
+    fun finishWithdrawalReport(message: String)
 }

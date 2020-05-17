@@ -68,7 +68,7 @@ class InputPrefectureViewModel(private val profileRepository: ProfileRepository,
             .subscribeBy(
                 onSuccess = {
                     navigator.hideProgress()
-                    navigator.finishWithCompleteMessage("完了") // TODO
+                    navigator.finishWithCompleteMessage("完了")
                 },
                 onError = { e ->
                     navigator.hideProgress()

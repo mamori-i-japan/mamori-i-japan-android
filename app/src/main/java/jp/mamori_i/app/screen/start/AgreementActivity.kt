@@ -3,6 +3,7 @@ package jp.mamori_i.app.screen.start
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.disposables.CompositeDisposable
 import jp.mamori_i.app.R
@@ -62,7 +63,8 @@ class AgreementActivity: AppCompatActivity(), AgreementNavigator {
     }
 
     override fun openWebBrowser(uri: Uri) {
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        this.startActivity(intent)
+        Toast.makeText(this, "URLを設定して必要な情報に誘導します", Toast.LENGTH_SHORT).show()
+        //val intent = Intent(Intent.ACTION_VIEW, uri)
+        //this.startActivity(intent)
     }
 }

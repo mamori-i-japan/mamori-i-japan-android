@@ -29,6 +29,7 @@ class AgreementViewModel(private val disposable: CompositeDisposable): ViewModel
     }
 
     fun onClickAgreementLink() {
-        navigator.openWebBrowser("https://yahoo.co.jp".toUri())
+        // TODO URL
+        navigator.openWebBrowser("https://exemple.com".toUri())
     }
 }

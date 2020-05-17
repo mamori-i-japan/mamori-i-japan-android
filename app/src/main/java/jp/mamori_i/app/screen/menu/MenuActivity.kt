@@ -2,6 +2,7 @@ package jp.mamori_i.app.screen.menu
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -10,6 +11,8 @@ import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
 import jp.mamori_i.app.extension.handleError
 import jp.mamori_i.app.extension.setUpToolBar
+import jp.mamori_i.app.extension.showAlertDialog
+import jp.mamori_i.app.extension.showConfirmAlertDialog
 import jp.mamori_i.app.screen.start.SplashActivity
 import jp.mamori_i.app.screen.trace.TraceDataUploadActivity
 import jp.mamori_i.app.ui.ProgressHUD
@@ -105,5 +108,15 @@ class MenuActivity: AppCompatActivity(), MenuNavigator {
         val intent = Intent(this, SplashActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         this.startActivity(intent)
+    }
+
+    override fun showWithdrawalReportConfirmDialog(message: String) {
+        showConfirmAlertDialog("", message) {
+            viewModel.executeWithdrawalReport()
+        }
+    }
+
+    override fun finishWithdrawalReport(message: String) {
+        Toast.makeText(this, "取り消しました", Toast.LENGTH_SHORT).show()
     }
 }

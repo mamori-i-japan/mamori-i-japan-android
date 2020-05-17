@@ -19,6 +19,6 @@ class TutorialViewModel(private val disposable: CompositeDisposable): ViewModel(
 
     fun onClickWebLink() {
         // TODO URL
-        navigator.openWebBrowser("https://yahoo.co.jp".toUri())
+        navigator.openWebBrowser("https://exemple.com".toUri())
     }
 }

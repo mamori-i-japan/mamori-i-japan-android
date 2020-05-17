@@ -14,7 +14,7 @@
         android:textColor="@color/colorTextBlack"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:text="1週間ほど前\n陽性判定者との濃厚接触が\nあったかもしれません"/>
+        android:text="この2週間以内に\n陽性判定者との濃厚接触が\nあったかもしれません"/>
 
     <RelativeLayout
         android:id="@+id/deepContactCountAreaView"

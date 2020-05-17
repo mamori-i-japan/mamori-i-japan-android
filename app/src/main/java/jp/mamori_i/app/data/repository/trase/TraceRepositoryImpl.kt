@@ -1,12 +1,9 @@
 package jp.mamori_i.app.data.repository.trase
 
 import android.app.Activity
-import android.content.Context
-import android.net.ConnectivityManager
 import androidx.lifecycle.LiveData
 import androidx.room.withTransaction
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.moshi.Moshi
 import io.reactivex.Single
 import io.reactivex.rxkotlin.subscribeBy
@@ -17,15 +14,16 @@ import jp.mamori_i.app.data.database.deepcontactuser.DeepContactUserEntity
 import jp.mamori_i.app.data.database.tempuserid.TempUserIdEntity
 import jp.mamori_i.app.data.database.tracedata.TraceDataEntity
 import jp.mamori_i.app.data.exception.MIJException
-import jp.mamori_i.app.data.exception.MIJException.Reason.*
-import jp.mamori_i.app.data.model.*
+import jp.mamori_i.app.data.exception.MIJException.Reason.Auth
+import jp.mamori_i.app.data.exception.MIJException.Reason.Parse
+import jp.mamori_i.app.data.model.DeleteTempIdsRequestBody
+import jp.mamori_i.app.data.model.PositivePersons
+import jp.mamori_i.app.data.model.TempUserId
+import jp.mamori_i.app.data.model.UploadTempIdsRequestBody
 import jp.mamori_i.app.data.storage.FirebaseStorageService
 import jp.mamori_i.app.data.storage.FirebaseStorageService.FileNameKey.PositivePersonList
 import jp.mamori_i.app.data.storage.LocalCacheService
 import jp.mamori_i.app.data.storage.LocalStorageService
-import jp.mamori_i.app.extension.convertSHA256HashString
-import jp.mamori_i.app.extension.convertToDateTimeString
-import jp.mamori_i.app.extension.convertToUnixTime
 import jp.mamori_i.app.extension.*
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.*
@@ -106,6 +104,33 @@ class TraceRepositoryImpl (private val moshi: Moshi,
                                 onSuccess = {
                                     // UploadKeyの追加
                                     localStorageService.addList(LocalStorageService.ListKey.UploadRandomKeys, randomId)
+                                    result.onSuccess(true)
+                                },
+                                onError = { e ->
+                                    result.onError(e)
+                                }
+                            )
+                    }?: result.onError(task.exception?: MIJException(Auth))
+                } else {
+                    result.onError(task.exception?: MIJException(Auth))
+                }
+            }
+        }
+    }
+
+    override fun deleteTempUserId(): Single<Boolean> {
+        return Single.create { result ->
+            auth.currentUser?.getIdToken(true)?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    task.result?.token?.let { token ->
+                        val uploadRandomKeys = localStorageService.loadList(LocalStorageService.ListKey.UploadRandomKeys, listOf())
+                        val requestBody = DeleteTempIdsRequestBody(uploadRandomKeys.map { DeleteTempIdsRequestBody.RandomId(it) })
+                        api.deleteTempIds("Bearer $token", requestBody)
+                            .subscribeOn(Schedulers.io())
+                            .subscribeBy (
+                                onSuccess = {
+                                    // 成功したらuploadRandomKeysを削除する
+                                    localStorageService.clearList(LocalStorageService.ListKey.UploadRandomKeys)
                                     result.onSuccess(true)
                                 },
                                 onError = { e ->

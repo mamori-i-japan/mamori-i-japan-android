@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -199,8 +200,9 @@ class HomeActivity: AppCompatActivity(), HomeNavigator {
     }
 
     override fun openWebBrowser(uri: Uri) {
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        this.startActivity(intent)
+        Toast.makeText(this, "URLを設定して必要な情報に誘導します", Toast.LENGTH_SHORT).show()
+        //val intent = Intent(Intent.ACTION_VIEW, uri)
+        //this.startActivity(intent)
     }
 
     override fun openShareComponent(title: String, content: String) {

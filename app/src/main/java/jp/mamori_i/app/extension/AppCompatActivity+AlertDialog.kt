@@ -15,3 +15,17 @@ fun AppCompatActivity.showAlertDialog(title: String,
         .setCancelable(completion == null)
         .show()
 }
+
+fun AppCompatActivity.showConfirmAlertDialog(title: String,
+                                             message: String,
+                                             completion: (() -> Unit)? = null) {
+    AlertDialog.Builder(this)
+        .setTitle(title)
+        .setMessage(message)
+        .setPositiveButton("OK") { _, _ ->
+            completion?.invoke()
+        }
+        .setNegativeButton("キャンセル") { _, _ ->
+        }
+        .show()
+}

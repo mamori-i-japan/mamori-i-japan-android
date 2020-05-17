@@ -26,6 +26,8 @@ interface TraceRepository {
 
     // TempUserIdのアップロード
     fun uploadTempUserId(tempUserIds: List<TempUserId>, currentTime: Long, inputCode: String): Single<Boolean>
+    // アップロードしたTempUserIdの削除
+    fun deleteTempUserId(): Single<Boolean>
 
     // 接触者情報の登録
     suspend fun insertTraceData(entity: TraceDataEntity)

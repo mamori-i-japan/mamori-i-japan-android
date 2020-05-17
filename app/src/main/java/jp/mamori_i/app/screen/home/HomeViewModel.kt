@@ -76,17 +76,17 @@ class HomeViewModel(private val traceRepository: TraceRepository,
 
     fun onClickStayHomeButton() {
         // TODO URL
-        navigator.openWebBrowser("https://yahoo.co.jp".toUri())
+        navigator.openWebBrowser("https://exemple.com".toUri())
     }
 
     fun onClickHygieneButton() {
         // TODO URL
-        navigator.openWebBrowser("https://yahoo.co.jp".toUri())
+        navigator.openWebBrowser("https://exemple.com".toUri())
     }
 
     fun onClickContactButton() {
         // TODO URL
-        navigator.openWebBrowser("https://yahoo.co.jp".toUri())
+        navigator.openWebBrowser("https://exemple.com".toUri())
     }
 
     fun onClickPositiveReportButton() {
