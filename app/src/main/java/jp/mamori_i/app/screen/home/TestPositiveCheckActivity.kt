@@ -14,6 +14,7 @@ import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
 import jp.mamori_i.app.data.repository.profile.ProfileRepository
 import jp.mamori_i.app.data.repository.trase.TraceRepository
+import jp.mamori_i.app.extension.convertToDateTimeString
 import jp.mamori_i.app.extension.handleError
 import jp.mamori_i.app.extension.setUpToolBar
 import jp.mamori_i.app.screen.common.MIJError
@@ -92,6 +93,13 @@ class TestPositiveCheckActivity: AppCompatActivity(), CoroutineScope {
                         val isPositive = AnalysisUtil.analysisPositive(list, tempIds)
 
                         withContext(Dispatchers.Main) {
+                            positiveListText.text = list.joinToString("\n")
+                            myTempIdListText.text = tempIds.joinToString("\n") {
+                                it.tempId + "\n      " + it.startTime.convertToDateTimeString("MM/dd HH:mm") + "~" + it.expiryTime.convertToDateTimeString(
+                                    "MM/dd HH:mm"
+                                )
+                            }
+
                             if (isPositive) {
                                 checkResultText.text = "陽性です"
                             } else {
