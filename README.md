@@ -14,8 +14,7 @@ The images made by [Miro](https://miro.com/app/board/o9J_ksGHtPE=/) (read only a
 
 ![ScreenOverview](./docs/screen-overview.png)
 
-[Screens](./docs/screens.pdf)
-
+- [Screens](./docs/screens.pdf)
 - figma will be public soon.
 
 ## 環境
@@ -33,3 +32,7 @@ The images made by [Miro](https://miro.com/app/board/o9J_ksGHtPE=/) (read only a
 ## セットアップ
 
 特になし
+
+## お問い合わせ
+
+- [お問い合わせフォーム](https://docs.google.com/forms/d/e/1FAIpQLSfcGM9itQ3i--GN9FUsQpdlW58Ug4Y6lcnE11N-igILDJdZlw/viewform)
