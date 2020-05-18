@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.oss.licenses.plugin'
 apply plugin: 'kotlin-kapt'
 
 android {
@@ -168,6 +169,9 @@ dependencies {
 
     // RecycleView
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
+    // License
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
 
     // Test
     testImplementation 'junit:junit:4.12'

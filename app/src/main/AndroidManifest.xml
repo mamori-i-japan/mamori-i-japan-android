@@ -42,9 +42,6 @@
             android:name=".screen.menu.AboutActivity"
             android:exported="false" />
         <activity
-            android:name=".screen.menu.LicenseActivity"
-            android:exported="false" />
-        <activity
             android:name=".screen.menu.MenuActivity"
             android:exported="false" />
         <activity

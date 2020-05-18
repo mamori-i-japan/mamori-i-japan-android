@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -11,7 +12,6 @@ import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
 import jp.mamori_i.app.extension.handleError
 import jp.mamori_i.app.extension.setUpToolBar
-import jp.mamori_i.app.extension.showAlertDialog
 import jp.mamori_i.app.extension.showConfirmAlertDialog
 import jp.mamori_i.app.screen.start.SplashActivity
 import jp.mamori_i.app.screen.trace.TraceDataUploadActivity
@@ -99,7 +99,8 @@ class MenuActivity: AppCompatActivity(), MenuNavigator {
     }
 
     override fun goToLicense() {
-        val intent = Intent(this, LicenseActivity::class.java)
+        val intent = Intent(this, OssLicensesMenuActivity::class.java)
+        intent.putExtra("title", "利用ライセンス")
         this.startActivity(intent)
     }
 
