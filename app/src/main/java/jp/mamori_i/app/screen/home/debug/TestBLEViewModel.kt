@@ -1,4 +1,4 @@
-package jp.mamori_i.app.screen.home
+package jp.mamori_i.app.screen.home.debug
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

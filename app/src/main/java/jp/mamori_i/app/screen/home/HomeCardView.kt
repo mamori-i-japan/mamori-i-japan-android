@@ -8,10 +8,7 @@ import android.widget.RelativeLayout
 import jp.mamori_i.app.R
 import jp.mamori_i.app.screen.home.HomeStatus.HomeStatusType.*
 import kotlinx.android.synthetic.main.view_home_card.view.*
-import kotlinx.android.synthetic.main.view_home_card_deep_contact.view.*
 import kotlinx.android.synthetic.main.view_home_card_usual.view.*
-import kotlinx.android.synthetic.main.view_home_card_usual.view.deepContactCountAreaView
-import kotlinx.android.synthetic.main.view_home_card_usual.view.mainMessageTextView
 
 class HomeCardView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : RelativeLayout(context, attrs, defStyle) {
 
@@ -19,7 +16,7 @@ class HomeCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
         fun onClickDeepContactCountArea()
     }
 
-    inner class UsualView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : RelativeLayout(context, attrs, defStyle) {
+    inner class UsualCardView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : RelativeLayout(context, attrs, defStyle) {
         init {
             LayoutInflater.from(context).inflate(R.layout.view_home_card_usual, this, true)
             deepContactCountAreaView.setOnClickListener {
@@ -35,7 +32,7 @@ class HomeCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
         }
     }
 
-    inner class DeepContactView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : RelativeLayout(context, attrs, defStyle) {
+    inner class DeepContactCardView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : RelativeLayout(context, attrs, defStyle) {
         init {
             LayoutInflater.from(context).inflate(R.layout.view_home_card_deep_contact, this, true)
             deepContactCountAreaView.setOnClickListener {
@@ -44,7 +41,7 @@ class HomeCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
         }
     }
 
-    inner class PositiveContactView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : RelativeLayout(context, attrs, defStyle) {
+    inner class PositiveCardView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : RelativeLayout(context, attrs, defStyle) {
         init {
             LayoutInflater.from(context).inflate(R.layout.view_home_card_positive, this, true)
         }
@@ -65,7 +62,7 @@ class HomeCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
         cardContentContainerView.removeAllViews()
         val contentView = when (status.statusType) {
             Usual -> {
-                UsualView(context).apply {
+                UsualCardView(context).apply {
                     updateContent(
                         "一緒に日本を守ってくれて\nありがとうございます",
                         "引き続き接触を控えましょう",
@@ -73,15 +70,15 @@ class HomeCardView @JvmOverloads constructor(context: Context, attrs: AttributeS
                 }
             }
             SemiUsual -> {
-                UsualView(context).apply {
+                UsualCardView(context).apply {
                     updateContent(
                         "接触を減らすために\n周りに協力してもらえることは\nありませんか",
                         null,
                         status.deepContactCount)
                 }
             }
-            DeepContact -> DeepContactView(context)
-            Positive -> PositiveContactView(context)
+            DeepContact -> DeepContactCardView(context)
+            Positive -> PositiveCardView(context)
         }
         cardContentContainerView.addView(contentView)
 

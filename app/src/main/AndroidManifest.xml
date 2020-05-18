@@ -78,10 +78,10 @@
             android:name=".screen.trace.TraceDataUploadActivity"
             android:exported="false" />
 
-        <activity android:name=".screen.home.TestBLEActivity" android:exported="false" /> <!-- TODO 動作確認用 -->
-        <activity android:name=".screen.home.BLEActivity" android:exported="false" /> <!-- TODO 動作確認用 -->
-        <activity android:name=".screen.home.TestPositiveCheckActivity" android:exported="false" /> <!-- TODO 動作確認用 -->
-        <activity android:name=".screen.home.TestContactListActivity" android:exported="false" /> <!-- TODO 動作確認用 -->
+        <activity android:name=".screen.home.debug.TestBLEActivity" android:exported="false" /> <!-- TODO 動作確認用 -->
+        <activity android:name=".screen.home.debug.BLEActivity" android:exported="false" /> <!-- TODO 動作確認用 -->
+        <activity android:name=".screen.home.debug.TestPositiveCheckActivity" android:exported="false" /> <!-- TODO 動作確認用 -->
+        <activity android:name=".screen.home.debug.TestContactListActivity" android:exported="false" /> <!-- TODO 動作確認用 -->
 
     </application>
 

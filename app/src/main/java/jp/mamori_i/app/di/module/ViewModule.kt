@@ -3,8 +3,8 @@ package jp.mamori_i.app.di.module
 import jp.mamori_i.app.screen.common.LogoutHelper
 import jp.mamori_i.app.screen.common.LogoutHelperImpl
 import jp.mamori_i.app.screen.home.HomeViewModel
-import jp.mamori_i.app.screen.home.TestBLEViewModel
-import jp.mamori_i.app.screen.home.TestContactListViewModel
+import jp.mamori_i.app.screen.home.debug.TestBLEViewModel
+import jp.mamori_i.app.screen.home.debug.TestContactListViewModel
 import jp.mamori_i.app.screen.trace.TraceDataUploadViewModel
 import jp.mamori_i.app.screen.trace.TraceHistoryViewModel
 import jp.mamori_i.app.screen.menu.MenuViewModel

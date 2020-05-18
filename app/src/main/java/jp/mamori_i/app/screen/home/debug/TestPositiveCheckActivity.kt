@@ -1,4 +1,4 @@
-package jp.mamori_i.app.screen.home
+package jp.mamori_i.app.screen.home.debug
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -12,7 +12,6 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
-import jp.mamori_i.app.data.repository.profile.ProfileRepository
 import jp.mamori_i.app.data.repository.trase.TraceRepository
 import jp.mamori_i.app.extension.convertToDateTimeString
 import jp.mamori_i.app.extension.handleError
@@ -28,7 +27,7 @@ import kotlin.coroutines.CoroutineContext
 class TestPositiveCheckActivity: AppCompatActivity(), CoroutineScope {
     companion object {
         const val TAG = "TestPositiveCheckActivity"
-        const val KEY = "jp.mamori_i.app.screen.home.TestPositiveCheckActivity"
+        const val KEY = "jp.mamori_i.app.screen.home.debug.TestPositiveCheckActivity"
     }
 
     private val repository: TraceRepository by inject()

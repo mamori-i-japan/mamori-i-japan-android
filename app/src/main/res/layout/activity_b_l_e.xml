@@ -129,6 +129,6 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context=".screen.home.BLEActivity"
+        tools:context=".screen.home.debug.BLEActivity"
         tools:listitem="@layout/ble_contact_row_item" />
 </LinearLayout>

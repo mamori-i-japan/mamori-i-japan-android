@@ -1,4 +1,4 @@
-package jp.mamori_i.app.screen.home
+package jp.mamori_i.app.screen.home.debug
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -6,7 +6,6 @@ import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -17,7 +16,6 @@ import jp.mamori_i.app.extension.setUpToolBar
 import jp.mamori_i.app.logger.DebugLogger
 import kotlinx.android.synthetic.main.activity_test_ble.*
 import kotlinx.android.synthetic.main.activity_test_ble.toolBar
-import kotlinx.android.synthetic.main.activity_test_positive_check.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -25,7 +23,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class TestBLEActivity: AppCompatActivity() {
     companion object {
         const val TAG = "TestBLEActivity"
-        const val KEY = "jp.mamori_i.app.screen.home.TestBLEActivity"
+        const val KEY = "jp.mamori_i.app.screen.home.debug.TestBLEActivity"
     }
 
     private val viewModel: TestBLEViewModel by viewModel()

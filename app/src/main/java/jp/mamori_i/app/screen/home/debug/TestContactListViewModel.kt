@@ -1,4 +1,4 @@
-package jp.mamori_i.app.screen.home
+package jp.mamori_i.app.screen.home.debug
 
 import android.app.Activity
 import androidx.lifecycle.Transformations
@@ -10,7 +10,6 @@ import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import jp.mamori_i.app.data.repository.profile.ProfileRepository
 import jp.mamori_i.app.data.repository.trase.TraceRepository
 import jp.mamori_i.app.util.AnalysisUtil
 import kotlinx.coroutines.launch
@@ -30,7 +29,13 @@ class TestContactListViewModel(
     val checkResultNone = PublishSubject.create<Any>()
 
     val deepContactUserModels = Transformations.map(traceRepository.selectAllLiveDataDeepContactUsers()) {
-        it.map { entity -> TestContactModel(entity.tempId, entity.startTime, entity.endTime) }
+        it.map { entity ->
+            TestContactModel(
+                entity.tempId,
+                entity.startTime,
+                entity.endTime
+            )
+        }
     }
 
     fun checkDeepContactWithPositivePerson(activity: Activity) {

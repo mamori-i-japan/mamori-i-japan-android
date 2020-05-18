@@ -3,8 +3,6 @@ package jp.mamori_i.app.screen.trace
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -13,8 +11,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
 import jp.mamori_i.app.extension.setUpToolBar
-import jp.mamori_i.app.screen.home.TestContactViewAdapter
-import kotlinx.android.synthetic.main.activity_test_contact_list.*
 import kotlinx.android.synthetic.main.activity_trace_history.*
 import kotlinx.android.synthetic.main.activity_trace_history.toolBar
 import org.koin.android.ext.android.inject

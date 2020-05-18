@@ -14,6 +14,7 @@ import io.reactivex.schedulers.Schedulers
 import jp.mamori_i.app.R
 import jp.mamori_i.app.extension.handleError
 import jp.mamori_i.app.screen.home.HomeStatus.HomeStatusType.*
+import jp.mamori_i.app.screen.home.debug.BLEActivity
 import jp.mamori_i.app.screen.menu.MenuActivity
 import jp.mamori_i.app.screen.trace.TraceDataUploadActivity
 import jp.mamori_i.app.screen.trace.TraceHistoryActivity

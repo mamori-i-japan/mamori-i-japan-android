@@ -1,12 +1,9 @@
-package jp.mamori_i.app.screen.home
+package jp.mamori_i.app.screen.home.debug
 
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,22 +23,19 @@ import jp.mamori_i.app.idmanager.TempIdManager
 import jp.mamori_i.app.util.BLEUtil
 import kotlinx.android.synthetic.main.activity_b_l_e.*
 import kotlinx.android.synthetic.main.activity_b_l_e.toolBar
-import kotlinx.android.synthetic.main.activity_test_positive_check.*
 import kotlinx.android.synthetic.main.ble_contact_row_item.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import pub.devrel.easypermissions.AfterPermissionGranted
-import pub.devrel.easypermissions.EasyPermissions
 import kotlin.coroutines.CoroutineContext
 
 class BLEActivity : AppCompatActivity(), CoroutineScope {
 
     companion object {
         const val TAG = "BLEActivity"
-        const val KEY = "jp.mamori_i.app.screen.home.BLEActivity"
+        const val KEY = "jp.mamori_i.app.screen.home.debug.BLEActivity"
         private const val PERMISSION_REQUEST_ACCESS_LOCATION = 222
         private const val REQUEST_ENABLE_BT = 333
     }
@@ -76,7 +70,10 @@ class BLEActivity : AppCompatActivity(), CoroutineScope {
 
         contact_list.also {
             it.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-            it.adapter = ContactViewAdapter(this, contactList)
+            it.adapter = ContactViewAdapter(
+                this,
+                contactList
+            )
             it.layoutManager = LinearLayoutManager(this)
         }
     }
@@ -145,7 +142,10 @@ class ContactViewAdapter(private val context: Context, private val contactList: 
         val txPowerTextView: TextView = view.txPoweTextViewr
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder = ContactViewHolder(LayoutInflater.from(context).inflate(R.layout.ble_contact_row_item, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder =
+        ContactViewHolder(
+            LayoutInflater.from(context).inflate(R.layout.ble_contact_row_item, parent, false)
+        )
 
     override fun getItemCount(): Int = contactList.size
 

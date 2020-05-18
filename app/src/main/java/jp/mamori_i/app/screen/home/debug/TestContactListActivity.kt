@@ -1,4 +1,4 @@
-package jp.mamori_i.app.screen.home
+package jp.mamori_i.app.screen.home.debug
 
 import android.content.Context
 import android.os.Bundle
@@ -25,14 +25,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.koin.android.ext.android.inject
-import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 
 class TestContactListActivity: AppCompatActivity(), CoroutineScope {
     companion object {
         const val TAG = "TestContactListActivity"
-        const val KEY = "jp.mamori_i.app.screen.home.TestContactListActivity"
+        const val KEY = "jp.mamori_i.app.screen.home.debug.TestContactListActivity"
     }
 
     private val viewModel: TestContactListViewModel by inject()
@@ -71,7 +70,11 @@ class TestContactListActivity: AppCompatActivity(), CoroutineScope {
 
         contact_list.also {
             it.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-            it.adapter = TestContactViewAdapter(this, contactList)
+            it.adapter =
+                TestContactViewAdapter(
+                    this,
+                    contactList
+                )
             it.layoutManager = LinearLayoutManager(this)
         }
     }
@@ -120,7 +123,10 @@ class TestContactViewAdapter(private val context: Context, private val contactLi
         val endTimeTextView: TextView = view.endTimeTextViewr
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TestContactViewHolder = TestContactViewHolder(LayoutInflater.from(context).inflate(R.layout.test_contact_row_item, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TestContactViewHolder =
+        TestContactViewHolder(
+            LayoutInflater.from(context).inflate(R.layout.test_contact_row_item, parent, false)
+        )
 
     override fun getItemCount(): Int = contactList.size
 
