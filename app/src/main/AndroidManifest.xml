@@ -34,32 +34,41 @@
 
         <activity
             android:name=".screen.common.WebActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".screen.home.HomeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".screen.menu.AboutActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".screen.menu.MenuActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".screen.menu.SettingActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".screen.profile.InputPrefectureActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".screen.permission.PermissionSettingActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".screen.start.AgreementActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".screen.start.SplashActivity"
             android:label="@string/app_name"
-            android:exported="true" >
+            android:exported="true"
+            android:screenOrientation="nosensor" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -67,18 +76,33 @@
         </activity>
         <activity
             android:name=".screen.start.TutorialActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".screen.trace.TraceHistoryActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".screen.trace.TraceDataUploadActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="nosensor" />
 
-        <activity android:name=".screen.home.debug.TestBLEActivity" android:exported="false" /> <!-- TODO 動作確認用 -->
-        <activity android:name=".screen.home.debug.BLEActivity" android:exported="false" /> <!-- TODO 動作確認用 -->
-        <activity android:name=".screen.home.debug.TestPositiveCheckActivity" android:exported="false" /> <!-- TODO 動作確認用 -->
-        <activity android:name=".screen.home.debug.TestContactListActivity" android:exported="false" /> <!-- TODO 動作確認用 -->
+        <activity
+            android:name=".screen.home.debug.TestBLEActivity"
+            android:exported="false"
+            android:screenOrientation="nosensor" /> <!-- TODO 動作確認用 -->
+        <activity
+            android:name=".screen.home.debug.BLEActivity"
+            android:exported="false"
+            android:screenOrientation="nosensor" /> <!-- TODO 動作確認用 -->
+        <activity
+            android:name=".screen.home.debug.TestPositiveCheckActivity"
+            android:exported="false"
+            android:screenOrientation="nosensor" /> <!-- TODO 動作確認用 -->
+        <activity
+            android:name=".screen.home.debug.TestContactListActivity"
+            android:exported="false"
+            android:screenOrientation="nosensor" /> <!-- TODO 動作確認用 -->
 
     </application>
 
