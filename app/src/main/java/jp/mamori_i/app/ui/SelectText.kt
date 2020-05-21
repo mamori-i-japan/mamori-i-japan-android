@@ -58,6 +58,7 @@ class SelectText @JvmOverloads constructor(context: Context, attrs: AttributeSet
         picker.displayedValues = selectDisplaySource()
         picker.minValue = 0
         picker.maxValue = selectDataSource.count() - 1
+        picker.wrapSelectorWheel = false
         picker.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
         initValue?.let { initValue ->
             picker.value = selectDataSource.indexOf(initValue)
