@@ -48,7 +48,7 @@ class TraceDataUploadActivity: AppCompatActivity(), TraceDataUploadNavigator {
 
     private fun setupViews() {
         // ツールバー
-        setUpToolBar(toolBar, "陽性報告")
+        setUpToolBar(toolBar, getString(R.string.toolbar_title_trace_data_upload))
 
         codeInputText.requestFocus()
 

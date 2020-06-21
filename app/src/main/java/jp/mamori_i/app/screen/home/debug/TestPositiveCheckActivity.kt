@@ -58,7 +58,7 @@ class TestPositiveCheckActivity: AppCompatActivity(), CoroutineScope {
     }
 
     private fun setupViews() {
-        setUpToolBar(toolBar, "陽性者判定(テスト用)")
+        setUpToolBar(toolBar, getString(R.string.toolbar_title_test_positive_check))
         refreshButton.setOnClickListener {
             checkResultText.text = ""
             check()

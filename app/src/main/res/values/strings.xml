@@ -14,6 +14,19 @@
     <!-- FetchErrorView -->
     <string name="fetch_error_view_reload_button">再読み込み</string>
 
+    <!-- Toolbar Title -->
+    <string name="toolbar_title_about">このアプリについて</string>
+    <string name="toolbar_title_test_contact_list">濃厚接触リスト(テスト用)</string>
+    <string name="toolbar_title_agreement">利用規約への同意</string>
+    <string name="toolbar_title_test_positive_check">陽性者判定(テスト用)</string>
+    <string name="toolbar_title_test_ble">BLEテスト</string>
+    <string name="toolbar_title_ble">テスト用画面</string>
+    <string name="toolbar_title_menu">メニュー</string>
+    <string name="toolbar_title_setting">設定</string>
+    <string name="toolbar_title_permission_setting">利用いただくために</string>
+    <string name="toolbar_title_input_prefecture">都道府県選択</string>
+    <string name="toolbar_title_trace_data_upload">陽性報告</string>
+    <string name="toolbar_title_trace_history">接触履歴</string>
 
     <!-- 持ち込みなので、後で削除するかも -->
     <string name="service_ok_title">まもりあいJAPANのスキャン中</string>

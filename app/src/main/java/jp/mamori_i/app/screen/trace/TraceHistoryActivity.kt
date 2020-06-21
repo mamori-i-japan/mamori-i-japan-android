@@ -48,7 +48,7 @@ class TraceHistoryActivity: AppCompatActivity() {
 
     private fun setupViews() {
         // ツールバー
-        setUpToolBar(toolBar, "接触履歴")
+        setUpToolBar(toolBar, getString(R.string.toolbar_title_trace_history))
         // リスト
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@TraceHistoryActivity)

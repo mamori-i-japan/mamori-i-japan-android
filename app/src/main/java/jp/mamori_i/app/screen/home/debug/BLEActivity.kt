@@ -79,7 +79,7 @@ class BLEActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun setupViews() {
-        setUpToolBar(toolBar, "テスト用画面")
+        setUpToolBar(toolBar, getString(R.string.toolbar_title_ble))
 
         launch (Dispatchers.IO) {
             val tempId = tempIdManager.getTempUserId(System.currentTimeMillis())

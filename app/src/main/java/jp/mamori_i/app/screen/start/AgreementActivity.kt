@@ -43,7 +43,7 @@ class AgreementActivity: AppCompatActivity(), AgreementNavigator {
     }
 
     private fun setupViews() {
-        setUpToolBar(toolBar, "利用規約への同意")
+        setUpToolBar(toolBar, getString(R.string.toolbar_title_agreement))
 
         agreeButton.setOnClickListener {
             viewModel.onClickAgree()
