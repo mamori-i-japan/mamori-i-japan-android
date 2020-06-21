@@ -58,7 +58,7 @@ class InputPrefectureActivity: AppCompatActivity(),
 
     private fun setupViews() {
         // ツールバー
-        setUpToolBar(toolBar, "都道府県選択")
+        setUpToolBar(toolBar, getString(R.string.toolbar_title_input_prefecture))
 
         executeButton.setOnClickListener {
             val input = prefecturesSelectText.selectItem() as PrefectureType

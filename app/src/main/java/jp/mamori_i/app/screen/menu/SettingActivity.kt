@@ -55,7 +55,7 @@ class SettingActivity: AppCompatActivity(), SettingNavigator {
 
     private fun setupViews() {
         // ツールバー
-        setUpToolBar(toolBar, "設定")
+        setUpToolBar(toolBar, getString(R.string.toolbar_title_setting))
 
         prefectureSelectButton.setOnClickListener {
             viewModel.onClickPrefecture()

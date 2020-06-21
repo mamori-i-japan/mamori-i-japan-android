@@ -54,7 +54,7 @@ class TestBLEActivity: AppCompatActivity() {
     }
 
     private fun setupViews() {
-        setUpToolBar(toolBar, "BLEテスト")
+        setUpToolBar(toolBar, getString(R.string.toolbar_title_test_ble))
 
         val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
         logText.setOnLongClickListener {

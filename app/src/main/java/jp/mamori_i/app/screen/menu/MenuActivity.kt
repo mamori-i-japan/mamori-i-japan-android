@@ -53,7 +53,7 @@ class MenuActivity: AppCompatActivity(), MenuNavigator {
 
     private fun setupViews() {
         // ツールバー
-        setUpToolBar(toolBar, "メニュー")
+        setUpToolBar(toolBar, getString(R.string.toolbar_title_menu))
     }
 
     private fun bind() {

@@ -28,7 +28,7 @@ class AboutActivity: AppCompatActivity() {
 
     private fun setupViews() {
         // ツールバー
-        setUpToolBar(toolBar, "このアプリについて")
+        setUpToolBar(toolBar, getString(R.string.toolbar_title_about))
         versionTextView.text = BuildConfig.VERSION_NAME
     }
 }

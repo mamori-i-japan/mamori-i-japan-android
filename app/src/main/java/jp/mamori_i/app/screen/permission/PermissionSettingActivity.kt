@@ -58,7 +58,7 @@ class PermissionSettingActivity: AppCompatActivity() {
     }
 
     private fun setupViews() {
-        setUpToolBar(toolBar, "利用いただくために", "", false)
+        setUpToolBar(toolBar, getString(R.string.toolbar_title_permission_setting), "", false)
         settingButton.setOnClickListener {
             if (enableBluetooth()) {
                 setupPermissionsAndSettings()

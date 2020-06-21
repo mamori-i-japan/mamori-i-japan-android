@@ -80,7 +80,7 @@ class TestContactListActivity: AppCompatActivity(), CoroutineScope {
     }
 
     private fun setupViews() {
-        setUpToolBar(toolBar, "濃厚接触リスト(テスト用)")
+        setUpToolBar(toolBar, getString(R.string.toolbar_title_test_contact_list))
 
         refreshButton.setOnClickListener {
             checkResultText.text = ""
